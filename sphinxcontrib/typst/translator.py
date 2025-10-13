@@ -869,11 +869,12 @@ class TypstTranslator(SphinxTranslator):
         # Generate #include() for each entry with heading offset
         # Each included file has its own imports, so block scope is safe
         for _title, docname in entries:
-            # Requirement 13.14: Use block scope for heading offset
-            self.add_text("{\n")
+            # Requirement 13.14: Use content block #[...] for heading offset
+            # This creates a scoped block without displaying {} in output
+            self.add_text("#[\n")
             self.add_text("  #set heading(offset: 1)\n")
             self.add_text(f'  #include("{docname}.typ")\n')
-            self.add_text("}\n\n")
+            self.add_text("]\n\n")
 
         # Skip processing children as we've handled the toctree entries
         raise nodes.SkipNode

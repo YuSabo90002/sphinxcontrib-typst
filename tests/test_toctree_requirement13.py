@@ -85,8 +85,8 @@ def test_toctree_with_heading_offset(simple_document, mock_builder):
     Test that toctree generates #include() with heading offset.
 
     Requirement 13.14: WHEN `#include()` を生成する際に見出しレベルを調整
-    THEN Typst SHALL `{ #set heading(offset: 1); #include("doc.typ") }` のように
-    ブロックスコープ内で `#set heading(offset: 1)` を適用する
+    THEN Typst SHALL `#[ #set heading(offset: 1); #include("doc.typ") ]` のように
+    コンテンツブロック内で `#set heading(offset: 1)` を適用する
     """
     from sphinxcontrib.typst.translator import TypstTranslator
 
@@ -104,10 +104,10 @@ def test_toctree_with_heading_offset(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Should generate heading offset block
+    # Should generate heading offset content block with #[...]
     assert "#set heading(offset: 1)" in output
-    assert "{\n" in output or "{ " in output
-    assert "}\n" in output or " }" in output
+    assert "#[\n" in output or "#[" in output
+    assert "]\n" in output or "]" in output
 
 
 def test_toctree_with_nested_path(simple_document, mock_builder):
