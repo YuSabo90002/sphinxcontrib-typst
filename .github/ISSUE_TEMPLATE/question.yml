@@ -1,0 +1,88 @@
+name: Question
+description: Ask a question about using sphinxcontrib-typst
+title: "[Q] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question? We're here to help! Please provide as much context as possible.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+      placeholder: How do I...?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to achieve? Provide background information.
+      placeholder: |
+        I'm trying to...
+        My goal is to...
+        I want to create a document that...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment (Optional)
+      description: Information about your environment if relevant
+      value: |
+        - sphinxcontrib-typst version:
+        - Python version:
+        - Sphinx version:
+        - OS:
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What I've Tried
+      description: What have you already attempted? (Optional)
+      placeholder: |
+        - I tried setting this configuration...
+        - I looked at the documentation...
+        - I searched for similar issues...
+    validations:
+      required: false
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example Code (Optional)
+      description: Share relevant configuration or code if applicable
+      placeholder: |
+        # conf.py
+        typst_use_mitex = True
+        ...
+      render: python
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other information that might be helpful
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please check the following before submitting
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: I have checked the documentation
+          required: true

@@ -1,0 +1,46 @@
+version: 2
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "00:00"  # UTC 00:00 = JST 09:00
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps(dev)"
+      include: "scope"
+    # Group minor and patch updates together
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    # Separate major updates and security updates
+    ignore:
+      # Ignore specific packages if needed (example)
+      # - dependency-name: "some-package"
+      #   versions: ["2.x"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "00:00"
+    open-pull-requests-limit: 3
+    labels:
+      - "ci"
+      - "automated"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
