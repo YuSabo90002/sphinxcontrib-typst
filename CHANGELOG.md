@@ -190,5 +190,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[0.1.0b1]: https://github.com/yourusername/sphinxcontrib-typst/releases/tag/v0.1.0b1
-[Unreleased]: https://github.com/yourusername/sphinxcontrib-typst/compare/v0.1.0b1...HEAD
+[0.1.0b1]: https://github.com/YuSabo90002/sphinxcontrib-typst/releases/tag/v0.1.0b1
+[Unreleased]: https://github.com/YuSabo90002/sphinxcontrib-typst/compare/v0.1.0b1...HEAD

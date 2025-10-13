@@ -46,7 +46,7 @@ pip install sphinxcontrib-typst
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/sphinxcontrib-typst.git
+git clone https://github.com/YuSabo90002/sphinxcontrib-typst.git
 cd sphinxcontrib-typst
 
 # Install dependencies with uv
