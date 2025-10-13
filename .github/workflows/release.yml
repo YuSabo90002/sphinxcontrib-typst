@@ -195,9 +195,9 @@ jobs:
       contains(github.ref, 'beta') ||
       contains(github.ref, 'alpha') ||
       contains(github.ref, 'rc') ||
-      contains(github.event.inputs.tag, 'beta') ||
-      contains(github.event.inputs.tag, 'alpha') ||
-      contains(github.event.inputs.tag, 'rc')
+      contains(inputs.tag, 'beta') ||
+      contains(inputs.tag, 'alpha') ||
+      contains(inputs.tag, 'rc')
     environment:
       name: testpypi
       url: https://test.pypi.org/p/sphinxcontrib-typst
