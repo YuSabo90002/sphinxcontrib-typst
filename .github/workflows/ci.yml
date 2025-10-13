@@ -1,0 +1,188 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run tests
+        run: uv run pytest tests/ -v
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: |
+            .pytest_cache
+            test-results/
+
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run black
+        run: uv run black --check .
+
+      - name: Run ruff
+        run: uv run ruff check .
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run mypy
+        run: uv run mypy sphinxcontrib/
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run coverage
+        run: uv run pytest --cov=sphinxcontrib.typst --cov-report=term-missing --cov-report=xml --cov-report=html tests/
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov/
+
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Build package
+        run: uv build
+
+      - name: Check package
+        run: |
+          uv run pip install twine
+          uv run twine check dist/*
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  integration:
+    name: Integration Test - ${{ matrix.example }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        example: [basic, advanced]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install package
+        run: uv pip install -e .
+
+      - name: Install Typst Python package
+        run: uv pip install typst
+
+      - name: Build ${{ matrix.example }} example
+        working-directory: examples/${{ matrix.example }}
+        run: |
+          uv run sphinx-build -b typst . _build/typst
+          ls -la _build/typst/
+
+      - name: Upload example output
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-${{ matrix.example }}-output
+          path: examples/${{ matrix.example }}/_build/typst/

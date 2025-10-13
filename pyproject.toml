@@ -1,0 +1,135 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sphinxcontrib-typst"
+version = "0.1.0b1"
+description = "Sphinx extension for Typst output"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+    {name = "Sphinx Typst Contributors", email = "noreply@example.com"}
+]
+keywords = ["sphinx", "typst", "documentation", "pdf"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Sphinx :: Extension",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Documentation :: Sphinx",
+    "Topic :: Software Development :: Documentation",
+]
+
+dependencies = [
+    "sphinx>=5.0",
+    "docutils>=0.18",
+    "typst>=0.11.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "tox>=4.0",
+    "tox-uv>=1.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+    "sphinx-testing>=1.0",
+    "pre-commit>=3.0",
+    "types-docutils>=0.18",
+    "twine>=5.0",
+    "build>=1.0",
+]
+docs = [
+    "sphinx-rtd-theme>=2.0",
+    "sphinx-autodoc-typehints>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/sphinxcontrib-typst"
+Documentation = "https://sphinxcontrib-typst.readthedocs.io"
+Repository = "https://github.com/yourusername/sphinxcontrib-typst"
+Issues = "https://github.com/yourusername/sphinxcontrib-typst/issues"
+
+# Entry points for automatic Sphinx builder discovery
+[project.entry-points."sphinx.builders"]
+typst = "sphinxcontrib.typst"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sphinxcontrib*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+"sphinxcontrib.typst" = ["templates/*.typ"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311", "py312"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.tox
+  | \.venv
+  | _build
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "T20"]
+ignore = [
+    "E501",   # Line too long (handled by black)
+    "T201",   # print found (used in tests for debugging)
+    "B017",   # asserting blind exception in tests
+    "UP035",  # typing.Dict/List/Set deprecation (Python 3.9+ support)
+    "UP006",  # Use dict instead of Dict (Python 3.9+ support)
+    "UP028",  # yield from (minor optimization)
+    "N802",   # Function naming (docutils visitor pattern uses PascalCase)
+    "A001",   # Shadowing builtins (copyright in conf.py is Sphinx convention)
+    "F841",   # Unused variable (acceptable in tests and mocks)
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+no_implicit_optional = false
+check_untyped_defs = false
+warn_no_return = false
+warn_unreachable = false
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = "sphinxcontrib.typst.*"
+disable_error_code = ["var-annotated", "arg-type", "override", "misc", "union-attr", "attr-defined", "list-item"]
+
+[dependency-groups]
+dev = [
+    "types-docutils>=0.22.2.20251006",
+]
