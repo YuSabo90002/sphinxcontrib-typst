@@ -142,7 +142,7 @@ jobs:
 
       - name: Check package
         run: |
-          uv run pip install twine
+          uv sync --extra dev
           uv run twine check dist/*
 
       - name: Upload package artifacts
@@ -169,11 +169,8 @@ jobs:
       - name: Set up Python
         run: uv python install 3.11
 
-      - name: Install package
-        run: uv pip install -e .
-
-      - name: Install Typst Python package
-        run: uv pip install typst
+      - name: Install package and dependencies
+        run: uv sync
 
       - name: Build ${{ matrix.example }} example
         working-directory: examples/${{ matrix.example }}
