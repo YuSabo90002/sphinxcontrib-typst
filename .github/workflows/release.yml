@@ -118,38 +118,10 @@ jobs:
           name: dist-packages
           path: dist/
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          version: "latest"
-
-      - name: Set up Python
-        run: uv python install 3.11
-
-      - name: Install dependencies
-        run: uv sync --extra dev
-
-      # Option 1: Trusted Publishing (recommended, no token needed)
-      # Requires configuration at https://pypi.org/manage/account/publishing/
-      - name: Publish to PyPI (Trusted Publishing)
-        if: env.PYPI_TOKEN == ''
-        run: |
-          uv run python -m pip install --upgrade twine
-          uv run twine upload dist/* --verbose
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-
-      # Option 2: API Token (fallback)
-      - name: Publish to PyPI (API Token)
-        if: env.PYPI_TOKEN != ''
-        run: |
-          uv run python -m pip install --upgrade twine
-          uv run twine upload dist/* --verbose
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.PYPI_API_TOKEN }}
 
   # Create GitHub Release
   create-release:
@@ -230,21 +202,8 @@ jobs:
           name: dist-packages
           path: dist/
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          version: "latest"
-
-      - name: Set up Python
-        run: uv python install 3.11
-
-      - name: Install dependencies
-        run: uv sync --extra dev
-
       - name: Publish to TestPyPI
-        run: |
-          uv run python -m pip install --upgrade twine
-          uv run twine upload --repository testpypi dist/* --verbose
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository-url: https://test.pypi.org/legacy/
