@@ -191,7 +191,13 @@ jobs:
     name: Publish to TestPyPI (Optional)
     needs: build
     runs-on: ubuntu-latest
-    if: contains(github.ref, 'beta') || contains(github.ref, 'alpha') || contains(github.ref, 'rc')
+    if: |
+      contains(github.ref, 'beta') ||
+      contains(github.ref, 'alpha') ||
+      contains(github.ref, 'rc') ||
+      contains(github.event.inputs.tag, 'beta') ||
+      contains(github.event.inputs.tag, 'alpha') ||
+      contains(github.event.inputs.tag, 'rc')
     environment:
       name: testpypi
       url: https://test.pypi.org/p/sphinxcontrib-typst
