@@ -268,6 +268,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - Integrates [mitex](https://github.com/mitex-rs/mitex) for LaTeX math
 - Uses [codly](https://typst.app/universe/package/codly) for code highlighting
 - Uses [gentle-clues](https://typst.app/universe/package/gentle-clues) for admonitions
+- Developed with [Claude Code](https://claude.ai/code) and Kiro-style Spec-Driven Development
 
 ## Version History
 
