@@ -4,10 +4,16 @@ Kiro-style Spec Driven Development implementation using claude code slash comman
 
 ## Project Context
 
+### Repository Information
+- Owner: `YuSabo90002`
+- Repository: `sphinxcontrib-typst`
+- GitHub URL: https://github.com/YuSabo90002/sphinxcontrib-typst
+
 ### Paths
 - Steering: `.kiro/steering/`
 - Specs: `.kiro/specs/`
 - Commands: `.claude/commands/`
+- Issue Templates: `.github/ISSUE_TEMPLATE/`
 
 ### Steering vs Specification
 
@@ -20,6 +26,11 @@ Kiro-style Spec Driven Development implementation using claude code slash comman
 
 ## Development Guidelines
 - Think in English, but generate responses in Japanese (思考は英語、回答の生成は日本語で行うように)
+- **Language for GitHub interactions**: Always write issues and pull requests in English
+- **When creating issues**: Always reference issue templates in `.github/ISSUE_TEMPLATE/` and follow the appropriate template format
+  - Bug Report: `bug_report.yml`
+  - Feature Request: `feature_request.yml`
+  - Question: `question.yml`
 
 ## Workflow
 
@@ -70,6 +81,15 @@ Managed by `/kiro:steering` command. Updates here reflect command changes.
 - **Conditional**: Loaded for specific file patterns (e.g., "*.test.js")
 - **Manual**: Reference with `@filename.md` syntax
 
-# 特記
-uvコマンドでコマンド、テストを実施すること。
+## Project-Specific Guidelines
+
+### Package and Task Management
+- **Always use `uv` commands** for package management and task execution
+  - Running commands: `uv run <command>`
+  - Running tests: `uv run pytest`
+  - Installing packages: `uv add <package>`
+  - Syncing dependencies: `uv sync`
+  - Other pip operations: `uv pip <command>`
+- Do NOT use `pip` or bare `python` commands directly
+- Do NOT use `poetry` or other package managers
 
