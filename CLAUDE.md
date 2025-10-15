@@ -23,6 +23,7 @@ Kiro-style Spec Driven Development implementation using claude code slash comman
 ### Active Specifications
 - **sphinxcontrib-typst**: Sphinx拡張によるTypstビルダーの実装 (Phase: initialized)
 - **fix-nested-toctree-paths**: ネストされたtoctreeにおける#include()ディレクティブの相対パス修正 (Phase: initialized) - Issue #5対応
+- **simplify-toctree-content-block**: toctree翻訳の簡略化 - 単一コンテンツブロック使用 (Phase: initialized) - Issue #7対応
 - Use `/kiro:spec-status [feature-name]` to check progress
 
 ## Development Guidelines

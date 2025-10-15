@@ -17,7 +17,8 @@ sphinx-typst は、Sphinx ドキュメントジェネレータと Typst タイ�
 - **数式サポート**: mitex による LaTeX 数式またはネイティブ Typst 数式
 - **図表管理**: 画像、表、図表の埋め込みと参照管理
 - **マルチドキュメント対応**: toctree による `#include()` 統合
-- **ネストされたtoctreeサポート**: 相対パスによる正確な `#include()` 生成（Issue #5対応）
+- **ネストされたtoctreeサポート**: 相対パスによる正確な `#include()` 生成
+- **簡潔なTypst出力**: 単一コンテンツブロックによるtoctree生成で可読性向上
 
 ## Target Use Case
 
@@ -72,21 +73,22 @@ sphinx-typst は、Sphinx ドキュメントジェネレータと Typst タイ�
 - **Sphinx + Typst の初の統合**: Sphinx と Typst を繋ぐ専用ソリューション
 - **Python エコシステム統合**: Python プロジェクトのドキュメントワークフローにシームレスに統合
 - **拡張性**: Sphinx と Typst 両方の拡張メカニズムを活用可能
-- **高品質実装**: 313 テスト、94% カバレッジで検証済み（Issue #5実装により27テスト追加）
+- **高品質実装**: 317 テスト、94% カバレッジで検証済み
 - **ベータリリース**: PyPI で配布中 (v0.1.0b1)、早期採用とフィードバックを歓迎
 
 ## Release Status
 
 **Current Version**: v0.1.0b1 (Beta)
 - **Status**: ベータ版 - テストと早期採用に適している
-- **Test Coverage**: 94% (313 tests)
-  - ユニットテスト: 10件（相対パス計算）
-  - 統合テスト: 10件（Sphinxビルド検証）
-  - E2Eテスト: 4件（PDF生成検証）
-  - カバレッジテスト: 3件（パラメータ変換）
+- **Test Coverage**: 94% (317 tests)
+  - ユニットテスト: 10件（相対パス計算、toctree単一ブロック検証）
+  - 統合テスト: 47件（Sphinxビルド検証、toctreeオプション）
+  - E2Eテスト: 24件（PDF生成検証）
+  - その他テスト: 236件（ノード変換、設定、ドキュメント）
 - **Distribution**: PyPI で利用可能
 - **Production Readiness**: 12/13 要件を実装、エンタープライズ使用には v1.0 待機を推奨
 - **Recent Improvements**:
-  - Issue #5修正: ネストされたtoctreeの相対パス生成
+  - toctree単一コンテンツブロック生成で可読性向上
+  - ネストされたtoctreeの相対パス生成
   - デバッグログ機能追加: `-vv`フラグで詳細ログ出力
   - E2Eコンパイルテスト: typst-pyによるPDF生成検証

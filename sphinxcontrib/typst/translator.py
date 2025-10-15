@@ -968,14 +968,18 @@ class TypstTranslator(SphinxTranslator):
         - Apply #set heading(offset: 1) to lower heading levels
         - Issue #5: Fix relative paths for nested toctrees
           - Calculate relative paths from current document
+        - Issue #7: Simplify toctree output with single content block
+          - Generate single #[...] block containing all includes
+          - Apply #set heading(offset: 1) once per toctree
 
         Args:
             node: The toctree node
 
         Notes:
-            This method generates Typst #include() directives for each toctree entry.
-            Each include is wrapped in a content block #[...] to apply heading offset
-            without displaying the block delimiters in the output.
+            This method generates Typst #include() directives for each toctree entry
+            within a single content block #[...] to apply heading offset without
+            displaying the block delimiters in the output. This simplifies the
+            generated Typst code and improves readability.
         """
         # Get entries from the toctree node
         entries = node.get("entries", [])
@@ -995,7 +999,12 @@ class TypstTranslator(SphinxTranslator):
             f"entries: {[docname for _, docname in entries]}"
         )
 
-        # Generate #include() for each entry with heading offset
+        # Issue #7: Generate single content block for all includes
+        # Start single content block
+        self.add_text("#[\n")
+        self.add_text("  #set heading(offset: 1)\n")
+
+        # Generate #include() for each entry within the single block
         # Each included file has its own imports, so block scope is safe
         for _title, docname in entries:
             # Compute relative path for #include() (Issue #5 fix)
@@ -1007,12 +1016,11 @@ class TypstTranslator(SphinxTranslator):
                 f"Generated #include() for toctree: {docname} -> {relative_path}.typ"
             )
 
-            # Requirement 13.14: Use content block #[...] for heading offset
-            # This creates a scoped block without displaying {} in output
-            self.add_text("#[\n")
-            self.add_text("  #set heading(offset: 1)\n")
+            # Issue #7: Generate only #include() within the block
             self.add_text(f'  #include("{relative_path}.typ")\n')
-            self.add_text("]\n\n")
+
+        # End single content block
+        self.add_text("]\n\n")
 
         # Skip processing children as we've handled the toctree entries
         raise nodes.SkipNode

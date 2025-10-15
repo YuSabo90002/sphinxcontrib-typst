@@ -3,7 +3,7 @@
 ## Root Directory Organization
 
 ```
-sphinx-typst/
+sphinxcontrib-typst/
 ├── .kiro/                      # Kiro spec-driven development
 │   ├── steering/               # プロジェクト全体のガイドライン
 │   └── specs/                  # 機能ごとの仕様書
@@ -40,7 +40,7 @@ sphinxcontrib/typst/
 ```
 
 #### `tests/` - Test Suite
-テストコードの配置（313 テスト、94% カバレッジ）
+テストコードの配置（317 テスト、94% カバレッジ）
 
 ```
 tests/
@@ -56,15 +56,16 @@ tests/
 ├── test_documentation_*.py          # ドキュメンテーションのテスト
 ├── test_entry_points.py             # Entry points 自動検出のテスト
 ├── test_extension.py                # 拡張機能のテスト
-├── test_nested_toctree_paths.py     # ユニットテスト（相対パス計算、Issue #5）
-├── test_integration_nested_toctree.py  # 統合・E2Eテスト（Issue #5）
+├── test_nested_toctree_paths.py     # ユニットテスト（相対パス計算）
+├── test_integration_nested_toctree.py  # 統合・E2Eテスト（ネストtoctree）
+├── test_toctree_requirement13.py    # toctree要件テスト（単一ブロック検証）
 ├── fixtures/                        # テスト用フィクスチャ
 │   ├── integration_basic/           # 基本統合テスト用
 │   ├── integration_multi_doc/       # マルチドキュメント用
 │   ├── integration_math_figures/    # 数式・図表用
-│   ├── integration_nested_toctree/  # Issue #5再現テスト用（2階層ネスト）
-│   ├── integration_multi_level/     # 3階層ネストテスト用（Issue #5）
-│   └── integration_sibling/         # 兄弟ディレクトリ参照テスト用（Issue #5）
+│   ├── integration_nested_toctree/  # ネストtoctreeテスト用（2階層）
+│   ├── integration_multi_level/     # 多階層ネストテスト用（3階層）
+│   └── integration_sibling/         # 兄弟ディレクトリ参照テスト用
 └── roots/                           # Sphinx テストルート
     └── test-basic/                  # 基本テストプロジェクト
 ```
@@ -234,6 +235,13 @@ class TypstTranslator(nodes.NodeVisitor):
     def depart_paragraph(self, node: nodes.paragraph) -> None:
         """段落終了"""
         self.body.append('\n\n')
+
+    def visit_toctree(self, node: addnodes.toctree) -> None:
+        """toctreeノードを #include() ディレクティブに変換
+
+        ネストされたtoctreeの相対パス計算と単一コンテンツブロック生成を実装
+        """
+        pass
 
     # その他多数のノードタイプに対応
     # visit_literal_block, visit_image, visit_table, など
