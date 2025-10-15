@@ -848,13 +848,87 @@ class TypstTranslator(SphinxTranslator):
         if reftarget:
             self.add_text("]")
 
+    def _compute_relative_include_path(
+        self, target_docname: str, current_docname: str | None
+    ) -> str:
+        """
+        Compute relative path for toctree #include() directive.
+
+        This method calculates the relative path from the current document
+        to the target document for use in Typst #include() directives.
+        Uses PurePosixPath for OS-independent POSIX path handling.
+
+        Args:
+            target_docname: Target document name (e.g., "chapter1/section1")
+            current_docname: Current document name (e.g., "chapter1/index"), or None
+
+        Returns:
+            Relative path string for #include() (e.g., "section1" or "../chapter2/doc")
+
+        Examples:
+            >>> _compute_relative_include_path("chapter1/section1", "chapter1/index")
+            "section1"
+            >>> _compute_relative_include_path("chapter2/doc", "chapter1/index")
+            "../chapter2/doc"
+            >>> _compute_relative_include_path("chapter1/doc", None)
+            "chapter1/doc"
+
+        Requirements: 1.1, 1.2, 1.3, 1.4, 1.5
+        """
+        from pathlib import PurePosixPath
+
+        # Fallback to absolute path if current_docname is None
+        if not current_docname:
+            return target_docname
+
+        current_path = PurePosixPath(current_docname)
+        target_path = PurePosixPath(target_docname)
+        current_dir = current_path.parent
+
+        # Root directory case: use absolute path (backward compatibility)
+        if current_dir == PurePosixPath("."):
+            return target_docname
+
+        # Try to compute relative path
+        try:
+            relative_path = target_path.relative_to(current_dir)
+            return str(relative_path)
+        except ValueError:
+            # Different directory trees - build path via common parent
+            # 1. Find common parent
+            # 2. Build "../" * depth + relative_from_common
+
+            current_parts = current_dir.parts
+            target_parts = target_path.parts
+
+            # Find common parent
+            common_length = 0
+            for i, (c, t) in enumerate(zip(current_parts, target_parts)):
+                if c == t:
+                    common_length = i + 1
+                else:
+                    break
+
+            # Build path: "../" from current to common parent
+            up_count = len(current_parts) - common_length
+            up_path = "../" * up_count if up_count > 0 else ""
+
+            # Build path: from common parent to target
+            down_parts = target_parts[common_length:]
+            down_path = "/".join(down_parts) if down_parts else ""
+
+            relative_path = up_path + down_path
+            return str(relative_path)
+
     def visit_toctree(self, node: nodes.Node) -> None:
         """
         Visit a toctree node (Sphinx table of contents tree).
 
-        Requirement 13: 複数ドキュメントの統合と toctree 処理
-        - 各エントリーに対して#include()を生成
-        - 見出しレベルを1下げるため#set heading(offset: 1)を適用
+        Requirement 13: Multi-document integration and toctree processing
+        - Generate #include() for each entry
+        - Apply #set heading(offset: 1) to lower heading levels
+        - Issue #5: Fix relative paths for nested toctrees
+          - Calculate relative paths from current document
 
         Args:
             node: The toctree node
@@ -866,14 +940,22 @@ class TypstTranslator(SphinxTranslator):
         if not entries:
             raise nodes.SkipNode
 
+        # Get current document name for relative path calculation
+        current_docname = getattr(self.builder, "current_docname", None)
+
         # Generate #include() for each entry with heading offset
         # Each included file has its own imports, so block scope is safe
         for _title, docname in entries:
+            # Compute relative path for #include() (Issue #5 fix)
+            relative_path = self._compute_relative_include_path(
+                docname, current_docname
+            )
+
             # Requirement 13.14: Use content block #[...] for heading offset
             # This creates a scoped block without displaying {} in output
             self.add_text("#[\n")
             self.add_text("  #set heading(offset: 1)\n")
-            self.add_text(f'  #include("{docname}.typ")\n')
+            self.add_text(f'  #include("{relative_path}.typ")\n')
             self.add_text("]\n\n")
 
         # Skip processing children as we've handled the toctree entries
