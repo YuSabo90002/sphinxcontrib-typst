@@ -14,9 +14,12 @@ sphinxcontrib-typst は、Sphinx ドキュメントジェネレータに Typst �
 
 #### Acceptance Criteria
 
-1. WHEN sphinxcontrib-typst がインストールされる THEN `pyproject.toml` の `[project.entry-points."sphinx.builders"]` SHALL `typst = "sphinxcontrib.typst"` エントリーポイントを定義する
-2. WHEN Sphinx が起動 THEN entry points経由で TypstBuilder SHALL 自動的に検出され、`conf.py` の `extensions` リストへの追加なしで利用可能になる
+1. WHEN sphinxcontrib-typst がインストールされる THEN `pyproject.toml` の `[project.entry-points."sphinx.builders"]` SHALL 以下のエントリーポイントを定義する:
+   - `typst = "sphinxcontrib.typst"` (Typst マークアップ生成)
+   - `typstpdf = "sphinxcontrib.typst"` (PDF 直接生成)
+2. WHEN Sphinx が起動 THEN entry points経由で TypstBuilder と TypstPDFBuilder SHALL 自動的に検出され、`conf.py` の `extensions` リストへの追加なしで利用可能になる
 3. WHEN ユーザーが `sphinx-build -b typst <source> <build>` コマンドを実行 THEN Typst Builder SHALL 指定されたソースディレクトリのドキュメントを Typst 形式でビルドディレクトリに出力する
+   AND WHEN ユーザーが `sphinx-build -b typstpdf <source> <build>` コマンドを実行 THEN TypstPDF Builder SHALL Typst 形式でドキュメントを生成し、さらに PDF にコンパイルして出力する
 4. WHEN Sphinx が拡張をロード THEN sphinxcontrib-typst SHALL `setup()` 関数で TypstBuilder を登録し、バージョン情報と並列処理の安全性を返す
 5. WHERE Sphinx のビルダーシステム内 THE TypstBuilder SHALL `sphinx.builders.Builder` 基底クラスを継承して実装される
 6. IF ビルダー名が `'typst'` で指定された THEN Sphinx SHALL TypstBuilder を選択してビルドプロセスを実行する

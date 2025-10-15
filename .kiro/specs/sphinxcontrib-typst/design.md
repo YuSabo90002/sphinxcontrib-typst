@@ -995,7 +995,9 @@ tests/fixtures/
 
 ```python
 # === Basic Configuration ===
-extensions = ['sphinxcontrib.typst']
+# Note: sphinxcontrib-typst is auto-discovered via entry points.
+# Adding to extensions list is optional but recommended for clarity.
+# extensions = ['sphinxcontrib.typst']
 
 # === Typst Builder Configuration ===
 # ビルド対象ドキュメント
