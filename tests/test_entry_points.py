@@ -20,14 +20,17 @@ def test_entry_point_registration():
     # Convert to list of names
     ep_names = [ep.name for ep in eps]
 
-    # Check that 'typst' entry point exists
+    # Check that both 'typst' and 'typstpdf' entry points exist
     assert (
         "typst" in ep_names
     ), f"'typst' entry point not found in sphinx.builders. Found: {ep_names}"
+    assert (
+        "typstpdf" in ep_names
+    ), f"'typstpdf' entry point not found in sphinx.builders. Found: {ep_names}"
 
 
 def test_entry_point_value():
-    """Test that the entry point points to the correct module."""
+    """Test that the entry points point to the correct module."""
     # Get entry points for sphinx.builders group
     if sys.version_info >= (3, 10):
         eps = entry_points(group="sphinx.builders")
@@ -35,16 +38,23 @@ def test_entry_point_value():
         all_eps = entry_points()
         eps = all_eps.get("sphinx.builders", [])
 
-    # Find the typst entry point
+    # Find the entry points
     typst_ep = None
+    typstpdf_ep = None
     for ep in eps:
         if ep.name == "typst":
             typst_ep = ep
-            break
+        elif ep.name == "typstpdf":
+            typstpdf_ep = ep
 
+    # Check typst entry point
     assert typst_ep is not None, "'typst' entry point not found"
-
-    # Check that it points to sphinxcontrib.typst
     assert (
         typst_ep.value == "sphinxcontrib.typst"
     ), f"Entry point value should be 'sphinxcontrib.typst', got '{typst_ep.value}'"
+
+    # Check typstpdf entry point
+    assert typstpdf_ep is not None, "'typstpdf' entry point not found"
+    assert (
+        typstpdf_ep.value == "sphinxcontrib.typst"
+    ), f"Entry point value should be 'sphinxcontrib.typst', got '{typstpdf_ep.value}'"
