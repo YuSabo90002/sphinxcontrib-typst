@@ -16,11 +16,17 @@ Basic Setup
 
       pip install sphinxcontrib-typst
 
-2. **Add to Sphinx configuration** (``conf.py``):
+2. **Configure Typst output** (``conf.py``):
+
+   .. note::
+
+      sphinxcontrib-typst builders are automatically discovered via entry points.
+      Adding to ``extensions`` list is optional but recommended for clarity.
 
    .. code-block:: python
 
-      extensions = ['sphinxcontrib.typst']
+      # Optional: explicit extension loading
+      # extensions = ['sphinxcontrib.typst']
 
       typst_documents = [
           ('index', 'output.typ', 'My Document', 'Author Name'),
@@ -125,7 +131,8 @@ For simple projects with one main document:
 
 .. code-block:: python
 
-   extensions = ['sphinxcontrib.typst']
+   # Optional: explicit extension loading
+   # extensions = ['sphinxcontrib.typst']
 
    typst_documents = [
        ('index', 'documentation.typ', project, author),
@@ -176,7 +183,7 @@ For Python projects with autodoc:
 .. code-block:: python
 
    extensions = [
-       'sphinxcontrib.typst',
+       # 'sphinxcontrib.typst',  # Optional: auto-discovered via entry points
        'sphinx.ext.autodoc',
        'sphinx.ext.napoleon',
    ]
@@ -407,7 +414,7 @@ Configuration Management
 
    # Extensions
    extensions = [
-       'sphinxcontrib.typst',
+       # 'sphinxcontrib.typst',  # Optional: auto-discovered via entry points
        'sphinx.ext.autodoc',
    ]
 

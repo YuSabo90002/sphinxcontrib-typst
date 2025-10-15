@@ -61,6 +61,7 @@ Issues = "https://github.com/YuSabo90002/sphinxcontrib-typst/issues"
 # Entry points for automatic Sphinx builder discovery
 [project.entry-points."sphinx.builders"]
 typst = "sphinxcontrib.typst"
+typstpdf = "sphinxcontrib.typst"
 
 [tool.setuptools.packages.find]
 where = ["."]

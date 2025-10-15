@@ -60,13 +60,14 @@ uv sync --extra dev
 
 ### Basic Configuration
 
-Add `sphinxcontrib.typst` to your `conf.py`:
+Configure Typst output in your `conf.py`:
 
 ```python
 # conf.py
-extensions = [
-    'sphinxcontrib.typst',
-]
+
+# Note: sphinxcontrib-typst is auto-discovered via entry points.
+# Adding to extensions list is optional but recommended for clarity.
+# extensions = ['sphinxcontrib.typst']
 
 # Optional: Configure Typst builder
 typst_use_mitex = True  # Use mitex for LaTeX math (default: True)
