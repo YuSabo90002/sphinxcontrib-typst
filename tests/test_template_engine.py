@@ -384,6 +384,75 @@ class TestToctreeOutlineIntegration:
         assert params["toctree_numbered"] is True
         assert params["toctree_caption"] == "Contents"
 
+    def test_toctree_maxdepth_unlimited_conversion(self):
+        """Test that maxdepth=-1 is converted to None for Typst"""
+        from docutils import nodes
+        from docutils.parsers.rst import states
+        from docutils.utils import Reporter
+        from sphinx import addnodes
+
+        # Create doctree with maxdepth=-1 (unlimited)
+        reporter = Reporter("", 2, 4)
+        doctree = nodes.document("", reporter=reporter)
+        doctree.settings = states.Struct()
+
+        toctree = addnodes.toctree()
+        toctree["maxdepth"] = -1  # Unlimited depth in Sphinx
+        toctree["numbered"] = False
+        doctree += toctree
+
+        engine = TemplateEngine()
+        options = engine.extract_toctree_options(doctree)
+
+        # Should convert -1 to None for Typst
+        assert options["toctree_maxdepth"] is None
+
+    def test_toctree_numbered_zero_conversion(self):
+        """Test that numbered=0 is converted to false for Typst"""
+        from docutils import nodes
+        from docutils.parsers.rst import states
+        from docutils.utils import Reporter
+        from sphinx import addnodes
+
+        # Create doctree with numbered=0 (not numbered in Sphinx)
+        reporter = Reporter("", 2, 4)
+        doctree = nodes.document("", reporter=reporter)
+        doctree.settings = states.Struct()
+
+        toctree = addnodes.toctree()
+        toctree["maxdepth"] = 2
+        toctree["numbered"] = 0  # Not numbered
+        doctree += toctree
+
+        engine = TemplateEngine()
+        options = engine.extract_toctree_options(doctree)
+
+        # Should convert 0 to False (boolean)
+        assert options["toctree_numbered"] is False
+
+    def test_toctree_numbered_positive_conversion(self):
+        """Test that numbered>0 is converted to true for Typst"""
+        from docutils import nodes
+        from docutils.parsers.rst import states
+        from docutils.utils import Reporter
+        from sphinx import addnodes
+
+        # Create doctree with numbered=3 (numbered depth in Sphinx)
+        reporter = Reporter("", 2, 4)
+        doctree = nodes.document("", reporter=reporter)
+        doctree.settings = states.Struct()
+
+        toctree = addnodes.toctree()
+        toctree["maxdepth"] = 2
+        toctree["numbered"] = 3  # Numbered with depth 3
+        doctree += toctree
+
+        engine = TemplateEngine()
+        options = engine.extract_toctree_options(doctree)
+
+        # Should convert positive int to True (boolean)
+        assert options["toctree_numbered"] is True
+
 
 class TestTemplateRendering:
     """Test template rendering and integration (Task 9.5)"""

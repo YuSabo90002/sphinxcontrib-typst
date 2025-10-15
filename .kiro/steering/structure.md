@@ -28,32 +28,45 @@ Sphinx 拡張の主要実装ディレクトリ
 
 ```
 sphinxcontrib/typst/
-├── __init__.py                 # 拡張エントリーポイント
-├── builder.py                  # Typst ビルダー実装
-├── writer.py                   # Typst ライター (doctree → typst)
-├── translator.py               # Node visitor / Typst変換ロジック
-├── templates/                  # デフォルト Typst テンプレート
-│   ├── base.typ                # 基本テンプレート
-│   └── components/             # 再利用可能コンポーネント
-├── transforms/                 # Doctree 変換処理
-├── utils/                      # ユーティリティ関数
-└── config.py                   # 設定ハンドラ
+├── __init__.py                 # 拡張エントリーポイント (setup 関数)
+├── builder.py                  # TypstBuilder - Typst マークアップ生成
+├── pdf.py                      # TypstPDFBuilder - PDF 直接生成
+├── writer.py                   # TypstWriter (doctree → typst)
+├── translator.py               # TypstTranslator (Node visitor パターン)
+├── template_engine.py          # テンプレート処理とパラメータマッピング
+└── templates/                  # デフォルト Typst テンプレート
+    ├── base.typ                # 基本テンプレート
+    └── article.typ             # 記事スタイルテンプレート
 ```
 
 #### `tests/` - Test Suite
-テストコードの配置
+テストコードの配置（313 テスト、94% カバレッジ）
 
 ```
 tests/
-├── conftest.py                 # pytest 設定とフィクスチャ
-├── test_builder.py             # ビルダーのテスト
-├── test_writer.py              # ライターのテスト
-├── test_translator.py          # トランスレータのテスト
-├── test_integration.py         # 統合テスト
-├── fixtures/                   # テスト用フィクスチャ
-│   ├── sample_docs/            # サンプルドキュメント
-│   └── expected_output/        # 期待される出力
-└── utils/                      # テスト用ヘルパー
+├── conftest.py                      # pytest 設定とフィクスチャ
+├── test_builder.py                  # TypstBuilder のテスト
+├── test_translator.py               # TypstTranslator のテスト
+├── test_template_engine.py          # テンプレートエンジンのテスト
+├── test_pdf_generation.py           # PDF 生成のテスト
+├── test_config*.py                  # 設定関連のテスト
+├── test_math_*.py                   # 数式変換のテスト (mitex/native)
+├── test_template_*.py               # テンプレート機能のテスト
+├── test_integration_*.py            # 統合テスト
+├── test_documentation_*.py          # ドキュメンテーションのテスト
+├── test_entry_points.py             # Entry points 自動検出のテスト
+├── test_extension.py                # 拡張機能のテスト
+├── test_nested_toctree_paths.py     # ユニットテスト（相対パス計算、Issue #5）
+├── test_integration_nested_toctree.py  # 統合・E2Eテスト（Issue #5）
+├── fixtures/                        # テスト用フィクスチャ
+│   ├── integration_basic/           # 基本統合テスト用
+│   ├── integration_multi_doc/       # マルチドキュメント用
+│   ├── integration_math_figures/    # 数式・図表用
+│   ├── integration_nested_toctree/  # Issue #5再現テスト用（2階層ネスト）
+│   ├── integration_multi_level/     # 3階層ネストテスト用（Issue #5）
+│   └── integration_sibling/         # 兄弟ディレクトリ参照テスト用（Issue #5）
+└── roots/                           # Sphinx テストルート
+    └── test-basic/                  # 基本テストプロジェクト
 ```
 
 #### `docs/` - Documentation
@@ -66,9 +79,7 @@ docs/
 ├── installation.rst            # インストールガイド
 ├── usage.rst                   # 使用方法
 ├── configuration.rst           # 設定オプション
-├── api/                        # API リファレンス
-├── examples/                   # 使用例
-└── development.rst             # 開発者ガイド
+└── requirements.txt            # ドキュメントビルド用依存関係
 ```
 
 #### `examples/` - Example Projects
@@ -78,30 +89,45 @@ docs/
 examples/
 ├── basic/                      # 基本的な使用例
 │   ├── conf.py
-│   └── index.rst
-├── advanced/                   # 高度な使用例
-│   ├── conf.py
 │   ├── index.rst
-│   └── custom_template.typ
-└── api_docs/                   # API ドキュメント例
-    └── ...
+│   └── README.md
+└── advanced/                   # 高度な使用例
+    ├── conf.py
+    ├── index.rst
+    ├── chapter1.rst
+    ├── chapter2.rst
+    └── README.md
 ```
 
 ## Code Organization Patterns
 
 ### Sphinx Extension Pattern
 
-Sphinx 拡張の標準パターンに従います：
+Sphinx 拡張の標準パターンに従います。Entry points による自動検出をサポート：
 
 ```python
 # sphinxcontrib/typst/__init__.py
 from typing import Any, Dict
 from sphinx.application import Sphinx
+from .builder import TypstBuilder
+from .pdf import TypstPDFBuilder
 
 def setup(app: Sphinx) -> Dict[str, Any]:
-    """Sphinx 拡張エントリーポイント"""
+    """Sphinx 拡張エントリーポイント
+
+    Note: pyproject.toml の entry points で自動検出されるため、
+    conf.py の extensions リストへの追加はオプショナル
+    """
+    # 両方のビルダーを登録
     app.add_builder(TypstBuilder)
-    app.add_config_value('typst_documents', default_value, 'html')
+    app.add_builder(TypstPDFBuilder)
+
+    # 設定値の追加
+    app.add_config_value('typst_use_mitex', True, 'html')
+    app.add_config_value('typst_template', None, 'html')
+    app.add_config_value('typst_elements', {}, 'html')
+    app.add_config_value('typst_template_mapping', {}, 'html')
+    app.add_config_value('typst_toctree_defaults', {}, 'html')
 
     return {
         'version': '0.1.0',
@@ -110,11 +136,19 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     }
 ```
 
+Entry points 定義（pyproject.toml）:
+```toml
+[project.entry-points."sphinx.builders"]
+typst = "sphinxcontrib.typst:TypstBuilder"
+typstpdf = "sphinxcontrib.typst:TypstPDFBuilder"
+```
+
 ### Builder Pattern
 
 ```python
 # sphinxcontrib/typst/builder.py
 from sphinx.builders import Builder
+from .writer import TypstWriter
 
 class TypstBuilder(Builder):
     name = 'typst'
@@ -123,15 +157,47 @@ class TypstBuilder(Builder):
 
     def init(self) -> None:
         """ビルダー初期化"""
-        pass
+        self.writer = TypstWriter(self)
 
     def get_outdated_docs(self) -> Iterator[str]:
         """更新が必要なドキュメントを特定"""
-        pass
+        for docname in self.env.found_docs:
+            if docname not in self.env.all_docs:
+                yield docname
+            targetname = self.get_outfilename(docname)
+            if not path.isfile(targetname):
+                yield docname
 
     def write_doc(self, docname: str, doctree: nodes.document) -> None:
         """ドキュメント書き込み"""
-        pass
+        self.current_docname = docname
+        destination = StringOutput(encoding='utf-8')
+        self.writer.write(doctree, destination)
+        outfilename = self.get_outfilename(docname)
+        ensuredir(path.dirname(outfilename))
+        with open(outfilename, 'w', encoding='utf-8') as f:
+            f.write(self.writer.output)
+```
+
+PDF Builder（pdf.py）:
+```python
+# sphinxcontrib/typst/pdf.py
+from .builder import TypstBuilder
+import typst
+
+class TypstPDFBuilder(TypstBuilder):
+    name = 'typstpdf'
+    format = 'pdf'
+    out_suffix = '.pdf'
+
+    def finish(self) -> None:
+        """すべてのドキュメント処理後に PDF を生成"""
+        super().finish()
+        # typst-py を使用して PDF 生成
+        for docname in self.env.found_docs:
+            typ_file = self.get_typst_file(docname)
+            pdf_file = self.get_outfilename(docname)
+            typst.compile(typ_file, output=pdf_file)
 ```
 
 ### Visitor Pattern for Node Translation
@@ -142,15 +208,35 @@ from docutils import nodes
 from sphinx.writers import Writer
 
 class TypstTranslator(nodes.NodeVisitor):
-    """Doctree ノードを Typst に変換"""
+    """Doctree ノードを Typst に変換
+
+    各ノードタイプに対して visit_* および depart_* メソッドを実装
+    """
+
+    def __init__(self, document: nodes.document, builder: Builder) -> None:
+        super().__init__(document)
+        self.builder = builder
+        self.body: List[str] = []
+        self.section_level = 0
 
     def visit_section(self, node: nodes.section) -> None:
         """セクション開始時の処理"""
-        pass
+        self.section_level += 1
 
     def depart_section(self, node: nodes.section) -> None:
         """セクション終了時の処理"""
+        self.section_level -= 1
+
+    def visit_paragraph(self, node: nodes.paragraph) -> None:
+        """段落の処理"""
         pass
+
+    def depart_paragraph(self, node: nodes.paragraph) -> None:
+        """段落終了"""
+        self.body.append('\n\n')
+
+    # その他多数のノードタイプに対応
+    # visit_literal_block, visit_image, visit_table, など
 ```
 
 ## File Naming Conventions
