@@ -4,7 +4,7 @@
 
 ### High-Level Design
 
-sphinx-typst は Sphinx 拡張アーキテクチャに基づいて構築されます：
+sphinxcontrib-typst は Sphinx 拡張アーキテクチャに基づいて構築されます：
 
 ```
 ┌─────────────────────────────────────────┐
@@ -91,7 +91,7 @@ typst-py >= 0.11.1  # Typst の Python バインディング (自己完結型 PD
    - typst ビルダー出力を手動コンパイルする場合のみ必要
 
 3. **Testing Tools**
-   - pytest: ユニットテスト、統合テスト、E2Eテスト（313 テスト）
+   - pytest: ユニットテスト、統合テスト、E2Eテスト（317 テスト）
    - pytest-cov: カバレッジ測定（94% 達成）
    - tox: 複数環境でのテスト
    - typst-py: E2E PDF生成テスト用
@@ -126,12 +126,13 @@ typst --version  # typstpdf ビルダーには不要
 
 ```bash
 # テスト実行（uv 使用 - 推奨）
-uv run pytest                          # すべてのテスト（313 tests）
+uv run pytest                          # すべてのテスト（317 tests）
 uv run pytest tests/test_builder.py   # 特定のテストファイル
 uv run pytest -v                       # 詳細出力
 uv run pytest --cov                    # カバレッジ付き（94%）
-uv run pytest tests/test_nested_toctree_paths.py  # ユニットテスト（Issue #5）
-uv run pytest tests/test_integration_nested_toctree.py  # 統合・E2Eテスト
+uv run pytest tests/test_nested_toctree_paths.py  # ユニットテスト（相対パス計算）
+uv run pytest tests/test_integration_nested_toctree.py  # 統合・E2Eテスト（ネストtoctree）
+uv run pytest tests/test_toctree_requirement13.py  # toctree要件テスト（単一ブロック検証）
 
 # 複数環境でのテスト
 uv run tox
