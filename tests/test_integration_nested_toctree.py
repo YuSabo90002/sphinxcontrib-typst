@@ -12,6 +12,14 @@ from pathlib import Path
 
 import pytest
 
+# Check if typst-py is available for E2E compilation tests
+try:
+    import typst
+
+    TYPST_AVAILABLE = True
+except ImportError:
+    TYPST_AVAILABLE = False
+
 
 @pytest.fixture
 def fixtures_dir():
@@ -284,3 +292,164 @@ class TestSiblingDirectoryReferences:
         assert (
             '#include("../chapter2/doc2.typ")' in content
         ), "Expected relative path #include(\"../chapter2/doc2.typ\") not found"
+
+
+@pytest.mark.skipif(not TYPST_AVAILABLE, reason="typst-py not installed")
+class TestE2ETypstCompilation:
+    """
+    End-to-end compilation tests using typst-py (Task 5.1).
+
+    Verifies that generated Typst files can be successfully compiled to PDF.
+    """
+
+    def test_nested_toctree_compiles_to_pdf(self, nested_toctree_dir, temp_build_dir):
+        """
+        Test that nested toctree project compiles to PDF successfully.
+
+        Requirements: 4.1, 4.2, 4.3, 5.3
+        """
+        # Build Typst files
+        result = subprocess.run(
+            [
+                "uv",
+                "run",
+                "sphinx-build",
+                "-b",
+                "typst",
+                str(nested_toctree_dir),
+                str(temp_build_dir),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Sphinx build failed: {result.stderr}"
+
+        # Compile root index.typ to PDF
+        index_typ = temp_build_dir / "index.typ"
+        assert index_typ.exists(), "index.typ was not generated"
+
+        pdf_output = temp_build_dir / "index.pdf"
+
+        # Compile using typst-py
+        typst.compile(str(index_typ), output=str(pdf_output))
+
+        # Verify PDF was created
+        assert pdf_output.exists(), "PDF file was not created"
+        assert pdf_output.stat().st_size > 0, "PDF file is empty"
+
+        # Verify PDF magic number
+        with open(pdf_output, "rb") as f:
+            magic = f.read(4)
+            assert magic == b"%PDF", "Generated file is not a valid PDF"
+
+    def test_multi_level_nested_compiles_to_pdf(self, multi_level_dir, temp_build_dir):
+        """
+        Test that 3-level nested project compiles to PDF successfully.
+
+        Requirements: 4.2, 5.3
+        """
+        # Build Typst files
+        result = subprocess.run(
+            [
+                "uv",
+                "run",
+                "sphinx-build",
+                "-b",
+                "typst",
+                str(multi_level_dir),
+                str(temp_build_dir),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Sphinx build failed: {result.stderr}"
+
+        # Compile root index.typ to PDF
+        index_typ = temp_build_dir / "index.typ"
+        assert index_typ.exists(), "index.typ was not generated"
+
+        pdf_output = temp_build_dir / "index.pdf"
+
+        # Compile using typst-py
+        typst.compile(str(index_typ), output=str(pdf_output))
+
+        # Verify PDF was created
+        assert pdf_output.exists(), "PDF file was not created"
+        assert pdf_output.stat().st_size > 0, "PDF file is empty"
+
+    def test_sibling_directory_compiles_to_pdf(self, sibling_dir, temp_build_dir):
+        """
+        Test that sibling directory project compiles to PDF successfully.
+
+        Requirements: 4.3, 5.3
+        """
+        # Build Typst files
+        result = subprocess.run(
+            [
+                "uv",
+                "run",
+                "sphinx-build",
+                "-b",
+                "typst",
+                str(sibling_dir),
+                str(temp_build_dir),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Sphinx build failed: {result.stderr}"
+
+        # Compile root index.typ to PDF
+        index_typ = temp_build_dir / "index.typ"
+        assert index_typ.exists(), "index.typ was not generated"
+
+        pdf_output = temp_build_dir / "index.pdf"
+
+        # Compile using typst-py
+        typst.compile(str(index_typ), output=str(pdf_output))
+
+        # Verify PDF was created
+        assert pdf_output.exists(), "PDF file was not created"
+        assert pdf_output.stat().st_size > 0, "PDF file is empty"
+
+    def test_compilation_uses_correct_root_directory(
+        self, nested_toctree_dir, temp_build_dir
+    ):
+        """
+        Test that typst compilation correctly resolves #include() paths.
+
+        This ensures that the root directory is set correctly for typst.compile(),
+        allowing #include() directives to find nested files.
+
+        Requirements: 5.3
+        """
+        # Build Typst files
+        subprocess.run(
+            [
+                "uv",
+                "run",
+                "sphinx-build",
+                "-b",
+                "typst",
+                str(nested_toctree_dir),
+                str(temp_build_dir),
+            ],
+            capture_output=True,
+        )
+
+        # Compile chapter1/index.typ directly (should resolve includes)
+        chapter1_index = temp_build_dir / "chapter1" / "index.typ"
+        assert chapter1_index.exists()
+
+        pdf_output = temp_build_dir / "chapter1_index.pdf"
+
+        # Compile with correct root directory
+        typst.compile(
+            str(chapter1_index),
+            output=str(pdf_output),
+            root=str(temp_build_dir / "chapter1"),
+        )
+
+        # Verify compilation succeeded
+        assert pdf_output.exists(), "Nested document PDF was not created"
+        assert pdf_output.stat().st_size > 0, "Nested document PDF is empty"

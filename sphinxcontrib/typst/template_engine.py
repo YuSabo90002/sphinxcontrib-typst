@@ -226,9 +226,22 @@ class TemplateEngine:
         toctree = toctree_nodes[0]
 
         # Extract options with defaults
+        # Note: Sphinx toctree numbered can be False, True, or int
+        # Convert to bool for Typst (0 means False, positive means True)
+        numbered_value = toctree.get("numbered", False)
+        if isinstance(numbered_value, int):
+            numbered_value = numbered_value > 0
+
+        # Note: Sphinx toctree maxdepth can be -1 (unlimited)
+        # Typst outline() requires positive depth or none
+        # Convert -1 to none for unlimited depth
+        maxdepth_value = toctree.get("maxdepth", 2)
+        if maxdepth_value == -1:
+            maxdepth_value = None
+
         return {
-            "toctree_maxdepth": toctree.get("maxdepth", 2),
-            "toctree_numbered": toctree.get("numbered", False),
+            "toctree_maxdepth": maxdepth_value,
+            "toctree_numbered": numbered_value,
             "toctree_caption": toctree.get("caption", ""),
         }
 
