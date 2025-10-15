@@ -27,12 +27,13 @@ sphinx-typst は Sphinx 拡張アーキテクチャに基づいて構築され�
                   ▼
 ┌─────────────────────────────────────────┐
 │         Typst Markup Files              │
+│         (typst builder)                 │
 └─────────────────┬───────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────┐
-│       Typst Compiler (External)         │
-│         (typst compile)                 │
+│    Typst Compiler (typst-py 0.11.1)    │
+│    (typstpdf builder - built-in)       │
 └─────────────────┬───────────────────────┘
                   │
                   ▼
@@ -43,11 +44,14 @@ sphinx-typst は Sphinx 拡張アーキテクチャに基づいて構築され�
 
 ### Key Components
 
-1. **Typst Builder**: `sphinx.builders.Builder` を継承したカスタムビルダー
+1. **Dual Builders**:
+   - `TypstBuilder`: Typst マークアップファイルを生成
+   - `TypstPDFBuilder`: typst-py を使用して直接 PDF を生成
 2. **Typst Writer**: Doctree ノードを Typst マークアップに変換するライター
-3. **Template Engine**: Typst ドキュメントテンプレート管理
-4. **Node Visitors**: 各種 docutils ノードの Typst 変換ロジック
-5. **Config Integration**: Sphinx 設定と Typst オプションの統合
+3. **Template Engine**: Typst ドキュメントテンプレート管理とパラメータマッピング
+4. **Translator**: 各種 docutils ノードの Typst 変換ロジック（visitor パターン）
+5. **PDF Generator**: typst-py ラッパーによる PDF 生成
+6. **Config Integration**: Sphinx 設定と Typst オプションの統合
 
 ## Backend
 
@@ -60,17 +64,18 @@ sphinx-typst は Sphinx 拡張アーキテクチャに基づいて構築され�
 ### Core Dependencies
 
 ```python
-# 予定される主要依存関係
+# 主要依存関係 (pyproject.toml より)
 sphinx >= 5.0
 docutils >= 0.18
-typst-py  # Typst の Python バインディング (存在する場合)
+typst-py >= 0.11.1  # Typst の Python バインディング (自己完結型 PDF 生成)
 ```
 
-### External Tools
+### External Tools (Optional)
 
-- **Typst CLI**: PDF 生成のための外部コマンド (`typst compile`)
+- **Typst CLI**: オプショナル - typst ビルダー出力を手動でコンパイルする場合のみ必要
   - インストール方法: https://github.com/typst/typst
-  - バージョン要件: 0.10.0+
+  - バージョン要件: 0.11.0+
+  - **注**: typstpdf ビルダーは typst-py を使用するため Typst CLI は不要
 
 ## Development Environment
 
@@ -78,40 +83,41 @@ typst-py  # Typst の Python バインディング (存在する場合)
 
 1. **Python Development**
    - Python 3.9 以上
-   - pip / pipenv / poetry (パッケージ管理)
-   - virtualenv 推奨
+   - **uv**: 高速パッケージマネージャ（推奨）
+   - pip: フォールバックオプション
 
-2. **Typst**
-   - Typst CLI ツール
-   - PDF 生成のために必要
+2. **Typst (Optional)**
+   - Typst CLI ツール（オプショナル）
+   - typst ビルダー出力を手動コンパイルする場合のみ必要
 
 3. **Testing Tools**
-   - pytest: ユニットテスト、統合テスト
-   - sphinx-testing: Sphinx 拡張のテストヘルパー
-   - coverage: コードカバレッジ測定
+   - pytest: ユニットテスト、統合テスト、E2Eテスト（313 テスト）
+   - pytest-cov: カバレッジ測定（94% 達成）
+   - tox: 複数環境でのテスト
+   - typst-py: E2E PDF生成テスト用
 
 4. **Development Tools**
    - black: コードフォーマッター
-   - flake8 / ruff: リンター
+   - ruff: 高速リンター
    - mypy: 型チェック
-   - pre-commit: Git フック管理
 
 ### Setup Instructions
 
 ```bash
-# 仮想環境作成
+# uv を使用した開発環境セットアップ（推奨）
+uv sync --extra dev
+
+# または pip を使用
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
-
-# 依存関係インストール
 pip install -e ".[dev]"
 
-# Typst インストール確認
-typst --version
-
 # テスト実行
-pytest
+uv run pytest
+# または: pytest
+
+# Typst CLI の確認（オプショナル）
+typst --version  # typstpdf ビルダーには不要
 ```
 
 ## Common Commands
@@ -119,20 +125,26 @@ pytest
 ### Development Commands
 
 ```bash
-# テスト実行
-pytest                          # すべてのテスト
-pytest tests/test_builder.py   # 特定のテストファイル
-pytest -v                       # 詳細出力
-pytest --cov                    # カバレッジ付き
+# テスト実行（uv 使用 - 推奨）
+uv run pytest                          # すべてのテスト（313 tests）
+uv run pytest tests/test_builder.py   # 特定のテストファイル
+uv run pytest -v                       # 詳細出力
+uv run pytest --cov                    # カバレッジ付き（94%）
+uv run pytest tests/test_nested_toctree_paths.py  # ユニットテスト（Issue #5）
+uv run pytest tests/test_integration_nested_toctree.py  # 統合・E2Eテスト
+
+# 複数環境でのテスト
+uv run tox
 
 # コード品質チェック
-black .                         # フォーマット
-flake8 sphinxcontrib/          # リント
-mypy sphinxcontrib/            # 型チェック
+uv run black .                         # フォーマット
+uv run ruff check .                    # リント
+uv run mypy sphinxcontrib/            # 型チェック
 
 # ドキュメントビルド (自己ドキュメント)
 sphinx-build -b html docs/ docs/_build/html
 sphinx-build -b typst docs/ docs/_build/typst
+sphinx-build -b typstpdf docs/ docs/_build/pdf  # PDF 直接生成
 
 # パッケージビルド
 python -m build                 # sdist と wheel を生成
@@ -142,15 +154,15 @@ twine check dist/*             # パッケージ検証
 ### Sphinx with Typst Builder
 
 ```bash
-# Typst ビルダー使用例
+# Typst マークアップ生成
 sphinx-build -b typst source/ build/typst
 sphinx-build -b typst -a source/ build/typst  # 全ファイル再ビルド
 
-# Typst から PDF 生成
-typst compile build/typst/index.typ output.pdf
-
-# ワンステップビルド (予定機能)
+# 直接 PDF 生成（推奨 - typst-py 使用）
 sphinx-build -b typstpdf source/ build/pdf
+
+# または Typst CLI で手動コンパイル（オプショナル）
+typst compile build/typst/index.typ output.pdf
 ```
 
 ## Environment Variables
@@ -211,19 +223,33 @@ sphinx-autobuild docs/ docs/_build/html --port 8000
 
 ```python
 # conf.py での設定例
-extensions = [
-    'sphinxcontrib.typst',
-]
+
+# 注: sphinxcontrib.typst は entry points で自動検出されます
+# extensions リストへの追加はオプショナルですが、明示性のため推奨
+# extensions = ['sphinxcontrib.typst']
 
 # Typst ビルダー設定
-typst_documents = [
-    ('index', 'output.typ', 'Project Documentation', 'Author Name'),
-]
+typst_use_mitex = True  # LaTeX 数式に mitex を使用（デフォルト: True）
 
-typst_template = 'custom_template.typ'
+# テンプレートカスタマイズ
+typst_template = '_templates/custom.typ'  # オプショナル
 typst_elements = {
     'papersize': 'a4',
     'fontsize': '11pt',
+    'lang': 'ja',
+}
+
+# メタデータマッピング
+typst_template_mapping = {
+    'title': 'project',      # Sphinx の project → template の title
+    'authors': ['author'],   # Sphinx の author → template の authors
+    'date': 'release',       # Sphinx の release → template の date
+}
+
+# toctree デフォルト設定
+typst_toctree_defaults = {
+    'maxdepth': 2,
+    'numbered': True,
 }
 ```
 
