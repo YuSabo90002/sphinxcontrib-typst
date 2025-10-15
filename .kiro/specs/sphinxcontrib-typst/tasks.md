@@ -15,7 +15,7 @@
 - [x] 1.1 プロジェクト構造とパッケージング設定
   - Python パッケージの基本構造を作成（sphinxcontrib/typst/）
   - pyproject.toml でプロジェクトメタデータと依存関係を定義
-  - Sphinx 拡張としてのエントリーポイントを設定
+  - Sphinx 拡張としてのエントリーポイントを設定（`[project.entry-points."sphinx.builders"]`に`typst`と`typstpdf`を登録）
   - 開発用依存関係（pytest, black, mypy など）を追加
   - _Requirements: 1.1, 1.4, 9.1_
 
@@ -35,9 +35,9 @@
   - _Requirements: 1.1, 1.2, 1.3, 1.5_
 
 - [x] 2.2 Sphinx拡張登録とエントリーポイント
-  - setup()関数でTypstBuilderをSphinxに登録
+  - setup()関数でTypstBuilderとTypstPDFBuilderをSphinxに登録
   - バージョン情報と並列処理の安全性を返す
-  - エントリーポイント経由での自動検出を実装
+  - エントリーポイント経由での自動検出を実装（typst, typstpdf両ビルダー）
   - 拡張のロードとアンロードを正しく処理
   - _Requirements: 1.1, 1.2, 1.4, 1.7_
 
