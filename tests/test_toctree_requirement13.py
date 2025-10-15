@@ -191,7 +191,6 @@ def test_toctree_single_content_block_multiple_includes(simple_document, mock_bu
     WHEN toctree has multiple entries
     THEN a single content block #[...] SHALL contain all #include() directives
     """
-    import re
     from sphinxcontrib.typst.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
@@ -211,7 +210,9 @@ def test_toctree_single_content_block_multiple_includes(simple_document, mock_bu
     output = translator.astext()
 
     # Should have exactly one opening content block
-    assert output.count("#[") == 1, f"Expected 1 opening block, got {output.count('#[')}"
+    assert (
+        output.count("#[") == 1
+    ), f"Expected 1 opening block, got {output.count('#[')}"
 
     # Should have exactly one closing content block
     assert output.count("]") == 1, f"Expected 1 closing block, got {output.count(']')}"
@@ -221,7 +222,7 @@ def test_toctree_single_content_block_multiple_includes(simple_document, mock_bu
     block_end = output.find("]", block_start)
     assert block_start != -1 and block_end != -1, "Content block not found"
 
-    block_content = output[block_start:block_end + 1]
+    block_content = output[block_start : block_end + 1]
 
     # All includes should be within the single block
     assert '#include("chapter1.typ")' in block_content
@@ -238,6 +239,7 @@ def test_toctree_heading_offset_appears_once(simple_document, mock_builder):
     THEN #set heading(offset: 1) SHALL appear exactly once
     """
     import re
+
     from sphinxcontrib.typst.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
@@ -257,10 +259,12 @@ def test_toctree_heading_offset_appears_once(simple_document, mock_builder):
     output = translator.astext()
 
     # Count occurrences of #set heading(offset: 1)
-    pattern = r'#set heading\(offset: 1\)'
+    pattern = r"#set heading\(offset: 1\)"
     matches = re.findall(pattern, output)
 
-    assert len(matches) == 1, f"Expected 1 occurrence of #set heading(offset: 1), got {len(matches)}"
+    assert (
+        len(matches) == 1
+    ), f"Expected 1 occurrence of #set heading(offset: 1), got {len(matches)}"
 
 
 def test_toctree_reduced_line_count(simple_document, mock_builder):
