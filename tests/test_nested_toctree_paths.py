@@ -112,7 +112,9 @@ class TestRelativePathCalculation:
 
         assert result == "../chapter2/doc2"
 
-    def test_compute_relative_path_nested_subdirectory(self, mock_document, mock_builder):
+    def test_compute_relative_path_nested_subdirectory(
+        self, mock_document, mock_builder
+    ):
         """
         Test relative path calculation for nested subdirectory.
 
@@ -151,7 +153,9 @@ class TestRelativePathCalculation:
 
         assert result == "../c/d/e"
 
-    def test_compute_relative_path_none_current_docname(self, mock_document, mock_builder):
+    def test_compute_relative_path_none_current_docname(
+        self, mock_document, mock_builder
+    ):
         """
         Test fallback behavior when current_docname is None.
 

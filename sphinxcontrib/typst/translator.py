@@ -6,7 +6,7 @@ nodes to Typst markup.
 """
 
 import re
-from typing import Any
+from typing import Any, Optional
 
 from docutils import nodes
 from sphinx import addnodes
@@ -849,7 +849,7 @@ class TypstTranslator(SphinxTranslator):
             self.add_text("]")
 
     def _compute_relative_include_path(
-        self, target_docname: str, current_docname: str | None
+        self, target_docname: str, current_docname: Optional[str]
     ) -> str:
         """
         Compute relative path for toctree #include() directive.
@@ -891,9 +891,7 @@ class TypstTranslator(SphinxTranslator):
 
         # Fallback to absolute path if current_docname is None
         if not current_docname:
-            logger.debug(
-                f"No current document, using absolute path: {target_docname}"
-            )
+            logger.debug(f"No current document, using absolute path: {target_docname}")
             return target_docname
 
         current_path = PurePosixPath(current_docname)
@@ -901,8 +899,7 @@ class TypstTranslator(SphinxTranslator):
         current_dir = current_path.parent
 
         logger.debug(
-            f"Path components: current_dir={current_dir}, "
-            f"target_path={target_path}"
+            f"Path components: current_dir={current_dir}, " f"target_path={target_path}"
         )
 
         # Root directory case: use absolute path (backward compatibility)
@@ -915,8 +912,8 @@ class TypstTranslator(SphinxTranslator):
 
         # Try to compute relative path
         try:
-            relative_path = target_path.relative_to(current_dir)
-            result = str(relative_path)
+            rel_path = target_path.relative_to(current_dir)
+            result = str(rel_path)
             logger.debug(
                 f"Same directory reference: {current_dir} -> {target_path}, "
                 f"result: {result}"
@@ -925,7 +922,7 @@ class TypstTranslator(SphinxTranslator):
         except ValueError:
             # Different directory trees - build path via common parent
             logger.debug(
-                f"Cross-directory reference detected, calculating via common parent"
+                "Cross-directory reference detected, calculating via common parent"
             )
 
             current_parts = current_dir.parts
@@ -952,7 +949,7 @@ class TypstTranslator(SphinxTranslator):
             down_parts = target_parts[common_length:]
             down_path = "/".join(down_parts) if down_parts else ""
 
-            relative_path = up_path + down_path
+            relative_path: str = up_path + down_path
 
             logger.debug(
                 f"Cross-directory path calculation: up_count={up_count}, "
@@ -960,7 +957,7 @@ class TypstTranslator(SphinxTranslator):
                 f"result: {relative_path}"
             )
 
-            return str(relative_path)
+            return relative_path
 
     def visit_toctree(self, node: nodes.Node) -> None:
         """

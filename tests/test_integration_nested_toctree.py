@@ -118,10 +118,10 @@ class TestNestedToctreeIntegration:
         # Verify relative paths (same directory - no "chapter1/" prefix)
         assert (
             '#include("section1.typ")' in content
-        ), "Expected relative path #include(\"section1.typ\") not found"
+        ), 'Expected relative path #include("section1.typ") not found'
         assert (
             '#include("section2.typ")' in content
-        ), "Expected relative path #include(\"section2.typ\") not found"
+        ), 'Expected relative path #include("section2.typ") not found'
 
         # Ensure absolute paths are NOT used
         assert (
@@ -160,7 +160,7 @@ class TestNestedToctreeIntegration:
         # Root directory should use subdirectory path
         assert (
             '#include("chapter1/index.typ")' in content
-        ), "Expected #include(\"chapter1/index.typ\") not found in root index"
+        ), 'Expected #include("chapter1/index.typ") not found in root index'
 
 
 class TestMultiLevelNestedToctree:
@@ -224,10 +224,10 @@ class TestMultiLevelNestedToctree:
         # Verify relative paths (same directory)
         assert (
             '#include("section1.typ")' in content
-        ), "Expected relative path #include(\"section1.typ\") not found"
+        ), 'Expected relative path #include("section1.typ") not found'
         assert (
             '#include("section2.typ")' in content
-        ), "Expected relative path #include(\"section2.typ\") not found"
+        ), 'Expected relative path #include("section2.typ") not found'
 
 
 class TestSiblingDirectoryReferences:
@@ -291,7 +291,7 @@ class TestSiblingDirectoryReferences:
         # Verify cross-directory relative path
         assert (
             '#include("../chapter2/doc2.typ")' in content
-        ), "Expected relative path #include(\"../chapter2/doc2.typ\") not found"
+        ), 'Expected relative path #include("../chapter2/doc2.typ") not found'
 
 
 @pytest.mark.skipif(not TYPST_AVAILABLE, reason="typst-py not installed")
