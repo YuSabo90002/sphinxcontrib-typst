@@ -873,41 +873,76 @@ class TypstTranslator(SphinxTranslator):
             >>> _compute_relative_include_path("chapter1/doc", None)
             "chapter1/doc"
 
+        Notes:
+            This method implements Issue #5 fix for nested toctree relative paths.
+            It handles three cases:
+            1. current_docname is None: return absolute path
+            2. Same directory: use relative_to() directly
+            3. Cross-directory: calculate via common parent
+
         Requirements: 1.1, 1.2, 1.3, 1.4, 1.5
         """
         from pathlib import PurePosixPath
 
+        logger.debug(
+            f"Computing relative include path: target={target_docname}, "
+            f"current={current_docname}"
+        )
+
         # Fallback to absolute path if current_docname is None
         if not current_docname:
+            logger.debug(
+                f"No current document, using absolute path: {target_docname}"
+            )
             return target_docname
 
         current_path = PurePosixPath(current_docname)
         target_path = PurePosixPath(target_docname)
         current_dir = current_path.parent
 
+        logger.debug(
+            f"Path components: current_dir={current_dir}, "
+            f"target_path={target_path}"
+        )
+
         # Root directory case: use absolute path (backward compatibility)
         if current_dir == PurePosixPath("."):
+            logger.debug(
+                f"Current document is in root directory, "
+                f"using absolute path: {target_docname}"
+            )
             return target_docname
 
         # Try to compute relative path
         try:
             relative_path = target_path.relative_to(current_dir)
-            return str(relative_path)
+            result = str(relative_path)
+            logger.debug(
+                f"Same directory reference: {current_dir} -> {target_path}, "
+                f"result: {result}"
+            )
+            return result
         except ValueError:
             # Different directory trees - build path via common parent
-            # 1. Find common parent
-            # 2. Build "../" * depth + relative_from_common
+            logger.debug(
+                f"Cross-directory reference detected, calculating via common parent"
+            )
 
             current_parts = current_dir.parts
             target_parts = target_path.parts
 
-            # Find common parent
+            # Find common parent by comparing path components
             common_length = 0
             for i, (c, t) in enumerate(zip(current_parts, target_parts)):
                 if c == t:
                     common_length = i + 1
                 else:
                     break
+
+            logger.debug(
+                f"Common parent depth: {common_length}, "
+                f"current_parts={current_parts}, target_parts={target_parts}"
+            )
 
             # Build path: "../" from current to common parent
             up_count = len(current_parts) - common_length
@@ -918,6 +953,13 @@ class TypstTranslator(SphinxTranslator):
             down_path = "/".join(down_parts) if down_parts else ""
 
             relative_path = up_path + down_path
+
+            logger.debug(
+                f"Cross-directory path calculation: up_count={up_count}, "
+                f"up_path='{up_path}', down_path='{down_path}', "
+                f"result: {relative_path}"
+            )
+
             return str(relative_path)
 
     def visit_toctree(self, node: nodes.Node) -> None:
@@ -932,16 +974,29 @@ class TypstTranslator(SphinxTranslator):
 
         Args:
             node: The toctree node
+
+        Notes:
+            This method generates Typst #include() directives for each toctree entry.
+            Each include is wrapped in a content block #[...] to apply heading offset
+            without displaying the block delimiters in the output.
         """
         # Get entries from the toctree node
         entries = node.get("entries", [])
 
+        logger.debug(f"Processing toctree with {len(entries)} entries")
+
         # If no entries, don't generate anything
         if not entries:
+            logger.debug("Toctree has no entries, skipping")
             raise nodes.SkipNode
 
         # Get current document name for relative path calculation
         current_docname = getattr(self.builder, "current_docname", None)
+
+        logger.debug(
+            f"Current document for toctree: {current_docname}, "
+            f"entries: {[docname for _, docname in entries]}"
+        )
 
         # Generate #include() for each entry with heading offset
         # Each included file has its own imports, so block scope is safe
@@ -949,6 +1004,10 @@ class TypstTranslator(SphinxTranslator):
             # Compute relative path for #include() (Issue #5 fix)
             relative_path = self._compute_relative_include_path(
                 docname, current_docname
+            )
+
+            logger.debug(
+                f"Generated #include() for toctree: {docname} -> {relative_path}.typ"
             )
 
             # Requirement 13.14: Use content block #[...] for heading offset

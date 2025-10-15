@@ -113,17 +113,19 @@
   - 追加テスト: maxdepth=-1とnumbered=0/正整数の変換ロジックをカバー
   - _Requirements: 5.2_
 
-- [ ] 7. ドキュメンテーションとログの実装
-- [ ] 7.1 デバッグログの追加
+- [x] 7. ドキュメンテーションとログの実装
+- [x] 7.1 デバッグログの追加
   - 相対パス計算の各ステップでデバッグレベルログを出力
   - current_docname、target_docname、計算された相対パスをログに記録
   - デバッグ時の追跡可能性を向上
+  - 実装: logger.debug()で全ケースをカバー（None、root、same-dir、cross-dir）
   - _Requirements: 1.3_
 
-- [ ] 7.2 コードコメントとdocstringの追加
+- [x] 7.2 コードコメントとdocstringの追加
   - プライベートヘルパーメソッドにdocstringを追加（引数、戻り値、例外の説明）
   - 複雑なロジック（異なるディレクトリツリー間のパス計算）にインラインコメントを追加
   - 使用例をdocstringに含める
+  - 実装: 包括的なdocstring、Examples、Notesセクション、インラインコメント
   - _Requirements: すべての要件（保守性向上）_
 
 ---
