@@ -255,7 +255,7 @@ sphinxcontrib-typst/
 └── pyproject.toml          # Project configuration
 ```
 
-## Known Limitations (v0.1.0b1)
+## Known Limitations (v0.2.0)
 
 - **Bibliography**: BibTeX integration not yet supported
 - **Glossary**: Glossary generation not yet supported
@@ -302,7 +302,19 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Version History
 
-### v0.1.0b1 (Beta Release)
+### v0.2.0 (Stable Release) - 2025-10-16
+
+Stable release with bug fixes, improvements, and complete feature set:
+- ✅ **All 13 requirements fully implemented**
+- Fixed nested toctree relative path issues (Issue #5)
+- Fixed typstpdf builder auto-discovery (Issue #10)
+- Simplified toctree output format (Issue #7)
+- Documented custom node support using Sphinx standard API (Issue #6)
+- Improved documentation and project guidelines
+- 317 tests passing (94% coverage)
+- Production ready
+
+### v0.1.0b1 (Beta Release) - 2025-10-13
 
 Initial beta release with:
 - 12 out of 13 requirements fully implemented
@@ -316,5 +328,5 @@ Initial beta release with:
 
 ---
 
-**Status**: Beta (v0.1.0b1) - Suitable for testing and early adoption
+**Status**: Stable (v0.2.0) - Production ready
 **Python**: 3.9+ | **Sphinx**: 5.0+ | **Typst**: 0.11.1+

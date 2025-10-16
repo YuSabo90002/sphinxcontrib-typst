@@ -178,10 +178,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] - 2025-10-16
+
+### Fixed
+
+- **Issue #5**: Fixed nested toctree relative path issues in `#include()` directives (PR #14)
+  - Corrected relative path calculation for nested toctree structures
+  - Added comprehensive debug logging for path resolution
+  - Added E2E Typst compilation tests and integration tests
+  - Improved code coverage to 94%
+
+- **Issue #10**: Fixed typstpdf builder auto-discovery (PR #12)
+  - Registered `typstpdf` builder in `entry_points` for automatic Sphinx discovery
+  - Updated documentation to reflect optional extension registration
+  - Added test coverage for typstpdf entry point
+
+### Improved
+
+- **Issue #7**: Simplified toctree output format (PR #15)
+  - Changed from multiple `#block(breakable: true)[]` to single content block
+  - Improved readability and maintainability of generated Typst code
+  - Resolved lint and format errors in test files
+
+### Documentation
+
+- **Issue #6**: Documented custom node support using Sphinx standard API (PR #16)
+  - Added "Working with Third-Party Extensions" section to README.md
+  - Documented usage of Sphinx's standard `app.add_node()` API
+  - Provided practical example with sphinxcontrib-mermaid integration
+  - Clarified that NodeHandlerRegistry is unnecessary - Sphinx already provides this functionality
+  - **Requirement 11 is now complete**: Custom node support via Sphinx's standard extension mechanism
+
+- **Issue #8**: Added acknowledgment for AI-assisted development (PR #9)
+  - Added Claude Code and Kiro-style Spec-Driven Development to acknowledgments
+
+- **PR #11**: Improved CLAUDE.md with repository information and guidelines
+  - Added repository owner and URL information
+  - Added language guidelines for GitHub interactions
+  - Added issue template references
+
+### Dependencies
+
+- **Dependabot updates**:
+  - Bump astral-sh/setup-uv from 4 to 7 (PR #1)
+  - Bump actions/checkout from 4 to 5 (PR #2)
+  - Bump codecov/codecov-action from 4 to 5 (PR #3)
+
+### Requirements Status
+
+**All 13 requirements now fully implemented**:
+- ✅ Requirement 1: Sphinx Builder Integration (100%)
+- ✅ Requirement 2: Doctree to Typst Conversion (100%)
+- ✅ Requirement 3: Cross-References and Links (100%)
+- ✅ Requirement 4: Math Support (mitex) (100%)
+- ✅ Requirement 5: Typst Native Math (100%)
+- ✅ Requirement 6: Figures and Tables (100%)
+- ✅ Requirement 7: Code Highlighting (100%)
+- ✅ Requirement 8: Templates and Customization (100%)
+- ✅ Requirement 9: Self-Contained PDF Generation (100%)
+- ✅ Requirement 10: Error Handling and Logging (100%)
+- ✅ Requirement 11: Extensibility and Plugin Support (100%) - **Now complete**
+- ✅ Requirement 12: Testing and Documentation (100%)
+- ✅ Requirement 13: Multi-Document Integration (100%)
+
+### Testing
+
+- **317 tests** with **94% code coverage**
+- All tests passing across Python 3.9, 3.10, 3.11, 3.12
+- CI/CD pipeline validated on Linux, macOS, Windows
+
+---
+
 ## [Unreleased]
 
-### Planned for v0.2.0
-- Custom node handler registry (Requirement 11)
+### Planned for Future Releases
 - BibTeX/bibliography support
 - Glossary generation
 - Index generation
@@ -190,5 +260,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[0.2.0]: https://github.com/YuSabo90002/sphinxcontrib-typst/releases/tag/v0.2.0
 [0.1.0b1]: https://github.com/YuSabo90002/sphinxcontrib-typst/releases/tag/v0.1.0b1
-[Unreleased]: https://github.com/YuSabo90002/sphinxcontrib-typst/compare/v0.1.0b1...HEAD
+[Unreleased]: https://github.com/YuSabo90002/sphinxcontrib-typst/compare/v0.2.0...HEAD
