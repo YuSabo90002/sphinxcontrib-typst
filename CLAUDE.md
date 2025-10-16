@@ -24,6 +24,7 @@ Kiro-style Spec Driven Development implementation using claude code slash comman
 - **sphinxcontrib-typst**: Sphinx拡張によるTypstビルダーの実装 (Phase: initialized)
 - **fix-nested-toctree-paths**: ネストされたtoctreeにおける#include()ディレクティブの相対パス修正 (Phase: initialized) - Issue #5対応
 - **simplify-toctree-content-block**: toctree翻訳の簡略化 - 単一コンテンツブロック使用 (Phase: initialized) - Issue #7対応
+- **remove-nodehandlerregistry-docs**: NodeHandlerRegistry設計文書の削除とSphinx標準機能の文書化 (Phase: initialized) - Issue #6対応
 - Use `/kiro:spec-status [feature-name]` to check progress
 
 ## Development Guidelines

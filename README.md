@@ -166,6 +166,36 @@ Use toctree to combine multiple documents:
 
 This generates `#include()` directives in Typst with proper heading level adjustments.
 
+### Working with Third-Party Extensions
+
+sphinxcontrib-typst integrates with Sphinx's standard extension mechanism. For custom nodes from third-party extensions (e.g., sphinxcontrib-mermaid), you can register Typst handlers in your `conf.py`:
+
+```python
+# conf.py
+def setup(app):
+    # Example: Support sphinxcontrib-mermaid diagrams
+    if 'sphinxcontrib.mermaid' in app.config.extensions:
+        from sphinxcontrib.mermaid import mermaid
+        from docutils import nodes
+
+        def typst_visit_mermaid(self, node):
+            """Render Mermaid diagram as image in Typst output"""
+            # Export diagram as SVG and include in Typst
+            diagram_path = f"diagrams/{node['name']}.svg"
+            self.add_text(f'#image("{diagram_path}")\n\n')
+            raise nodes.SkipNode
+
+        # Register with Sphinx's standard API
+        app.add_node(mermaid, typst=(typst_visit_mermaid, None))
+```
+
+**How it works**:
+- sphinxcontrib-typst uses Sphinx's standard `app.add_node()` API (no custom registry needed)
+- Unknown nodes trigger `unknown_visit()` which logs a warning and extracts text content
+- Users can add Typst support for any extension by registering handlers in `conf.py`
+
+For more details, see the [Sphinx Extension API documentation](https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_node).
+
 ## Configuration Options
 
 See [docs/configuration.rst](docs/configuration.rst) for all available configuration options:
@@ -227,7 +257,6 @@ sphinxcontrib-typst/
 
 ## Known Limitations (v0.1.0b1)
 
-- **Requirement 11** (Extensibility and Plugin Support): Custom node handler registry not yet implemented (planned for v0.2.0)
 - **Bibliography**: BibTeX integration not yet supported
 - **Glossary**: Glossary generation not yet supported
 
