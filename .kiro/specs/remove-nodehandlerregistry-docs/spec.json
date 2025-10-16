@@ -1,0 +1,27 @@
+{
+  "feature_name": "remove-nodehandlerregistry-docs",
+  "created_at": "2025-10-16T05:00:00+09:00",
+  "updated_at": "2025-10-16T14:30:00+09:00",
+  "language": "ja",
+  "phase": "completed",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": true,
+      "approved": true
+    },
+    "tasks": {
+      "generated": true,
+      "approved": true
+    },
+    "implementation": {
+      "completed": true,
+      "verified": true
+    }
+  },
+  "ready_for_implementation": true,
+  "implementation_notes": "All tasks were already completed in a previous implementation. Verification confirmed all requirements are satisfied."
+}
