@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Modified `depart_table()` to use `self.body.append()` directly for table structure output
   - Added comprehensive test coverage for all table formats
 
+- **RST Comments Rendered as Plain Text** ([#21](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/21))
+  - Fixed reStructuredText comments appearing as plain text in Typst output
+  - Comments (lines starting with `..`) are now properly skipped during conversion
+  - Resolved "unknown node type: comment" warning messages
+  - Added `visit_comment()` and `depart_comment()` methods to TypstTranslator
+  - Comments are completely omitted from output as intended for source-level documentation
+
 ## [0.1.0b1] - 2025-10-13
 
 ### Added
