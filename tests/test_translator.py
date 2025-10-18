@@ -1283,11 +1283,11 @@ def test_table_no_duplication_all_types(simple_document, mock_builder):
 
     Related: issue #19
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
-    from docutils.parsers.rst import Parser
-    from docutils.utils import new_document
     from docutils.frontend import OptionParser
     from docutils.parsers.rst import Parser as RstParser
+    from docutils.utils import new_document
+
+    from sphinxcontrib.typst.translator import TypstTranslator
 
     table_types = {
         "list-table": """
