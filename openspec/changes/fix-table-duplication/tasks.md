@@ -47,25 +47,39 @@ sed -n '15,95p' examples/advanced/_build/typst/chapter2.typ
 
 ### 4. 新規テストケースの追加
 
-- [ ] `tests/test_translator.py`に非重複検証テストを追加
-  - テストケース名: `test_table_no_duplication`
-  - 単純な2x2のlist-tableでテスト
-  - 出力に`#table()`が1回だけ含まれることを確認
+- [ ] `tests/test_translator.py`に**すべてのテーブル形式**の非重複検証テストを追加
+  - テストケース名: `test_table_no_duplication_all_types`
+  - 以下のテーブル形式すべてをテスト:
+    - list-table ディレクティブ
+    - grid table (罫線形式)
+    - simple table
+    - csv-table ディレクティブ
+  - 各形式で出力に`#table()`が1回だけ含まれることを確認
   - セル内容のプレーンテキストが`#table()`の前に出現しないことを確認
 
 **テストの骨格:**
 ```python
-def test_table_no_duplication(translator):
-    """Verify table content is not duplicated in output."""
-    # Create a simple list-table node
-    # Process through translator
-    # Assert #table( appears exactly once
-    # Assert cell content not duplicated before #table()
+def test_table_no_duplication_all_types(simple_document, mock_builder):
+    """Verify table content is not duplicated for all table types."""
+    from sphinxcontrib.typst.translator import TypstTranslator
+    from docutils.parsers.rst import Parser
+    from docutils.utils import new_document
+
+    table_types = {
+        'list-table': '.. list-table::\n   :header-rows: 1\n\n   * - H1\n     - H2\n   * - A\n     - B',
+        'grid': '+---+---+\n| H1| H2|\n+===+===+\n| A | B |\n+---+---+',
+        'simple': '==  ==\nH1  H2\n==  ==\nA   B\n==  ==',
+        'csv': '.. csv-table::\n   :header: "H1", "H2"\n\n   "A", "B"'
+    }
+
+    for table_type, rst_content in table_types.items():
+        # Parse RST and process
+        # Assert no duplication for each type
 ```
 
 - [ ] テストを実行して成功を確認
   ```bash
-  uv run pytest tests/test_translator.py::test_table_no_duplication -v
+  uv run pytest tests/test_translator.py::test_table_no_duplication_all_types -v
   ```
 
 ### 5. 型チェックとリンティング
