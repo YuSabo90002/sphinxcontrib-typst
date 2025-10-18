@@ -5,6 +5,28 @@
 **作成日:** 2025-10-18
 **関連Issue:** [#19](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/19)
 
+## Why
+
+reStructuredTextのテーブルをTypst形式に変換する際、テーブルセルの内容がプレーンテキストと`#table()`構造の両方に出力される重複問題が発生しています。この問題により：
+
+- 生成されたTypstドキュメントが読みにくくなる
+- PDF生成時にセル内容が2倍表示される
+- ドキュメントサイズが不必要に増加する
+- すべてのテーブル形式（list-table、grid table、simple table、csv-table）が影響を受ける
+
+根本原因は`visit_Text()`が無条件に`self.body`へテキストを追加し、さらに`depart_entry()`が`node.astext()`でセル内容を再取得するためです。
+
+## What Changes
+
+`add_text()`メソッドを修正し、テーブルセル内のテキストを専用バッファ（`table_cell_content`）にルーティングすることで重複を防ぎます。また、`depart_table()`で`#table()`構造を出力する際は`self.body.append()`を直接使用し、テーブルコンテンツバッファへの誤ルーティングを防ぎます。
+
+**変更内容:**
+- `add_text()`: テーブル内判定を追加し、セル内テキストを`table_cell_content`に蓄積
+- `depart_table()`: `self.body.append()`直接呼び出しでテーブル構造を出力
+
+**影響するspec:**
+- `specs/table-rendering/spec.md`: テーブルセルのテキスト収集とテーブル構造の非重複出力に関する要件を追加
+
 ## 概要
 
 `list-table`ディレクティブを含むreStructuredTextドキュメントをTypst形式に変換する際、テーブルの内容が重複して出力される問題を修正します。現在、プレーンテキストと`#table()`構造の両方が生成され、ドキュメントが読めない状態になっています。
