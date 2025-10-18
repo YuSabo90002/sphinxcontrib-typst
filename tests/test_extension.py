@@ -66,7 +66,6 @@ def test_setup_version_matches():
     metadata = setup(app)
 
     assert metadata["version"] == __version__
-    assert metadata["version"] == "0.1.0b1"
 
 
 def test_extension_can_be_loaded(temp_sphinx_app):
