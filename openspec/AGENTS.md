@@ -454,3 +454,17 @@ openspec archive [change] [--yes|-y]  # Mark complete (add --yes for automation)
 ```
 
 Remember: Specs are truth. Changes are proposals. Keep them in sync.
+
+## Language Guidelines
+
+### Documentation Language
+- **Proposal files** (`proposal.md`): 日本語 (Japanese)
+- **Design files** (`design.md`): 日本語 (Japanese)
+- **Task files** (`tasks.md`): 日本語 (Japanese)
+- **Spec files** (`spec.md`): 日本語 (Japanese)
+- **Code comments**: English only
+- **Commit messages**: English
+- **Pull request titles/descriptions**: English
+
+### Rationale
+Japanese documentation allows for clearer communication of technical nuances and requirements for Japanese-speaking team members, while keeping code comments and Git/GitHub interactions in English for broader community accessibility and code maintainability.
