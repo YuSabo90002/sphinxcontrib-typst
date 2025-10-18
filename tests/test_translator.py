@@ -1271,3 +1271,92 @@ def test_toctree_generates_outline(simple_document, mock_builder):
     assert '#include("getting_started.typ")' in output
     assert '#include("api.typ")' in output
     assert "#set heading(offset: 1)" in output
+
+
+def test_table_no_duplication_all_types(simple_document, mock_builder):
+    """
+    Verify table content is not duplicated for all table types.
+
+    This test ensures that ALL reStructuredText table formats (list-table,
+    grid table, simple table, csv-table) do not produce duplicate output
+    where cell content appears both as plain text AND inside #table().
+
+    Related: issue #19
+    """
+    from docutils.frontend import OptionParser
+    from docutils.parsers.rst import Parser as RstParser
+    from docutils.utils import new_document
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    table_types = {
+        "list-table": """
+.. list-table::
+   :header-rows: 1
+
+   * - Header1
+     - Header2
+   * - CellA
+     - CellB
+""",
+        "grid": """
++----------+----------+
+| Header1  | Header2  |
++==========+==========+
+| CellA    | CellB    |
++----------+----------+
+""",
+        "simple": """
+========  ========
+Header1   Header2
+========  ========
+CellA     CellB
+========  ========
+""",
+        "csv": """
+.. csv-table::
+   :header: "Header1", "Header2"
+
+   "CellA", "CellB"
+""",
+    }
+
+    parser = RstParser()
+    for table_type, rst_content in table_types.items():
+        # Parse RST content
+        settings = OptionParser(components=(RstParser,)).get_default_values()
+        document = new_document("<test>", settings=settings)
+        parser.parse(rst_content, document)
+
+        # Translate to Typst
+        translator = TypstTranslator(document, mock_builder)
+        document.walkabout(translator)
+        output = translator.astext()
+
+        # Check that #table( appears in output
+        assert "#table(" in output, f"{table_type}: #table() not found in output"
+
+        # Find the position of #table( in the output
+        lines = output.strip().split("\n")
+        table_idx = next((i for i, line in enumerate(lines) if "#table(" in line), None)
+
+        assert table_idx is not None, f"{table_type}: Could not find #table() in output"
+
+        # Get content before #table()
+        before_table = "\n".join(lines[:table_idx])
+
+        # Check that cell content keywords do NOT appear before #table()
+        # These keywords should only appear inside #table()
+        keywords = ["Header1", "Header2", "CellA", "CellB"]
+
+        for keyword in keywords:
+            assert (
+                keyword not in before_table
+            ), f"{table_type}: '{keyword}' appears before #table() - duplication detected!"
+
+        # Verify that keywords DO appear inside #table()
+        table_part = "\n".join(lines[table_idx:])
+        for keyword in keywords:
+            assert (
+                keyword in table_part
+            ), f"{table_type}: '{keyword}' not found in #table() - missing content!"

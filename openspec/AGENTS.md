@@ -51,10 +51,15 @@ Track these steps as TODOs and complete them one by one.
 1. **Read proposal.md** - Understand what's being built
 2. **Read design.md** (if exists) - Review technical decisions
 3. **Read tasks.md** - Get implementation checklist
-4. **Implement tasks sequentially** - Complete in order
-5. **Confirm completion** - Ensure every item in `tasks.md` is finished before updating statuses
-6. **Update checklist** - After all work is done, set every task to `- [x]` so the list reflects reality
-7. **Approval gate** - Do not start implementation until the proposal is reviewed and approved
+4. **Follow TDD (Test-Driven Development)** - Write tests first, then implement
+   - Write failing tests that specify the desired behavior
+   - Run tests to confirm they fail for the right reasons
+   - Implement minimal code to make tests pass
+   - Refactor while keeping tests green
+5. **Implement tasks sequentially** - Complete in order
+6. **Confirm completion** - Ensure every item in `tasks.md` is finished before updating statuses
+7. **Update checklist** - After all work is done, set every task to `- [x]` so the list reflects reality
+8. **Approval gate** - Do not start implementation until the proposal is reviewed and approved
 
 ### Stage 3: Archiving Changes
 After deployment, create separate PR to:
@@ -194,14 +199,74 @@ The system SHALL provide...
 ```
 If multiple capabilities are affected, create multiple delta files under `changes/[change-id]/specs/<capability>/spec.md`—one per capability.
 
-4. **Create tasks.md:**
+4. **Create tasks.md (TDD-first approach):**
+All implementation tasks MUST follow Test-Driven Development (TDD):
 ```markdown
-## 1. Implementation
-- [ ] 1.1 Create database schema
-- [ ] 1.2 Implement API endpoint
-- [ ] 1.3 Add frontend component
-- [ ] 1.4 Write tests
+## Implementation Tasks
+
+### 1. [Feature Name] - TDD Cycle
+
+#### Phase 1: RED (Write Failing Test)
+- [ ] Write test for [specific behavior]
+  - Test name: `test_[feature_name]`
+  - Test file: `tests/test_[module].py`
+  - Expected to fail initially
+
+#### Phase 2: Confirm RED
+- [ ] Run test to confirm it fails
+  ```bash
+  uv run pytest tests/test_[module].py::test_[feature_name] -xvs
+  ```
+  **Expected:** Test fails for the right reason
+
+#### Phase 3: GREEN (Implement)
+- [ ] Implement minimal code to make test pass
+  - File: `[module_path]`
+  - Changes: [brief description]
+
+#### Phase 4: Confirm GREEN
+- [ ] Run test to confirm it passes
+  ```bash
+  uv run pytest tests/test_[module].py::test_[feature_name] -xvs
+  ```
+  **Expected:** Test passes
+
+#### Phase 5: REFACTOR (Optional)
+- [ ] Refactor code while keeping tests green
+- [ ] Run tests after each refactor
+
+### 2. Regression Testing
+- [ ] Run existing test suite
+  ```bash
+  uv run pytest tests/test_[module].py -v
+  ```
+  **Expected:** All existing tests still pass
+
+### 3. Integration Verification
+- [ ] Test with real fixtures/examples
+- [ ] Verify output manually
+
+### 4. Quality Checks
+- [ ] Type checking: `uv run mypy [module_path]`
+- [ ] Linting: `uv run ruff check [module_path]`
+- [ ] Formatting: `uv run black --check [module_path]`
+
+### 5. Final Validation
+- [ ] Full test suite: `uv run pytest`
+- [ ] Coverage check: `uv run pytest --cov=[package] --cov-report=term-missing`
+  **Expected:** Coverage maintained or improved
+
+### 6. Documentation
+- [ ] Update CHANGELOG.md
+- [ ] Update relevant documentation files
+
+## Task Dependencies
+- Phase 1-2 (RED) must complete before Phase 3-4 (GREEN)
+- Phase 5 (REFACTOR) is optional but recommended
+- Phases 2-6 can run in parallel after GREEN is achieved
 ```
+
+**Important**: Always write tests BEFORE implementation. The TDD cycle (RED → GREEN → REFACTOR) is mandatory for all code changes.
 
 5. **Create design.md when needed:**
 Create `design.md` if any of the following apply; otherwise omit it:
@@ -454,3 +519,17 @@ openspec archive [change] [--yes|-y]  # Mark complete (add --yes for automation)
 ```
 
 Remember: Specs are truth. Changes are proposals. Keep them in sync.
+
+## Language Guidelines
+
+### Documentation Language
+- **Proposal files** (`proposal.md`): 日本語 (Japanese)
+- **Design files** (`design.md`): 日本語 (Japanese)
+- **Task files** (`tasks.md`): 日本語 (Japanese)
+- **Spec files** (`spec.md`): 日本語 (Japanese)
+- **Code comments**: English only
+- **Commit messages**: English
+- **Pull request titles/descriptions**: English
+
+### Rationale
+Japanese documentation allows for clearer communication of technical nuances and requirements for Japanese-speaking team members, while keeping code comments and Git/GitHub interactions in English for broader community accessibility and code maintainability.
