@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Table Content Duplication** ([#19](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/19))
+  - Fixed duplicate table content in Typst output where cell content appeared both as plain text and inside `#table()` structure
+  - Affects all reStructuredText table formats: list-table, grid table, simple table, csv-table
+  - Modified `add_text()` method to route text to `table_cell_content` when inside table cells
+  - Modified `depart_table()` to use `self.body.append()` directly for table structure output
+  - Added comprehensive test coverage for all table formats
+
 ## [0.1.0b1] - 2025-10-13
 
 ### Added

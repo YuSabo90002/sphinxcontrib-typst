@@ -58,12 +58,19 @@ class TypstTranslator(SphinxTranslator):
 
     def add_text(self, text: str) -> None:
         """
-        Add text to the output body.
+        Add text to the output body or table cell content.
 
         Args:
             text: The text to add
         """
-        self.body.append(text)
+        if (
+            hasattr(self, "in_table")
+            and self.in_table
+            and hasattr(self, "table_cell_content")
+        ):
+            self.table_cell_content.append(text)
+        else:
+            self.body.append(text)
 
     def visit_document(self, node: nodes.document) -> None:
         """
@@ -566,13 +573,14 @@ class TypstTranslator(SphinxTranslator):
         """
         # Generate Typst #table() syntax
         if self.table_colcount > 0:
-            self.add_text(f"#table(\n  columns: {self.table_colcount},\n")
+            # Use self.body.append directly to avoid routing to table_cell_content
+            self.body.append(f"#table(\n  columns: {self.table_colcount},\n")
 
             # Add all cells
             for cell in self.table_cells:
-                self.add_text(f"  [{cell}],\n")
+                self.body.append(f"  [{cell}],\n")
 
-            self.add_text(")\n\n")
+            self.body.append(")\n\n")
 
         self.in_table = False
         self.table_cells = []

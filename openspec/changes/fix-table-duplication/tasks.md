@@ -4,7 +4,7 @@
 
 ### 1. コア修正: add_text()メソッドの変更
 
-- [ ] `sphinxcontrib/typst/translator.py:59`の`add_text()`メソッドを修正
+- [x] `sphinxcontrib/typst/translator.py:59`の`add_text()`メソッドを修正
   - テーブルセル内かどうかをチェックする条件分岐を追加
   - `in_table`フラグと`table_cell_content`属性の存在を確認
   - テーブルセル内の場合は`table_cell_content`に追加
@@ -18,7 +18,7 @@ cat -n sphinxcontrib/typst/translator.py | sed -n '59,66p'
 
 ### 2. 既存テストの実行とリグレッション確認
 
-- [ ] 全テストを実行してリグレッションがないことを確認
+- [x] 全テストを実行してリグレッションがないことを確認
   ```bash
   uv run pytest tests/test_translator.py -v
   uv run pytest tests/test_integration_advanced.py -v
@@ -28,13 +28,13 @@ cat -n sphinxcontrib/typst/translator.py | sed -n '59,66p'
 
 ### 3. フィクスチャを使った動作確認
 
-- [ ] `examples/advanced`のビルドを実行
+- [x] `examples/advanced`のビルドを実行
   ```bash
   cd examples/advanced
   sphinx-build -b typst . _build/typst
   ```
 
-- [ ] 生成された`_build/typst/chapter2.typ`を確認
+- [x] 生成された`_build/typst/chapter2.typ`を確認
   - 21-85行目付近のテーブル出力を確認
   - プレーンテキストの重複がないことを確認
   - `#table()`構造のみが存在することを確認
@@ -47,7 +47,7 @@ sed -n '15,95p' examples/advanced/_build/typst/chapter2.typ
 
 ### 4. 新規テストケースの追加
 
-- [ ] `tests/test_translator.py`に**すべてのテーブル形式**の非重複検証テストを追加
+- [x] `tests/test_translator.py`に**すべてのテーブル形式**の非重複検証テストを追加
   - テストケース名: `test_table_no_duplication_all_types`
   - 以下のテーブル形式すべてをテスト:
     - list-table ディレクティブ
@@ -77,45 +77,45 @@ def test_table_no_duplication_all_types(simple_document, mock_builder):
         # Assert no duplication for each type
 ```
 
-- [ ] テストを実行して成功を確認
+- [x] テストを実行して成功を確認
   ```bash
   uv run pytest tests/test_translator.py::test_table_no_duplication_all_types -v
   ```
 
 ### 5. 型チェックとリンティング
 
-- [ ] 型チェックを実行
+- [x] 型チェックを実行
   ```bash
   uv run mypy sphinxcontrib/typst/translator.py
   ```
 
-- [ ] リンティングを実行
+- [x] リンティングを実行
   ```bash
   uv run ruff check sphinxcontrib/typst/translator.py
   uv run black --check sphinxcontrib/typst/translator.py
   ```
 
-**期待結果:** エラーなし
+**結果:** すべてパス ✓
 
 ### 6. 最終検証
 
-- [ ] 全テストスイートを実行
+- [x] 全テストスイートを実行
   ```bash
   uv run pytest
   ```
 
-- [ ] カバレッジを確認
+- [x] カバレッジを確認
   ```bash
   uv run pytest --cov=sphinxcontrib.typst --cov-report=term-missing
   ```
 
-**期待結果:**
-- 全テストパス (317+ tests)
-- カバレッジ 90%以上維持
+**結果:**
+- 全テストパス (318 tests) ✓
+- カバレッジ 94% 維持 ✓
 
 ### 7. ドキュメント更新
 
-- [ ] CHANGELOG.mdに修正内容を追加
+- [x] CHANGELOG.mdに修正内容を追加
   - セクション: `## [Unreleased]` または次のバージョン
   - カテゴリ: `### Fixed`
   - 内容: 「テーブル内容の重複出力を修正 (#19)」
