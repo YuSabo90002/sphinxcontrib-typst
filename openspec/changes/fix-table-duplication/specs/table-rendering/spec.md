@@ -8,7 +8,7 @@
 
 #### Scenario: テーブルセル内のテキストノード処理
 
-- **GIVEN** `list-table`ディレクティブを含むreStructuredTextドキュメント
+- **GIVEN** 任意のreStructuredTextテーブル形式（list-table、grid table、simple table、csv-table）を含むドキュメント
 - **AND** テーブルセル内にテキストノードが存在する
 - **WHEN** `visit_Text()`が呼び出される
 - **THEN** テキストは`self.table_cell_content`に追加される
@@ -32,24 +32,52 @@
 
 Typst出力において、テーブルの内容は`#table()`構造としてのみ出力され、プレーンテキストとしての重複出力があってはならない (MUST NOT)。
 
-#### Scenario: 単純なlist-tableの変換
+#### Scenario: list-tableディレクティブの変換
 
 - **GIVEN** 2列2行の`list-table`ディレクティブ
 - **WHEN** Typst形式に変換する
 - **THEN** 出力は`#table(columns: 2, ...)`構造のみを含む
 - **AND** テーブルの前にプレーンテキストのセル内容が出力されない
 
+#### Scenario: grid table形式の変換
+
+- **GIVEN** 2列2行のgrid table（ASCIIアート罫線形式）
+- **WHEN** Typst形式に変換する
+- **THEN** 出力は`#table(columns: 2, ...)`構造のみを含む
+- **AND** テーブルの前にプレーンテキストのセル内容が出力されない
+
+#### Scenario: simple table形式の変換
+
+- **GIVEN** 2列2行のsimple table形式
+- **WHEN** Typst形式に変換する
+- **THEN** 出力は`#table(columns: 2, ...)`構造のみを含む
+- **AND** テーブルの前にプレーンテキストのセル内容が出力されない
+
+#### Scenario: csv-tableディレクティブの変換
+
+- **GIVEN** 2列2行の`csv-table`ディレクティブ
+- **WHEN** Typst形式に変換する
+- **THEN** 出力は`#table(columns: 2, ...)`構造のみを含む
+- **AND** テーブルの前にプレーンテキストのセル内容が出力されない
+
 #### Scenario: ヘッダー行を持つテーブルの変換
 
-- **GIVEN** `:header-rows: 1`オプションを持つ`list-table`
+- **GIVEN** ヘッダー行を持つ任意のテーブル形式（`:header-rows: 1`オプション付きlist-table、またはgrid/simple tableのヘッダー行）
 - **WHEN** Typst形式に変換する
 - **THEN** ヘッダー行のセルも`#table()`内でのみ出力される
 - **AND** ヘッダー内容のプレーンテキスト重複がない
 
 #### Scenario: 複数行の複雑なテーブルの変換
 
-- **GIVEN** 4列5行の`list-table`ディレクティブ
+- **GIVEN** 4列5行の任意のテーブル形式（list-table、grid table、simple table、csv-tableのいずれか）
 - **AND** 各セルにテキストコンテンツが含まれる
 - **WHEN** Typst形式に変換する
 - **THEN** すべてのセルの内容が`#table()`構造内にのみ出力される
 - **AND** 20個すべてのセル内容について重複がない
+
+#### Scenario: 全テーブル形式の統一的処理
+
+- **GIVEN** 同一ドキュメント内にlist-table、grid table、simple table、csv-tableの4種類すべてが存在する
+- **WHEN** Typst形式に変換する
+- **THEN** すべてのテーブル形式で一貫して`#table()`構造のみが出力される
+- **AND** いずれのテーブル形式でもプレーンテキストの重複が発生しない
