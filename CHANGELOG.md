@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2025-10-18
+
 ### Fixed
 - **Table Content Duplication** ([#19](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/19))
   - Fixed duplicate table content in Typst output where cell content appeared both as plain text and inside `#table()` structure
