@@ -524,6 +524,9 @@ Remember: Specs are truth. Changes are proposals. Keep them in sync.
 
 ### Documentation Language
 - **Proposal files** (`proposal.md`): 日本語 (Japanese)
+  - **IMPORTANT**: Section headers `## Why` and `## What Changes` MUST be in English
+  - These headers are required by `openspec archive` command
+  - Content under these headers can be in Japanese
 - **Design files** (`design.md`): 日本語 (Japanese)
 - **Task files** (`tasks.md`): 日本語 (Japanese)
 - **Spec files** (`spec.md`): 日本語 (Japanese)

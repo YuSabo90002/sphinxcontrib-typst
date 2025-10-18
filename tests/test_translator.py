@@ -1360,3 +1360,85 @@ CellA     CellB
             assert (
                 keyword in table_part
             ), f"{table_type}: '{keyword}' not found in #table() - missing content!"
+
+
+def test_comment_skipped(simple_document, mock_builder):
+    """
+    Verify RST comments are completely skipped in Typst output.
+
+    Comments should not appear in the output and should not generate warnings.
+    This test covers:
+    - Single line comments
+    - Multi-line comments
+    - Text separation before/after comments
+    - Empty comments
+
+    Related: issue #21
+    """
+    from docutils.frontend import OptionParser
+    from docutils.parsers.rst import Parser as RstParser
+    from docutils.utils import new_document
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    rst_content = """
+Test Comments
+=============
+
+Before comment paragraph.
+
+.. This is a comment
+   It spans multiple lines
+   And should not appear in output
+
+After comment paragraph.
+
+..
+   Empty comment marker
+   Also hidden
+
+More text.
+"""
+
+    # Parse RST content
+    parser = RstParser()
+    settings = OptionParser(components=(RstParser,)).get_default_values()
+    document = new_document("<test>", settings=settings)
+    parser.parse(rst_content, document)
+
+    # Translate to Typst
+    translator = TypstTranslator(document, mock_builder)
+    document.walkabout(translator)
+    output = translator.astext()
+
+    # Check that heading is present
+    assert "= Test Comments" in output
+
+    # Check that comment text does NOT appear in output
+    assert "This is a comment" not in output
+    assert "It spans multiple lines" not in output
+    assert "And should not appear in output" not in output
+    assert "Empty comment marker" not in output
+    assert "Also hidden" not in output
+
+    # Check that paragraphs before/after are present
+    assert "Before comment paragraph." in output
+    assert "After comment paragraph." in output
+    assert "More text." in output
+
+    # Check that paragraphs are properly separated (comment doesn't merge them)
+    # The output should have "After comment paragraph." on a separate line,
+    # not merged with comment text
+    lines = [line.strip() for line in output.split("\n") if line.strip()]
+
+    # Find "After comment paragraph." line
+    after_idx = next(
+        (i for i, line in enumerate(lines) if "After comment paragraph." in line), None
+    )
+    assert after_idx is not None, "Could not find 'After comment paragraph.' in output"
+
+    # Check that the line containing "After comment paragraph." does not contain comment text
+    after_line = lines[after_idx]
+    assert (
+        "This is a comment" not in after_line
+    ), "Comment text merged with following paragraph!"

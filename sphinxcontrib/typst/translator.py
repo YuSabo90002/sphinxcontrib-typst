@@ -196,6 +196,33 @@ class TypstTranslator(SphinxTranslator):
         # Add double newline after paragraphs
         self.add_text("\n\n")
 
+    def visit_comment(self, node: nodes.comment) -> None:
+        """
+        Visit a comment node.
+
+        Comments are skipped entirely in Typst output as they are meant
+        for source-level documentation only.
+
+        Args:
+            node: The comment node
+
+        Raises:
+            nodes.SkipNode: Always raised to skip the comment
+        """
+        raise nodes.SkipNode
+
+    def depart_comment(self, node: nodes.comment) -> None:
+        """
+        Depart a comment node.
+
+        Args:
+            node: The comment node
+
+        Note:
+            This method is not called when SkipNode is raised in visit_comment.
+        """
+        pass
+
     def visit_Text(self, node: nodes.Text) -> None:
         """
         Visit a text node.
