@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Raw Directive Support** ([#25](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/25))
+  - Added support for docutils `raw` directive (`.. raw:: typst`)
+  - Typst-specific content (`format='typst'`) is passed through to output
+  - Other formats (html, latex, etc.) are skipped and logged
+  - Format name matching is case-insensitive
+  - Implemented `visit_raw()` and `depart_raw()` methods in TypstTranslator
+  - Added 6 comprehensive test cases covering various scenarios
+
 ### Fixed
 - **Code Block Directive Options Support** ([#20](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/20))
   - Fixed `:linenos:` option being ignored - now properly controls line number display in code blocks
@@ -19,6 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Line numbers now disabled by default when `:linenos:` is not specified (via `#codly(number-format: none)`)
   - All four options (`:linenos:`, `:caption:`, `:name:`, `:emphasize-lines:`) now work correctly together
   - Added comprehensive test coverage for all code block option combinations
+
+- **PDF Builder codly Import Missing** ([#28](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/28))
+  - Fixed `typstpdf` builder failing with "unknown variable: codly" error
+  - Added codly package imports to document-level essential imports in `template_engine.py`
+  - Document files now include `#import "@preview/codly:1.3.0": *` and `#import "@preview/codly-languages:0.1.1": *`
+  - Enables PDF generation for documents with code blocks (prerequisite for Issue #20)
+  - No breaking changes - only adds imports alongside existing mitex/gentle-clues imports
 
 ## [0.2.1] - 2025-10-18
 

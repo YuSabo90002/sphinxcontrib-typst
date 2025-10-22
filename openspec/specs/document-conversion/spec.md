@@ -47,3 +47,149 @@ reStructuredTextコメント（`.. comment`）は出力から完全に除外さ�
 - **THEN** 空コメントもスキップされる
 - **AND** 警告メッセージは表示されない
 
+### Requirement: Rawディレクティブの処理
+
+docutilsの`raw`ノードは、フォーマットに応じて適切に処理されなければならない (MUST)。`format='typst'`の場合はコンテンツをそのまま出力し、他のフォーマットの場合はコンテンツをスキップしなければならない。
+
+#### Scenario: Typstフォーマットのrawコンテンツのパススルー
+
+- **GIVEN** reStructuredTextファイルに`.. raw:: typst`ディレクティブが含まれる
+  ```rst
+  .. raw:: typst
+
+     #rect(fill: red)[Custom Typst content]
+  ```
+- **WHEN** Typst形式に変換される
+- **THEN** rawコンテンツがそのままTypst出力に含まれる
+- **AND** Typstコンテンツの前後に適切な改行が追加される
+
+#### Scenario: 他のフォーマットのrawコンテンツのスキップ
+
+- **GIVEN** reStructuredTextファイルに`.. raw:: html`ディレクティブが含まれる
+  ```rst
+  .. raw:: html
+
+     <div class="custom">HTML content</div>
+  ```
+- **WHEN** Typst形式に変換される
+- **THEN** HTMLコンテンツはTypst出力に含まれない
+- **AND** スキップされたフォーマットについてデバッグログが記録される
+
+#### Scenario: 複数のrawディレクティブの混在
+
+- **GIVEN** reStructuredTextファイルに複数のフォーマットのrawディレクティブが含まれる
+  ```rst
+  Before paragraph.
+
+  .. raw:: typst
+
+     #rect(fill: blue)[Typst content]
+
+  .. raw:: html
+
+     <div>HTML content</div>
+
+  .. raw:: typst
+
+     #circle(radius: 10pt)
+
+  After paragraph.
+  ```
+- **WHEN** Typst形式に変換される
+- **THEN** `format='typst'`のコンテンツのみがTypst出力に含まれる
+- **AND** HTMLコンテンツはスキップされる
+- **AND** 前後のパラグラフが正しく保持される
+
+#### Scenario: Typst rawコンテンツの改行処理
+
+- **GIVEN** rawディレクティブに複数行のTypstコードが含まれる
+  ```rst
+  .. raw:: typst
+
+     #set text(size: 12pt)
+     #rect(
+       fill: gradient.linear(red, blue),
+       [Multi-line Typst code]
+     )
+  ```
+- **WHEN** Typst形式に変換される
+- **THEN** すべてのTypstコードがそのまま保持される
+- **AND** 元のインデントと改行が維持される
+- **AND** コンテンツの後に適切な空行が追加される
+
+#### Scenario: 空のrawディレクティブ
+
+- **GIVEN** 空のrawディレクティブが含まれる
+  ```rst
+  .. raw:: typst
+  ```
+- **WHEN** Typst形式に変換される
+- **THEN** 空のコンテンツはスキップされる
+- **AND** エラーや警告は発生しない
+
+#### Scenario: 大文字小文字の混在フォーマット名
+
+- **GIVEN** フォーマット名が大文字小文字混在で指定される
+  ```rst
+  .. raw:: TYPST
+
+     #text[Content]
+  ```
+- **WHEN** Typst形式に変換される
+- **THEN** フォーマット名が大文字小文字を区別せずに処理される
+- **AND** コンテンツが正しく出力される
+
+### Requirement: ドキュメントレベルでのパッケージインポート
+
+生成されるTypstドキュメントファイル（`.typ`）は、コンテンツで使用されるすべての必須パッケージをインポートしなければならない (MUST)。
+
+#### Scenario: codlyパッケージのインポート
+
+- **GIVEN** テンプレートファイルを使用するドキュメント生成
+- **WHEN** `generate_document()` メソッドでドキュメントファイルが生成される
+- **THEN** 生成されたドキュメントファイルに以下のインポートが含まれる:
+  ```typst
+  #import "@preview/codly:1.3.0": *
+  #import "@preview/codly-languages:0.1.1": *
+  ```
+- **AND** これらのインポートは `mitex` と `gentle-clues` のインポートの前に配置される
+
+#### Scenario: コードブロックでのcodly関数の使用
+
+- **GIVEN** ドキュメントにコードブロックが含まれる
+- **WHEN** トランスレータが `#codly()` または `#codly-range()` 関数を生成する
+- **THEN** ドキュメントファイルがcodlyパッケージをインポートしているため、Typstコンパイルが成功する
+- **AND** 「unknown variable: codly」エラーが発生しない
+
+#### Scenario: PDFビルダーでのコード ブロック処理
+
+- **GIVEN** `:linenos:` オプション付きコードブロックを含むRSTファイル
+  ```rst
+  .. code-block:: python
+     :linenos:
+
+     def hello():
+         return "world"
+  ```
+- **WHEN** `typstpdf` ビルダーでPDFを生成する
+- **THEN** PDFが正常に生成される
+- **AND** コードブロックに行番号が表示される
+- **AND** Typstコンパイルエラーが発生しない
+
+#### Scenario: 必須インポートの順序
+
+- **GIVEN** ドキュメントファイルの生成
+- **WHEN** 必須パッケージインポートが追加される
+- **THEN** インポートの順序は以下の通りである:
+  1. `codly:1.3.0` と `codly-languages:0.1.1`
+  2. `mitex:0.2.4`
+  3. `gentle-clues:1.2.0`
+- **AND** すべてのインポートがテンプレートインポートの前に配置される
+
+#### Scenario: 既存ドキュメントとの互換性
+
+- **GIVEN** codlyインポートを追加する前に生成された既存ドキュメント
+- **WHEN** 新しいバージョンで再生成される
+- **THEN** すべての既存機能が正常に動作する
+- **AND** codlyインポートの追加による破壊的変更はない
+
