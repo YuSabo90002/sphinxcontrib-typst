@@ -16,7 +16,7 @@
 **重要:** mainブランチの統合テストはcodly関数を使わないため、修正の効果を検証できない。
 手動検証テストで修正の効果を確認する必要がある。
 
-- [ ] 手動検証テスト（修正前）- Issue #20ブランチで失敗を確認
+- [x] 手動検証テスト（修正前）- Issue #20ブランチで失敗を確認
   ```bash
   # Issue #20ブランチに切り替え（Issue #28の修正を適用しない状態）
   git stash  # 現在の変更を退避
@@ -30,7 +30,7 @@
   ```
   **Expected:** Build fails with "unknown variable: codly" error
 
-- [ ] 手動検証テスト（修正後）- Issue #28ブランチで成功を確認
+- [x] 手動検証テスト（修正後）- Issue #28ブランチで成功を確認
   ```bash
   # Issue #28ブランチに戻る（修正適用済み）
   git checkout fix/issue-28-codly-import
@@ -48,7 +48,7 @@
   ```
   **Expected:** Build succeeds, PDF file generated
 
-- [ ] 生成されたドキュメントファイルの確認
+- [x] 生成されたドキュメントファイルの確認
   ```bash
   cat /tmp/test-after/index.typ | head -10
   ```
@@ -58,7 +58,7 @@
   #import "@preview/codly-languages:0.1.1": *
   ```
 
-- [ ] mainブランチでのPDFビルドテスト（後方互換性確認）
+- [x] mainブランチでのPDFビルドテスト（後方互換性確認）
   ```bash
   # mainブランチに切り替え
   git checkout main
@@ -76,7 +76,7 @@
 **注意:** mainブランチの統合テストは現時点でcodly関数を使用しないため、修正前後で差が出ない。
 統合テストは後方互換性の確認のみとなる。
 
-- [ ] PDF生成統合テストを実行（後方互換性確認）
+- [x] PDF生成統合テストを実行（後方互換性確認）
   ```bash
   uv run pytest tests/test_integration_advanced.py::TestPDFGenerationIntegration -xvs
   ```
@@ -91,7 +91,7 @@
 
 ## 4. Regression Testing
 
-- [ ] 全テストスイートを実行
+- [x] 全テストスイートを実行
   ```bash
   uv run pytest
   ```
@@ -101,7 +101,7 @@
   この修正により新たにパスするテストはない（Issue #20マージ後に効果が現れる）。
   目的は既存テストの後方互換性確認のみ。
 
-- [ ] カバレッジチェック
+- [x] カバレッジチェック
   ```bash
   uv run pytest --cov=sphinxcontrib.typst --cov-report=term-missing
   ```
@@ -109,19 +109,19 @@
 
 ## 5. Quality Checks
 
-- [ ] 型チェック
+- [x] 型チェック
   ```bash
   uv run mypy sphinxcontrib/typst/template_engine.py
   ```
   **Expected:** No type errors
 
-- [ ] リンティング
+- [x] リンティング
   ```bash
   uv run ruff check sphinxcontrib/typst/template_engine.py
   ```
   **Expected:** No linting errors
 
-- [ ] フォーマットチェック
+- [x] フォーマットチェック
   ```bash
   uv run black --check sphinxcontrib/typst/template_engine.py
   ```
@@ -129,12 +129,12 @@
 
 ## 6. Documentation
 
-- [ ] CHANGELOG.mdに修正内容を記録
+- [x] CHANGELOG.mdに修正内容を記録
   - Section: `[Unreleased]`
   - Category: `Fixed`
   - Content: Issue #28 fix - codly import added to document files
 
-- [ ] Issue #28にクローズコメントを追加
+- [x] Issue #28にクローズコメントを追加
   - Describe the fix
   - Include before/after examples
   - Show test results
