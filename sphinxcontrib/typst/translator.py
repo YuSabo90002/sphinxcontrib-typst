@@ -223,6 +223,44 @@ class TypstTranslator(SphinxTranslator):
         """
         pass
 
+    def visit_raw(self, node: nodes.raw) -> None:
+        """
+        Visit a raw node.
+
+        Pass through content if format is 'typst', otherwise skip.
+
+        Args:
+            node: The raw node
+
+        Raises:
+            nodes.SkipNode: When format is not 'typst'
+        """
+        format_name = node.get("format", "").lower()
+
+        if format_name == "typst":
+            # Output the raw Typst content directly
+            content = node.astext()
+            if content:  # Only add non-empty content
+                self.add_text(content)
+                self.add_text("\n\n")
+            raise nodes.SkipNode
+        else:
+            # Skip content for other formats
+            logger.debug(f"Skipping raw node with format: {format_name}")
+            raise nodes.SkipNode
+
+    def depart_raw(self, node: nodes.raw) -> None:
+        """
+        Depart a raw node.
+
+        Args:
+            node: The raw node
+
+        Note:
+            This method is not called when SkipNode is raised in visit_raw.
+        """
+        pass
+
     def visit_Text(self, node: nodes.Text) -> None:
         """
         Visit a text node.
