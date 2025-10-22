@@ -63,15 +63,14 @@ code-blockディレクティブの`:caption:`および`:name:`オプションが
 - **WHEN** Typst形式に変換される
 - **THEN** コードブロックが`#figure()`でラップされる
 - **AND** キャプションが`caption:`パラメータとして設定される
-- **AND** 生成されるTypstコードは以下の形式になる：
+- **AND** 生成されるTypstコードは以下の形式になる（trailing content block形式）：
   ```typst
-  #figure(
+  #figure(caption: [Example function])[
     ```python
     def example():
         pass
-    ```,
-    caption: [Example function]
-  )
+    ```
+  ]
   ```
 
 #### Scenario: キャプションとラベル付きコードブロック
@@ -88,15 +87,14 @@ code-blockディレクティブの`:caption:`および`:name:`オプションが
 - **WHEN** Typst形式に変換される
 - **THEN** コードブロックが`#figure()`でラップされる
 - **AND** キャプションとラベルの両方が設定される
-- **AND** 生成されるTypstコードは以下の形式になる：
+- **AND** 生成されるTypstコードは以下の形式になる（trailing content block形式）：
   ```typst
-  #figure(
+  #figure(caption: [Example function])[
     ```python
     def example():
         pass
-    ```,
-    caption: [Example function]
-  ) <code-example>
+    ```
+  ] <code-example>
   ```
 
 #### Scenario: ラベルのみのコードブロック
