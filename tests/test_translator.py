@@ -1620,6 +1620,8 @@ def test_raw_case_insensitive_format(simple_document, mock_builder):
     # Content should be present regardless of case
     assert "#text[UPPERCASE]" in output
     assert "#text[MixedCase]" in output
+
+
 # --- Issue #20: Code Block Directive Options Support ---
 
 
