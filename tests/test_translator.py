@@ -1442,3 +1442,181 @@ More text.
     assert (
         "This is a comment" not in after_line
     ), "Comment text merged with following paragraph!"
+
+
+def test_raw_typst_passthrough(simple_document, mock_builder):
+    """Test that raw typst content is passed through to output."""
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a raw node with typst format
+    raw_node = nodes.raw("", "#rect(fill: red)[Custom Typst content]", format="typst")
+
+    # visit_raw should raise SkipNode after adding content
+    try:
+        translator.visit_raw(raw_node)
+    except nodes.SkipNode:
+        pass  # Expected behavior
+
+    output = translator.astext()
+
+    # Raw typst content should be in output
+    assert "#rect(fill: red)[Custom Typst content]" in output
+
+
+def test_raw_other_formats_skip(simple_document, mock_builder):
+    """Test that raw content with non-typst formats is skipped."""
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create raw nodes with HTML and LaTeX formats
+    raw_html = nodes.raw("", '<div class="custom">HTML content</div>', format="html")
+    raw_latex = nodes.raw("", r"\textbf{LaTeX content}", format="latex")
+
+    # Visit HTML raw node - should skip
+    try:
+        translator.visit_raw(raw_html)
+    except nodes.SkipNode:
+        pass  # Expected to skip
+
+    # Visit LaTeX raw node - should skip
+    try:
+        translator.visit_raw(raw_latex)
+    except nodes.SkipNode:
+        pass  # Expected to skip
+
+    output = translator.astext()
+
+    # Non-typst content should NOT be in output
+    assert "HTML content" not in output
+    assert "LaTeX content" not in output
+
+
+def test_raw_multiple_formats(simple_document, mock_builder):
+    """Test multiple raw directives with different formats."""
+    from docutils.frontend import OptionParser
+    from docutils.parsers.rst import Parser as RstParser
+    from docutils.utils import new_document
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    rst_content = """\
+Before paragraph.
+
+.. raw:: typst
+
+   #rect(fill: blue)[Typst content]
+
+.. raw:: html
+
+   <div>HTML content</div>
+
+.. raw:: typst
+
+   #circle(radius: 10pt)
+
+After paragraph.
+"""
+
+    # Parse RST content
+    parser = RstParser()
+    settings = OptionParser(components=(RstParser,)).get_default_values()
+    document = new_document("<test>", settings=settings)
+    parser.parse(rst_content, document)
+
+    # Translate to Typst
+    translator = TypstTranslator(document, mock_builder)
+    document.walkabout(translator)
+    output = translator.astext()
+
+    # Typst content should be present
+    assert "#rect(fill: blue)[Typst content]" in output
+    assert "#circle(radius: 10pt)" in output
+
+    # HTML content should NOT be present
+    assert "HTML content" not in output
+
+    # Paragraphs should be present
+    assert "Before paragraph." in output
+    assert "After paragraph." in output
+
+
+def test_raw_typst_multiline(simple_document, mock_builder):
+    """Test that multiline raw typst content preserves formatting."""
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a raw node with multiline typst content
+    multiline_content = """\
+#set text(size: 12pt)
+#rect(
+  fill: gradient.linear(red, blue),
+  [Multi-line Typst code]
+)"""
+    raw_node = nodes.raw("", multiline_content, format="typst")
+
+    # visit_raw should raise SkipNode after adding content
+    try:
+        translator.visit_raw(raw_node)
+    except nodes.SkipNode:
+        pass  # Expected behavior
+
+    output = translator.astext()
+
+    # All lines should be in output
+    assert "#set text(size: 12pt)" in output
+    assert "#rect(" in output
+    assert "fill: gradient.linear(red, blue)," in output
+    assert "[Multi-line Typst code]" in output
+
+
+def test_raw_empty_content(simple_document, mock_builder):
+    """Test that empty raw directive is handled gracefully."""
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a raw node with empty content
+    raw_node = nodes.raw("", "", format="typst")
+
+    # visit_raw should raise SkipNode even for empty content
+    try:
+        translator.visit_raw(raw_node)
+    except nodes.SkipNode:
+        pass  # Expected behavior
+
+    output = translator.astext()
+
+    # Should not raise an error, output may be empty or have minimal whitespace
+    assert isinstance(output, str)
+
+
+def test_raw_case_insensitive_format(simple_document, mock_builder):
+    """Test that format name is case-insensitive."""
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create raw nodes with different case formats
+    raw_upper = nodes.raw("", "#text[UPPERCASE]", format="TYPST")
+    raw_mixed = nodes.raw("", "#text[MixedCase]", format="Typst")
+
+    # visit_raw should raise SkipNode after adding content
+    try:
+        translator.visit_raw(raw_upper)
+    except nodes.SkipNode:
+        pass  # Expected behavior
+
+    try:
+        translator.visit_raw(raw_mixed)
+    except nodes.SkipNode:
+        pass  # Expected behavior
+
+    output = translator.astext()
+
+    # Content should be present regardless of case
+    assert "#text[UPPERCASE]" in output
+    assert "#text[MixedCase]" in output

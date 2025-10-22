@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Raw Directive Support** ([#25](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/25))
+  - Added support for docutils `raw` directive (`.. raw:: typst`)
+  - Typst-specific content (`format='typst'`) is passed through to output
+  - Other formats (html, latex, etc.) are skipped and logged
+  - Format name matching is case-insensitive
+  - Implemented `visit_raw()` and `depart_raw()` methods in TypstTranslator
+  - Added 6 comprehensive test cases covering various scenarios
+
 ## [0.2.1] - 2025-10-18
 
 ### Fixed
