@@ -290,6 +290,8 @@ class TemplateEngine:
         if template_file:
             # Import essential packages (needed for content, not just template)
             output_parts.append("// Essential package imports")
+            output_parts.append('#import "@preview/codly:1.3.0": *')
+            output_parts.append('#import "@preview/codly-languages:0.1.1": *')
             output_parts.append('#import "@preview/mitex:0.2.4": mi, mitex')
             output_parts.append('#import "@preview/gentle-clues:1.2.0": *')
             output_parts.append("")  # Blank line
