@@ -1496,9 +1496,10 @@ def test_raw_other_formats_skip(simple_document, mock_builder):
 
 def test_raw_multiple_formats(simple_document, mock_builder):
     """Test multiple raw directives with different formats."""
-    from docutils.parsers.rst import Parser as RstParser
     from docutils.frontend import OptionParser
+    from docutils.parsers.rst import Parser as RstParser
     from docutils.utils import new_document
+
     from sphinxcontrib.typst.translator import TypstTranslator
 
     rst_content = """\
