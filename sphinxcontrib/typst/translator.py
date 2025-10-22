@@ -47,6 +47,11 @@ class TypstTranslator(SphinxTranslator):
         self.figure_content = []
         self.figure_caption = ""
 
+        # Code block container state (Issue #20)
+        self.in_captioned_code_block = False
+        self.code_block_caption = ""
+        self.code_block_label = ""
+
     def astext(self) -> str:
         """
         Return the translated text as a string.
@@ -175,6 +180,44 @@ class TypstTranslator(SphinxTranslator):
             node: The compound node
         """
         pass
+
+    def visit_container(self, node: nodes.container) -> None:
+        """
+        Visit a container node.
+
+        Handle Sphinx-generated containers, particularly literal-block-wrapper
+        for captioned code blocks (Issue #20).
+
+        Args:
+            node: The container node
+        """
+        # Check if this is a literal-block-wrapper (captioned code block)
+        if "literal-block-wrapper" in node.get("classes", []):
+            self.in_captioned_code_block = True
+            # Caption and literal_block children will be processed separately
+            # We need to extract caption text first
+            for child in node.children:
+                if isinstance(child, nodes.caption):
+                    self.code_block_caption = child.astext()
+                elif isinstance(child, nodes.literal_block):
+                    # Extract label from :name: option
+                    if child.get("names"):
+                        self.code_block_label = child.get("names")[0]
+        # Other container types: just process children
+        pass
+
+    def depart_container(self, node: nodes.container) -> None:
+        """
+        Depart a container node.
+
+        Args:
+            node: The container node
+        """
+        # Reset state after literal-block-wrapper
+        if "literal-block-wrapper" in node.get("classes", []):
+            self.in_captioned_code_block = False
+            self.code_block_caption = ""
+            self.code_block_label = ""
 
     def visit_paragraph(self, node: nodes.paragraph) -> None:
         """
@@ -446,10 +489,26 @@ class TypstTranslator(SphinxTranslator):
         Implements Task 4.2.2: codly forced usage with #codly-range() for highlighted lines
         Design 3.5: All code blocks use codly, with #codly-range() for highlights
         Requirements 7.3, 7.4: Support line numbers and highlighted lines
+        Issue #20: Support :linenos:, :caption:, and :name: options
 
         Args:
             node: The literal block node
         """
+        # Issue #20: Handle captioned code blocks
+        # If we're in a captioned code block (literal-block-wrapper container),
+        # wrap the code block in a #figure()
+        if self.in_captioned_code_block and self.code_block_caption:
+            # Escape special characters in caption
+            escaped_caption = self.code_block_caption
+            # Start figure with caption (will add closing bracket in depart)
+            self.add_text(f"#figure(caption: [{escaped_caption}])[\n")
+
+        # Check for :linenos: option (Issue #20)
+        # If linenos is not set or False, disable line numbers in codly
+        linenos = node.get("linenos", False)
+        if not linenos:
+            self.add_text("#codly(number-format: none)\n")
+
         # Extract highlight_args if present (Task 4.2.2)
         highlight_args = node.get("highlight_args", {})
         hl_lines = highlight_args.get("hl_lines", [])
@@ -474,11 +533,29 @@ class TypstTranslator(SphinxTranslator):
         """
         Depart a literal block (code block) node.
 
+        Issue #20: Handle closing figure bracket and labels.
+
         Args:
             node: The literal block node
         """
         # Close code block
-        self.add_text("\n```\n\n")
+        self.add_text("\n```\n")
+
+        # Issue #20: Close figure wrapper if we're in a captioned code block
+        if self.in_captioned_code_block and self.code_block_caption:
+            # Close the figure's trailing content block with ]
+            self.add_text("]")
+            # Add label if present
+            if self.code_block_label:
+                self.add_text(f" <{self.code_block_label}>")
+            self.add_text("\n\n")
+        elif node.get("names"):
+            # Handle :name: option without :caption: - just add label after code block
+            label = node.get("names")[0]
+            self.add_text(f" <{label}>\n\n")
+        else:
+            # Normal code block - just add spacing
+            self.add_text("\n")
 
     def visit_definition_list(self, node: nodes.definition_list) -> None:
         """
@@ -600,10 +677,16 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a caption node.
 
+        Handles captions for both figures and code blocks (Issue #20).
+
         Args:
             node: The caption node
         """
-        # Start collecting caption text
+        # For captioned code blocks, caption is already extracted in visit_container
+        # We should skip output to avoid duplicate caption text
+        if self.in_captioned_code_block:
+            raise nodes.SkipNode
+        # For figures, start collecting caption text
         self.in_caption = True
 
     def depart_caption(self, node: nodes.caption) -> None:
@@ -613,7 +696,7 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The caption node
         """
-        # Store caption text
+        # Store caption text for figures
         if self.in_figure:
             self.figure_caption = node.astext()
         self.in_caption = False

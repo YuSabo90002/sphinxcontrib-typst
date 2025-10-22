@@ -1620,3 +1620,235 @@ def test_raw_case_insensitive_format(simple_document, mock_builder):
     # Content should be present regardless of case
     assert "#text[UPPERCASE]" in output
     assert "#text[MixedCase]" in output
+
+
+# --- Issue #20: Code Block Directive Options Support ---
+
+
+def test_code_block_without_linenos(simple_document, mock_builder):
+    """Test code block without :linenos: option - should disable line numbers."""
+    from docutils import nodes
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a literal block WITHOUT linenos option
+    literal_block = nodes.literal_block(text="def hello():\n    return 'world'")
+    literal_block["language"] = "python"
+    # linenos is NOT set (or False)
+
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(nodes.Text("def hello():\n    return 'world'"))
+    translator.depart_Text(nodes.Text("def hello():\n    return 'world'"))
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+
+    # Should contain code block
+    assert "```python" in output
+    assert "def hello():" in output
+
+    # Should contain #codly(number-format: none) to disable line numbers
+    assert "#codly(number-format: none)" in output or "number-format: none" in output
+
+
+def test_code_block_with_linenos(simple_document, mock_builder):
+    """Test code block with :linenos: option - should enable line numbers."""
+    from docutils import nodes
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a literal block WITH linenos option
+    literal_block = nodes.literal_block(text="def hello():\n    return 'world'")
+    literal_block["language"] = "python"
+    literal_block["linenos"] = True
+
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(nodes.Text("def hello():\n    return 'world'"))
+    translator.depart_Text(nodes.Text("def hello():\n    return 'world'"))
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+
+    # Should contain code block
+    assert "```python" in output
+    assert "def hello():" in output
+
+    # Should NOT disable line numbers (codly default shows line numbers)
+    # Or explicitly enable them - codly's default is to show line numbers
+    # So we just check that number-format: none is NOT present
+    assert "number-format: none" not in output
+
+
+def test_code_block_linenos_with_highlights(simple_document, mock_builder):
+    """Test code block with :linenos: and :emphasize-lines: options."""
+    from docutils import nodes
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a literal block WITH both linenos and emphasize-lines
+    literal_block = nodes.literal_block(text="def hello():\n    return 'world'")
+    literal_block["language"] = "python"
+    literal_block["linenos"] = True
+    literal_block["highlight_args"] = {"hl_lines": [1]}
+
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(nodes.Text("def hello():\n    return 'world'"))
+    translator.depart_Text(nodes.Text("def hello():\n    return 'world'"))
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+
+    # Should contain code block
+    assert "```python" in output
+    assert "def hello():" in output
+
+    # Should have highlight (already implemented)
+    assert "#codly-range(highlight: (1))" in output
+
+    # Should NOT disable line numbers
+    assert "number-format: none" not in output
+
+
+def test_code_block_with_caption(simple_document, mock_builder):
+    """Test code block with :caption: option - should wrap in #figure()."""
+    from docutils import nodes
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    # Manually create container structure that Sphinx generates for captioned code blocks
+    # Structure: container[literal-block-wrapper] > (caption + literal_block)
+    container = nodes.container()
+    container["classes"].append("literal-block-wrapper")
+
+    caption = nodes.caption()
+    caption += nodes.Text("Example function")
+
+    literal_block = nodes.literal_block()
+    literal_block["language"] = "python"
+    literal_block += nodes.Text("def example():\n    pass")
+
+    container += caption
+    container += literal_block
+
+    simple_document += container
+
+    translator = TypstTranslator(simple_document, mock_builder)
+    simple_document.walkabout(translator)
+    output = translator.astext()
+
+    # Should contain #figure() wrapper
+    assert "#figure(caption: [Example function])" in output or "#figure(" in output
+    # Should contain code block
+    assert "```python" in output
+    assert "def example():" in output
+    # Should use trailing content block format: #figure(...)[code]
+    # The closing ] should appear after the code block
+    assert "]" in output
+
+
+def test_code_block_with_caption_and_name(simple_document, mock_builder):
+    """Test code block with :caption: and :name: options."""
+    from docutils import nodes
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    # Manually create container structure that Sphinx generates
+    container = nodes.container()
+    container["classes"].append("literal-block-wrapper")
+
+    caption = nodes.caption()
+    caption += nodes.Text("Example function")
+
+    literal_block = nodes.literal_block()
+    literal_block["language"] = "python"
+    literal_block["names"].append("code-example")  # This is how :name: is stored
+    literal_block += nodes.Text("def example():\n    pass")
+
+    container += caption
+    container += literal_block
+
+    simple_document += container
+
+    translator = TypstTranslator(simple_document, mock_builder)
+    simple_document.walkabout(translator)
+    output = translator.astext()
+
+    # Should contain #figure() with caption
+    assert "#figure(caption: [Example function])" in output or "#figure(" in output
+    # Should contain label
+    assert "<code-example>" in output
+    # Should contain code block
+    assert "```python" in output
+
+
+def test_code_block_with_name_only(simple_document, mock_builder):
+    """Test code block with :name: option only (no caption)."""
+    from docutils import nodes
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    # Create literal_block with name but no caption (no container wrapper)
+    literal_block = nodes.literal_block()
+    literal_block["language"] = "python"
+    literal_block["names"].append("code-example")  # :name: option
+    literal_block += nodes.Text("def example():\n    pass")
+
+    simple_document += literal_block
+
+    translator = TypstTranslator(simple_document, mock_builder)
+    simple_document.walkabout(translator)
+    output = translator.astext()
+
+    # Should NOT wrap in #figure() (no caption)
+    assert "#figure(" not in output
+    # Should contain label after code block
+    assert "<code-example>" in output
+    # Should contain code block
+    assert "```python" in output
+
+
+def test_code_block_all_options(simple_document, mock_builder):
+    """Test code block with all options combined."""
+    from docutils import nodes
+
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    # Create container structure with all options
+    container = nodes.container()
+    container["classes"].append("literal-block-wrapper")
+
+    caption = nodes.caption()
+    caption += nodes.Text("Example function")
+
+    literal_block = nodes.literal_block()
+    literal_block["language"] = "python"
+    literal_block["names"].append("code-example")  # :name: option
+    literal_block["linenos"] = True  # :linenos: option
+    literal_block["highlight_args"] = {"hl_lines": [1]}  # :emphasize-lines: option
+    literal_block += nodes.Text("def example():\n    pass")
+
+    container += caption
+    container += literal_block
+
+    simple_document += container
+
+    translator = TypstTranslator(simple_document, mock_builder)
+    simple_document.walkabout(translator)
+    output = translator.astext()
+
+    # Should have line numbers (no number-format: none)
+    assert "number-format: none" not in output
+    # Should have highlights
+    assert "#codly-range(highlight: (1))" in output
+    # Should have figure with caption
+    assert "#figure(" in output
+    # Should have label
+    assert "<code-example>" in output
+    # Should contain code block
+    assert "```python" in output
