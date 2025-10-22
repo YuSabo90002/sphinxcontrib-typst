@@ -2,7 +2,7 @@
 
 ## 1. Code Modification
 
-- [ ] `template_engine.py` の `generate_document()` メソッドを修正
+- [x] `template_engine.py` の `generate_document()` メソッドを修正
   - File: `sphinxcontrib/typst/template_engine.py`
   - Location: lines 293-294 (essential imports section)
   - Changes:
