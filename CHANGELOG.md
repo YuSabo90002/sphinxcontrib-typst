@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Code Block Directive Options Support** ([#20](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/20))
+  - Fixed `:linenos:` option being ignored - now properly controls line number display in code blocks
+  - Fixed `:caption:` and `:name:` options causing "unknown node type: container" warnings
+  - Code blocks with `:caption:` now wrapped in `#figure()` with proper caption
+  - Code blocks with `:name:` now generate Typst labels for cross-referencing
+  - Added `visit_container()` and `depart_container()` methods to handle Sphinx literal-block-wrapper containers
+  - Extended `visit_literal_block()` and `depart_literal_block()` to support caption and label generation
+  - Modified `visit_caption()` to skip caption text output for captioned code blocks (prevents duplication)
+  - Line numbers now disabled by default when `:linenos:` is not specified (via `#codly(number-format: none)`)
+  - All four options (`:linenos:`, `:caption:`, `:name:`, `:emphasize-lines:`) now work correctly together
+  - Added comprehensive test coverage for all code block option combinations
+
 ## [0.2.1] - 2025-10-18
 
 ### Fixed
