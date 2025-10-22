@@ -1,6 +1,6 @@
 # Spec Delta: Document Conversion - codly Import
 
-## NEW Requirements
+## ADDED Requirements
 
 ### Requirement: ドキュメントレベルでのパッケージインポート
 
