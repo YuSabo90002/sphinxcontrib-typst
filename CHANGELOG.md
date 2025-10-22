@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented `visit_raw()` and `depart_raw()` methods in TypstTranslator
   - Added 6 comprehensive test cases covering various scenarios
 
+### Fixed
+- **PDF Builder codly Import Missing** ([#28](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/28))
+  - Fixed `typstpdf` builder failing with "unknown variable: codly" error
+  - Added codly package imports to document-level essential imports in `template_engine.py`
+  - Document files now include `#import "@preview/codly:1.3.0": *` and `#import "@preview/codly-languages:0.1.1": *`
+  - Enables PDF generation for documents with code blocks (prerequisite for Issue #20)
+  - No breaking changes - only adds imports alongside existing mitex/gentle-clues imports
+
 ## [0.2.1] - 2025-10-18
 
 ### Fixed
