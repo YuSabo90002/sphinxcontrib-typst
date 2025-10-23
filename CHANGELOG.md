@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2025-10-23
+
 ### Added
 - **Additional Code Block Options Support** ([#31](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/31))
   - Added support for `:lineno-start:` option to specify starting line number for code blocks
@@ -43,6 +45,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Document files now include `#import "@preview/codly:1.3.0": *` and `#import "@preview/codly-languages:0.1.1": *`
   - Enables PDF generation for documents with code blocks (prerequisite for Issue #20)
   - No breaking changes - only adds imports alongside existing mitex/gentle-clues imports
+
+### Documentation
+- **README Math Example Fix** ([#33](https://github.com/YuSabo90002/sphinxcontrib-typst/pull/33))
+  - Fixed incorrect double-escaped backslashes in math directive example
+  - Changed `\\int` to `\int` for correct reStructuredText syntax
+  - Helps users write proper reStructuredText files
 
 ## [0.2.1] - 2025-10-18
 
