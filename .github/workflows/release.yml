@@ -67,7 +67,7 @@ jobs:
           uv run ruff check .
 
       - name: Type check
-        run: uv run mypy sphinxcontrib/
+        run: uv run mypy typsphinx/
 
   # Build the distribution packages
   build:
@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/sphinxcontrib-typst
+      url: https://pypi.org/p/typsphinx
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -170,7 +170,7 @@ jobs:
           echo "## Installation" >> release_notes.md
           echo "" >> release_notes.md
           echo '```bash' >> release_notes.md
-          echo "pip install sphinxcontrib-typst==${TAG#v}" >> release_notes.md
+          echo "pip install typsphinx==${TAG#v}" >> release_notes.md
           echo '```' >> release_notes.md
 
       - name: Create GitHub Release
@@ -200,7 +200,7 @@ jobs:
       contains(inputs.tag, 'rc')
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/sphinxcontrib-typst
+      url: https://test.pypi.org/p/typsphinx
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4

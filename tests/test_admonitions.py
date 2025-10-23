@@ -10,8 +10,8 @@ from docutils.utils import Reporter
 from sphinx import addnodes
 from sphinx.testing.util import SphinxTestApp
 
-from sphinxcontrib.typst.translator import TypstTranslator
-from sphinxcontrib.typst.writer import TypstWriter
+from typsphinx.translator import TypstTranslator
+from typsphinx.writer import TypstWriter
 
 
 def create_document():

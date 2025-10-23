@@ -1,25 +1,25 @@
 # Basic Sphinx-Typst Example
 
-This is a basic example project demonstrating how to use `sphinxcontrib-typst` to generate Typst output from Sphinx documentation.
+This is a basic example project demonstrating how to use `typsphinx` to generate Typst output from Sphinx documentation.
 
 ## Prerequisites
 
 - Python 3.9 or higher
 - Sphinx 5.0 or higher
-- sphinxcontrib-typst installed
+- typsphinx installed
 
 ## Installation
 
-If you haven't installed sphinxcontrib-typst yet:
+If you haven't installed typsphinx yet:
 
 ```bash
-pip install sphinxcontrib-typst
+pip install typsphinx
 ```
 
 Or install from source:
 
 ```bash
-cd /path/to/sphinxcontrib-typst
+cd /path/to/typsphinx
 pip install -e .
 ```
 
@@ -73,7 +73,7 @@ basic/
 
 The `conf.py` file contains the Sphinx configuration, including:
 
-- `extensions = ['sphinxcontrib.typst']` - Enables the Typst builder
+- `extensions = ['typsphinx']` - Enables the Typst builder
 - `typst_documents` - Defines which documents to build as Typst files
 - `typst_use_mitex` - Enables mitex for LaTeX math support (default: True)
 
@@ -95,16 +95,16 @@ For more advanced features, check out:
 - `examples/advanced/` - Advanced features like toctree, custom templates, etc.
 - [Sphinx Documentation](https://www.sphinx-doc.org/)
 - [Typst Documentation](https://typst.app/docs/)
-- [sphinxcontrib-typst Documentation](https://sphinxcontrib-typst.readthedocs.io/)
+- [typsphinx Documentation](https://typsphinx.readthedocs.io/)
 
 ## Troubleshooting
 
-### Build Fails with "No module named 'sphinxcontrib.typst'"
+### Build Fails with "No module named 'typsphinx'"
 
-Make sure sphinxcontrib-typst is installed in your current Python environment:
+Make sure typsphinx is installed in your current Python environment:
 
 ```bash
-pip install sphinxcontrib-typst
+pip install typsphinx
 ```
 
 ### Typst Compilation Errors
@@ -119,5 +119,5 @@ If you encounter Typst compilation errors, check:
 
 For issues and questions:
 
-- GitHub Issues: https://github.com/your-repo/sphinxcontrib-typst/issues
-- Documentation: https://sphinxcontrib-typst.readthedocs.io/
+- GitHub Issues: https://github.com/your-repo/typsphinx/issues
+- Documentation: https://typsphinx.readthedocs.io/

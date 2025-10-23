@@ -12,7 +12,7 @@ def test_typst_toctree_defaults_config_registered(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 
@@ -44,7 +44,7 @@ def test_default_typst_toctree_defaults(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 project = 'Test'
 """
     (srcdir / "conf.py").write_text(conf_content)
@@ -64,7 +64,7 @@ def test_toctree_defaults_applied_to_template(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test Project'
 
@@ -109,7 +109,7 @@ def test_toctree_directive_overrides_defaults(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 
@@ -154,7 +154,7 @@ def test_partial_toctree_defaults(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 
@@ -180,7 +180,7 @@ def test_empty_toctree_defaults(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 
@@ -203,7 +203,7 @@ def test_toctree_defaults_with_no_toctree(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 
@@ -232,7 +232,7 @@ def test_invalid_toctree_defaults_type(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 

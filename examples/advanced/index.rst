@@ -1,7 +1,7 @@
 Advanced Sphinx-Typst Features
 ================================
 
-Welcome to the advanced example of sphinxcontrib-typst!
+Welcome to the advanced example of typsphinx!
 
 This example demonstrates advanced features including:
 
@@ -23,7 +23,7 @@ This example demonstrates advanced features including:
 Introduction
 ------------
 
-This advanced example shows how to use sphinxcontrib-typst for complex
+This advanced example shows how to use typsphinx for complex
 documentation projects with multiple documents, extensive cross-referencing,
 and rich mathematical content.
 
@@ -41,7 +41,7 @@ Key Features Demonstrated
 
 2. **Mathematics with mitex**
 
-   sphinxcontrib-typst uses the `mitex <https://typst.app/universe/package/mitex>`_
+   typsphinx uses the `mitex <https://typst.app/universe/package/mitex>`_
    package to render LaTeX math expressions in Typst. This provides excellent
    compatibility with existing Sphinx/LaTeX math.
 

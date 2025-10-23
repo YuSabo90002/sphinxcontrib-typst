@@ -86,7 +86,7 @@ jobs:
         run: uv sync --extra dev
 
       - name: Run mypy
-        run: uv run mypy sphinxcontrib/
+        run: uv run mypy typsphinx/
 
   coverage:
     name: Code Coverage
@@ -107,7 +107,7 @@ jobs:
         run: uv sync --extra dev
 
       - name: Run coverage
-        run: uv run pytest --cov=sphinxcontrib.typst --cov-report=term-missing --cov-report=xml --cov-report=html tests/
+        run: uv run pytest --cov=typsphinx --cov-report=term-missing --cov-report=xml --cov-report=html tests/
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5

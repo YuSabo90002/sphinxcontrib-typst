@@ -22,7 +22,7 @@ def simple_document():
 
 def test_translator_state_initialization(simple_document, mock_builder):
     """Test that translator initializes state variables correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -39,7 +39,7 @@ def test_translator_state_initialization(simple_document, mock_builder):
 
 def test_translator_section_level_management(simple_document, mock_builder):
     """Test that section_level is managed correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -67,7 +67,7 @@ def test_translator_section_level_management(simple_document, mock_builder):
 
 def test_translator_heading_level_generation(simple_document, mock_builder):
     """Test that heading levels are generated correctly based on section_level."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -99,7 +99,7 @@ def test_translator_heading_level_generation(simple_document, mock_builder):
 
 def test_table_conversion(simple_document, mock_builder):
     """Test that table nodes are converted to Typst #table() syntax."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -163,7 +163,7 @@ def test_table_conversion(simple_document, mock_builder):
 
 def test_unknown_visit_handles_unknown_nodes(simple_document, mock_builder):
     """Test that unknown_visit is called for unknown nodes."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -184,7 +184,7 @@ def test_unknown_visit_handles_unknown_nodes(simple_document, mock_builder):
 
 def test_in_figure_state_management(simple_document, mock_builder):
     """Test that in_figure state is managed correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -203,7 +203,7 @@ def test_in_figure_state_management(simple_document, mock_builder):
 
 def test_in_table_state_management(simple_document, mock_builder):
     """Test that in_table state is managed correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -222,7 +222,7 @@ def test_in_table_state_management(simple_document, mock_builder):
 
 def test_subtitle_conversion(simple_document, mock_builder):
     """Test that subtitle nodes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -244,7 +244,7 @@ def test_subtitle_conversion(simple_document, mock_builder):
 
 def test_paragraph_and_text_conversion(simple_document, mock_builder):
     """Test that paragraphs and text are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -263,7 +263,7 @@ def test_paragraph_and_text_conversion(simple_document, mock_builder):
 
 def test_multiple_paragraphs_conversion(simple_document, mock_builder):
     """Test that multiple paragraphs are separated correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -290,7 +290,7 @@ def test_multiple_paragraphs_conversion(simple_document, mock_builder):
 
 def test_emphasis_conversion(simple_document, mock_builder):
     """Test that emphasis (italic) nodes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -308,7 +308,7 @@ def test_emphasis_conversion(simple_document, mock_builder):
 
 def test_strong_conversion(simple_document, mock_builder):
     """Test that strong (bold) nodes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -326,7 +326,7 @@ def test_strong_conversion(simple_document, mock_builder):
 
 def test_literal_conversion(simple_document, mock_builder):
     """Test that literal (inline code) nodes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -344,7 +344,7 @@ def test_literal_conversion(simple_document, mock_builder):
 
 def test_subscript_conversion(simple_document, mock_builder):
     """Test that subscript nodes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -362,7 +362,7 @@ def test_subscript_conversion(simple_document, mock_builder):
 
 def test_superscript_conversion(simple_document, mock_builder):
     """Test that superscript nodes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -380,7 +380,7 @@ def test_superscript_conversion(simple_document, mock_builder):
 
 def test_mixed_inline_elements(simple_document, mock_builder):
     """Test that mixed inline elements work correctly together."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -432,7 +432,7 @@ def test_mixed_inline_elements(simple_document, mock_builder):
 
 def test_bullet_list_conversion(simple_document, mock_builder):
     """Test that bullet lists are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -463,7 +463,7 @@ def test_bullet_list_conversion(simple_document, mock_builder):
 
 def test_enumerated_list_conversion(simple_document, mock_builder):
     """Test that enumerated lists are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -494,7 +494,7 @@ def test_enumerated_list_conversion(simple_document, mock_builder):
 
 def test_nested_bullet_list(simple_document, mock_builder):
     """Test that nested bullet lists are converted correctly with proper indentation."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -539,7 +539,7 @@ def test_nested_bullet_list(simple_document, mock_builder):
 
 def test_nested_enumerated_list(simple_document, mock_builder):
     """Test that nested enumerated lists are converted correctly with proper indentation."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -584,7 +584,7 @@ def test_nested_enumerated_list(simple_document, mock_builder):
 
 def test_mixed_nested_lists(simple_document, mock_builder):
     """Test that mixed nested lists (bullet + enumerated) work correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -620,7 +620,7 @@ def test_mixed_nested_lists(simple_document, mock_builder):
 
 def test_literal_block_without_language(simple_document, mock_builder):
     """Test that literal blocks without language are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -640,7 +640,7 @@ def test_literal_block_without_language(simple_document, mock_builder):
 
 def test_literal_block_with_language(simple_document, mock_builder):
     """Test that literal blocks with language specification are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -661,7 +661,7 @@ def test_literal_block_with_language(simple_document, mock_builder):
 
 def test_literal_block_escaping(simple_document, mock_builder):
     """Test that literal blocks handle special characters correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -682,7 +682,7 @@ def test_literal_block_escaping(simple_document, mock_builder):
 
 def test_literal_block_with_linenos(simple_document, mock_builder):
     """Test that literal blocks with line numbers are handled correctly (Task 4.2)."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -711,7 +711,7 @@ def test_literal_block_with_highlight_lines(simple_document, mock_builder):
     Design 3.5: codly forced usage with #codly-range() for highlighted lines
     Requirement 7.4: highlight_args should be converted to #codly-range(highlight: (...))
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -741,7 +741,7 @@ def test_literal_block_with_linenos_and_highlights(simple_document, mock_builder
     Design 3.5: codly provides line numbers by default, use #codly-range() for highlights
     Requirement 7.3, 7.4: Both linenos and highlight_args should be supported
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -772,7 +772,7 @@ def test_literal_block_with_highlight_ranges(simple_document, mock_builder):
     Design 3.5: #codly-range() should support both individual lines and ranges
     Example: #codly-range(highlight: (2, 4-6)) highlights line 2 and lines 4-6
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -800,7 +800,7 @@ def test_literal_block_with_highlight_ranges(simple_document, mock_builder):
 
 def test_literal_block_unsupported_language_warning(simple_document, mock_builder):
     """Test handling of unsupported languages (Task 4.2)."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -823,7 +823,7 @@ def test_literal_block_with_lineno_start(simple_document, mock_builder):
 
     Note: Sphinx stores :lineno-start: in highlight_args['linenostart'].
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -849,7 +849,7 @@ def test_literal_block_with_lineno_start_without_linenos(simple_document, mock_b
 
     Note: Sphinx stores :lineno-start: in highlight_args['linenostart'].
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -877,7 +877,7 @@ def test_literal_block_with_lineno_start_and_emphasize(simple_document, mock_bui
 
     Note: Sphinx stores :lineno-start: in highlight_args['linenostart'].
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -917,7 +917,7 @@ def test_literal_block_with_dedent_numeric(simple_document, mock_builder):
     the translator is already dedented. This test verifies that dedented
     text is correctly handled.
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -946,7 +946,7 @@ def test_literal_block_with_dedent_auto(simple_document, mock_builder):
     Note: Sphinx processes :dedent: during parsing using textwrap.dedent().
     The text reaching the translator is already auto-dedented.
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -979,7 +979,7 @@ def test_literal_block_with_dedent_and_other_options(simple_document, mock_build
     Note: Sphinx processes :dedent: before other options are applied.
     This test verifies that dedented content works with linenos and highlights.
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1012,7 +1012,7 @@ def test_literal_block_with_dedent_short_lines(simple_document, mock_builder):
     Note: Sphinx handles edge cases like empty lines and short lines correctly.
     This test verifies that such content is properly rendered.
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1038,7 +1038,7 @@ def test_literal_block_with_dedent_short_lines(simple_document, mock_builder):
 
 def test_definition_list_conversion(simple_document, mock_builder):
     """Test that definition lists are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1090,7 +1090,7 @@ def test_definition_list_conversion(simple_document, mock_builder):
 
 def test_definition_list_with_multiple_definitions(simple_document, mock_builder):
     """Test that definition lists with multiple definitions per term work correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1120,7 +1120,7 @@ def test_definition_list_with_multiple_definitions(simple_document, mock_builder
 
 def test_block_quote_conversion(simple_document, mock_builder):
     """Test that block quotes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1146,7 +1146,7 @@ def test_block_quote_conversion(simple_document, mock_builder):
 
 def test_block_quote_with_attribution(simple_document, mock_builder):
     """Test that block quotes with attribution are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1180,7 +1180,7 @@ def test_block_quote_with_attribution(simple_document, mock_builder):
 
 def test_nested_block_quote(simple_document, mock_builder):
     """Test that nested block quotes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1218,7 +1218,7 @@ def test_nested_block_quote(simple_document, mock_builder):
 
 def test_image_conversion(simple_document, mock_builder):
     """Test that image nodes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1235,7 +1235,7 @@ def test_image_conversion(simple_document, mock_builder):
 
 def test_image_with_attributes(simple_document, mock_builder):
     """Test that image nodes with attributes are converted correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1255,7 +1255,7 @@ def test_image_with_attributes(simple_document, mock_builder):
 
 def test_image_relative_path(simple_document, mock_builder):
     """Test that relative image paths are handled correctly."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1272,7 +1272,7 @@ def test_image_relative_path(simple_document, mock_builder):
 
 def test_figure_with_caption(simple_document, mock_builder):
     """Test that figure with caption is converted to Typst #figure() syntax."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1301,7 +1301,7 @@ def test_figure_with_caption(simple_document, mock_builder):
 
 def test_figure_with_label(simple_document, mock_builder):
     """Test that figure with label generates proper Typst label."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1327,7 +1327,7 @@ def test_figure_with_label(simple_document, mock_builder):
 
 def test_figure_without_caption(simple_document, mock_builder):
     """Test that figure without caption still generates #figure()."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1348,7 +1348,7 @@ def test_figure_without_caption(simple_document, mock_builder):
 
 def test_target_label_generation(simple_document, mock_builder):
     """Test that target nodes generate Typst labels."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1366,7 +1366,7 @@ def test_target_label_generation(simple_document, mock_builder):
 
 def test_reference_to_target(simple_document, mock_builder):
     """Test that reference nodes generate Typst links."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1386,7 +1386,7 @@ def test_reference_to_target(simple_document, mock_builder):
 
 def test_external_reference(simple_document, mock_builder):
     """Test that external references generate proper Typst links."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1408,7 +1408,7 @@ def test_pending_xref_doc_reference(simple_document, mock_builder):
     """Test that pending_xref for document references are handled."""
     from sphinx import addnodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1436,7 +1436,7 @@ def test_pending_xref_with_refid(simple_document, mock_builder):
     """Test that pending_xref with refid generates proper reference."""
     from sphinx import addnodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1466,7 +1466,7 @@ def test_toctree_generates_outline(simple_document, mock_builder):
     """
     from sphinx import addnodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1505,7 +1505,7 @@ def test_table_no_duplication_all_types(simple_document, mock_builder):
     from docutils.parsers.rst import Parser as RstParser
     from docutils.utils import new_document
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     table_types = {
         "list-table": """
@@ -1597,7 +1597,7 @@ def test_comment_skipped(simple_document, mock_builder):
     from docutils.parsers.rst import Parser as RstParser
     from docutils.utils import new_document
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     rst_content = """
 Test Comments
@@ -1664,7 +1664,7 @@ More text.
 
 def test_raw_typst_passthrough(simple_document, mock_builder):
     """Test that raw typst content is passed through to output."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1685,7 +1685,7 @@ def test_raw_typst_passthrough(simple_document, mock_builder):
 
 def test_raw_other_formats_skip(simple_document, mock_builder):
     """Test that raw content with non-typst formats is skipped."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1718,7 +1718,7 @@ def test_raw_multiple_formats(simple_document, mock_builder):
     from docutils.parsers.rst import Parser as RstParser
     from docutils.utils import new_document
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     rst_content = """\
 Before paragraph.
@@ -1763,7 +1763,7 @@ After paragraph.
 
 def test_raw_typst_multiline(simple_document, mock_builder):
     """Test that multiline raw typst content preserves formatting."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1793,7 +1793,7 @@ def test_raw_typst_multiline(simple_document, mock_builder):
 
 def test_raw_empty_content(simple_document, mock_builder):
     """Test that empty raw directive is handled gracefully."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1814,7 +1814,7 @@ def test_raw_empty_content(simple_document, mock_builder):
 
 def test_raw_case_insensitive_format(simple_document, mock_builder):
     """Test that format name is case-insensitive."""
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1847,7 +1847,7 @@ def test_code_block_without_linenos(simple_document, mock_builder):
     """Test code block without :linenos: option - should disable line numbers."""
     from docutils import nodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1875,7 +1875,7 @@ def test_code_block_with_linenos(simple_document, mock_builder):
     """Test code block with :linenos: option - should enable line numbers."""
     from docutils import nodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1905,7 +1905,7 @@ def test_code_block_linenos_with_highlights(simple_document, mock_builder):
     """Test code block with :linenos: and :emphasize-lines: options."""
     from docutils import nodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -1937,7 +1937,7 @@ def test_code_block_with_caption(simple_document, mock_builder):
     """Test code block with :caption: option - should wrap in #figure()."""
     from docutils import nodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     # Manually create container structure that Sphinx generates for captioned code blocks
     # Structure: container[literal-block-wrapper] > (caption + literal_block)
@@ -1974,7 +1974,7 @@ def test_code_block_with_caption_and_name(simple_document, mock_builder):
     """Test code block with :caption: and :name: options."""
     from docutils import nodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     # Manually create container structure that Sphinx generates
     container = nodes.container()
@@ -2009,7 +2009,7 @@ def test_code_block_with_name_only(simple_document, mock_builder):
     """Test code block with :name: option only (no caption)."""
     from docutils import nodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     # Create literal_block with name but no caption (no container wrapper)
     literal_block = nodes.literal_block()
@@ -2035,7 +2035,7 @@ def test_code_block_all_options(simple_document, mock_builder):
     """Test code block with all options combined."""
     from docutils import nodes
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     # Create container structure with all options
     container = nodes.container()

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from sphinxcontrib.typst.template_engine import TemplateEngine
+from typsphinx.template_engine import TemplateEngine
 
 
 class TestTemplateLoading:

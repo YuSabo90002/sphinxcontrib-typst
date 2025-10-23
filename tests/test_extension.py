@@ -5,14 +5,14 @@ Tests for Sphinx extension entry point.
 
 def test_setup_function_exists():
     """Test that setup() function is defined in the extension."""
-    from sphinxcontrib.typst import setup
+    from typsphinx import setup
 
     assert callable(setup)
 
 
 def test_setup_returns_metadata():
     """Test that setup() returns correct extension metadata."""
-    from sphinxcontrib.typst import setup
+    from typsphinx import setup
 
     # Create a mock Sphinx app with add_builder method
     class MockApp:
@@ -34,7 +34,7 @@ def test_setup_returns_metadata():
 
 def test_setup_parallel_safety():
     """Test that extension declares parallel processing safety."""
-    from sphinxcontrib.typst import setup
+    from typsphinx import setup
 
     class MockApp:
         def add_builder(self, builder):
@@ -53,7 +53,7 @@ def test_setup_parallel_safety():
 
 def test_setup_version_matches():
     """Test that setup() returns correct version matching package version."""
-    from sphinxcontrib.typst import __version__, setup
+    from typsphinx import __version__, setup
 
     class MockApp:
         def add_builder(self, builder):
@@ -73,4 +73,4 @@ def test_extension_can_be_loaded(temp_sphinx_app):
     # This test uses our custom temp_sphinx_app fixture
     app = temp_sphinx_app
     assert app is not None
-    assert "sphinxcontrib.typst" in app.extensions
+    assert "typsphinx" in app.extensions

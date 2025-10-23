@@ -38,7 +38,7 @@ def test_fallback_inline_math_basic(simple_document, mock_builder_no_mitex):
     Requirement 4.9: typst_use_mitex=False should use Typst native syntax
     Task 6.5: Fallback implementation
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder_no_mitex)
 
@@ -65,7 +65,7 @@ def test_fallback_block_math_basic(simple_document, mock_builder_no_mitex):
     Requirement 4.9: typst_use_mitex=False should use Typst native syntax
     Task 6.5: Fallback implementation
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder_no_mitex)
 
@@ -91,7 +91,7 @@ def test_fallback_converts_greek_letters(simple_document, mock_builder_no_mitex)
 
     Task 6.5: Basic LaTeX to Typst conversion
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder_no_mitex)
 
@@ -117,7 +117,7 @@ def test_fallback_converts_frac(simple_document, mock_builder_no_mitex):
 
     Task 6.5: Basic LaTeX to Typst conversion
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder_no_mitex)
 
@@ -144,7 +144,7 @@ def test_fallback_converts_sum(simple_document, mock_builder_no_mitex):
 
     Task 6.5: Basic LaTeX to Typst conversion
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder_no_mitex)
 
@@ -169,7 +169,7 @@ def test_fallback_with_label(simple_document, mock_builder_no_mitex):
     Requirement 5.4: Labeled Typst native equations
     Task 6.5: Fallback with labels
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder_no_mitex)
 
@@ -197,7 +197,7 @@ def test_mitex_enabled_by_default(simple_document, mock_builder):
 
     Task 6.5: Default behavior
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     # Default builder (typst_use_mitex not explicitly set, should default to True)
     translator = TypstTranslator(simple_document, mock_builder)
@@ -226,7 +226,7 @@ def test_fallback_unsupported_syntax_warning(
     """
     import logging
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     # Set up logging to capture warnings
     caplog.set_level(logging.WARNING)

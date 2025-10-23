@@ -98,11 +98,11 @@ Enumerated Lists
 
       sphinx-quickstart
 
-2. Then, add sphinxcontrib-typst to extensions:
+2. Then, add typsphinx to extensions:
 
    .. code-block:: python
 
-      extensions = ['sphinxcontrib.typst']
+      extensions = ['typsphinx']
 
 3. Finally, build the documentation:
 

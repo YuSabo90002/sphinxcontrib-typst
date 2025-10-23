@@ -11,14 +11,14 @@ sources using Sphinx, which can then be compiled to PDF using the Typst compiler
 :license: MIT, see LICENSE for details.
 """
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 __author__ = "Sphinx Typst Contributors"
 
 from typing import Any, Dict
 
 from sphinx.application import Sphinx
 
-from sphinxcontrib.typst.builder import TypstBuilder, TypstPDFBuilder
+from typsphinx.builder import TypstBuilder, TypstPDFBuilder
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:

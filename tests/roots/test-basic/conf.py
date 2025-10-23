@@ -1,8 +1,8 @@
 """
-Test configuration for sphinxcontrib-typst extension.
+Test configuration for typsphinx extension.
 """
 
-extensions = ["sphinxcontrib.typst"]
+extensions = ["typsphinx"]
 
 project = "Test Project"
 author = "Test Author"

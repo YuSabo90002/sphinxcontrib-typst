@@ -31,7 +31,7 @@ def test_inline_math_conversion(simple_document, mock_builder):
     Requirement 4.3: Inline math should use #mi(`...`) format
     Design 3.3: mitex for LaTeX math compatibility
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -57,7 +57,7 @@ def test_block_math_conversion(simple_document, mock_builder):
     Requirement 4.2: Block math should use #mitex(`...`) or #mimath(`...`)
     Design 3.3: mitex for LaTeX math compatibility
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -82,7 +82,7 @@ def test_math_with_complex_latex(simple_document, mock_builder):
 
     Requirement 4.4: LaTeX commands should be preserved
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -109,7 +109,7 @@ def test_math_with_greek_letters(simple_document, mock_builder):
 
     Requirement 4.4: Greek letters in LaTeX should be preserved
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -131,7 +131,7 @@ def test_multiple_math_nodes(simple_document, mock_builder):
     """
     Test handling multiple math nodes in a document.
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -169,7 +169,7 @@ def test_math_block_with_label(simple_document, mock_builder):
     Requirement 4.7: Labeled equations should generate <eq:label> format
     Design 3.3: Labels should be appended after #mitex()
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -196,7 +196,7 @@ def test_math_block_with_number(simple_document, mock_builder):
     Task 6.3: Numbered equations
     Requirement 4.8: Numbered equations support
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -222,7 +222,7 @@ def test_math_with_aligned_environment(simple_document, mock_builder):
     Requirement 4.6: LaTeX environments should be preserved
     Design 3.3: mitex handles LaTeX environments natively
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -249,7 +249,7 @@ def test_inline_math_with_label(simple_document, mock_builder):
     Task 6.3: Labeled inline math (edge case)
     Note: This is an edge case - inline math rarely has labels
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 

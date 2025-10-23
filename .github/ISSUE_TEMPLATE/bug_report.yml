@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug in sphinxcontrib-typst
+description: Report a bug in typsphinx
 title: "[BUG] "
 labels: ["bug"]
 body:
@@ -23,7 +23,7 @@ body:
       label: Environment
       description: Information about your environment
       value: |
-        - sphinxcontrib-typst version:
+        - typsphinx version:
         - Python version:
         - Sphinx version:
         - OS:

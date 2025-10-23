@@ -3,8 +3,8 @@ requires = ["setuptools>=65.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sphinxcontrib-typst"
-version = "0.2.2"
+name = "typsphinx"
+version = "0.3.0"
 description = "Sphinx extension for Typst output"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -53,23 +53,23 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/YuSabo90002/sphinxcontrib-typst"
-Documentation = "https://github.com/YuSabo90002/sphinxcontrib-typst#readme"
-Repository = "https://github.com/YuSabo90002/sphinxcontrib-typst"
-Issues = "https://github.com/YuSabo90002/sphinxcontrib-typst/issues"
+Homepage = "https://github.com/YuSabo90002/typsphinx"
+Documentation = "https://github.com/YuSabo90002/typsphinx#readme"
+Repository = "https://github.com/YuSabo90002/typsphinx"
+Issues = "https://github.com/YuSabo90002/typsphinx/issues"
 
 # Entry points for automatic Sphinx builder discovery
 [project.entry-points."sphinx.builders"]
-typst = "sphinxcontrib.typst"
-typstpdf = "sphinxcontrib.typst"
+typst = "typsphinx"
+typstpdf = "typsphinx"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["sphinxcontrib*"]
+include = ["typsphinx*"]
 namespaces = false
 
 [tool.setuptools.package-data]
-"sphinxcontrib.typst" = ["templates/*.typ"]
+"typsphinx" = ["templates/*.typ"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -127,7 +127,7 @@ warn_unreachable = false
 ignore_missing_imports = false
 
 [[tool.mypy.overrides]]
-module = "sphinxcontrib.typst.*"
+module = "typsphinx.*"
 disable_error_code = ["var-annotated", "arg-type", "override", "misc", "union-attr", "attr-defined", "list-item"]
 
 [dependency-groups]

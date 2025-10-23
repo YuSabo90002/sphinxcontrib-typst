@@ -2,7 +2,7 @@
 Installation
 ============
 
-This guide explains how to install sphinxcontrib-typst and its dependencies.
+This guide explains how to install typsphinx and its dependencies.
 
 Requirements
 ============
@@ -10,7 +10,7 @@ Requirements
 System Requirements
 -------------------
 
-sphinxcontrib-typst requires the following software:
+typsphinx requires the following software:
 
 - **Python**: Version 3.9 or higher
 - **Sphinx**: Version 5.0 or higher
@@ -42,13 +42,13 @@ Installation Methods
 Using pip (Recommended for Users)
 ----------------------------------
 
-The simplest way to install sphinxcontrib-typst is using pip:
+The simplest way to install typsphinx is using pip:
 
 .. code-block:: bash
 
-   pip install sphinxcontrib-typst
+   pip install typsphinx
 
-This will install sphinxcontrib-typst and all required dependencies.
+This will install typsphinx and all required dependencies.
 
 Using pip with Optional Dependencies
 -------------------------------------
@@ -57,13 +57,13 @@ To install with development tools:
 
 .. code-block:: bash
 
-   pip install sphinxcontrib-typst[dev]
+   pip install typsphinx[dev]
 
 To install with documentation building tools:
 
 .. code-block:: bash
 
-   pip install sphinxcontrib-typst[docs]
+   pip install typsphinx[docs]
 
 Using uv (Recommended for Developers)
 --------------------------------------
@@ -74,8 +74,8 @@ For faster package management and development, use `uv <https://github.com/astra
 
    .. code-block:: bash
 
-      git clone https://github.com/yourusername/sphinxcontrib-typst.git
-      cd sphinxcontrib-typst
+      git clone https://github.com/yourusername/typsphinx.git
+      cd typsphinx
 
 2. Install dependencies with uv:
 
@@ -96,8 +96,8 @@ To install from source using pip:
 
 .. code-block:: bash
 
-   git clone https://github.com/yourusername/sphinxcontrib-typst.git
-   cd sphinxcontrib-typst
+   git clone https://github.com/yourusername/typsphinx.git
+   cd typsphinx
    pip install -e .
 
 The ``-e`` flag installs the package in "editable" mode, which is useful for development.
@@ -105,11 +105,11 @@ The ``-e`` flag installs the package in "editable" mode, which is useful for dev
 Verifying Installation
 ======================
 
-After installation, verify that sphinxcontrib-typst is available:
+After installation, verify that typsphinx is available:
 
 .. code-block:: bash
 
-   python -c "import sphinxcontrib.typst; print('sphinxcontrib-typst installed successfully')"
+   python -c "import sphinxcontrib.typst; print('typsphinx installed successfully')"
 
 You can also check the Sphinx builders available:
 
@@ -160,7 +160,7 @@ is installed in that environment:
 
 .. code-block:: bash
 
-   python -m pip list | grep sphinxcontrib-typst
+   python -m pip list | grep typsphinx
 
 Missing Dependencies
 --------------------
@@ -169,7 +169,7 @@ If Sphinx cannot find the typst builder, ensure all dependencies are installed:
 
 .. code-block:: bash
 
-   pip install --upgrade sphinxcontrib-typst
+   pip install --upgrade typsphinx
 
 PDF Generation Issues
 ---------------------
@@ -197,17 +197,17 @@ It is recommended to use virtual environments to avoid dependency conflicts:
    python -m venv venv
    source venv/bin/activate  # On Linux/macOS
    venv\\Scripts\\activate   # On Windows
-   pip install sphinxcontrib-typst
+   pip install typsphinx
 
    # Using virtualenv
    virtualenv venv
    source venv/bin/activate
-   pip install sphinxcontrib-typst
+   pip install typsphinx
 
 Next Steps
 ==========
 
-After installation, see the :doc:`usage` guide to learn how to use sphinxcontrib-typst
+After installation, see the :doc:`usage` guide to learn how to use typsphinx
 in your Sphinx projects.
 
 For configuration options, see :doc:`configuration`.

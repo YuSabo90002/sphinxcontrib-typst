@@ -1,7 +1,7 @@
-# sphinxcontrib-typst
+# typsphinx
 
-[![PyPI version](https://badge.fury.io/py/sphinxcontrib-typst.svg)](https://badge.fury.io/py/sphinxcontrib-typst)
-[![Python Support](https://img.shields.io/pypi/pyversions/sphinxcontrib-typst.svg)](https://pypi.org/project/sphinxcontrib-typst/)
+[![PyPI version](https://badge.fury.io/py/typsphinx.svg)](https://badge.fury.io/py/typsphinx)
+[![Python Support](https://img.shields.io/pypi/pyversions/typsphinx.svg)](https://pypi.org/project/typsphinx/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -9,7 +9,7 @@ Sphinx extension for Typst output format support.
 
 ## Overview
 
-sphinxcontrib-typst is a Sphinx extension that enables generating Typst documents from reStructuredText sources. Typst is a modern typesetting system designed as an alternative to LaTeX, offering faster compilation and a more intuitive syntax.
+typsphinx is a Sphinx extension that enables generating Typst documents from reStructuredText sources. Typst is a modern typesetting system designed as an alternative to LaTeX, offering faster compilation and a more intuitive syntax.
 
 ## Features
 
@@ -39,15 +39,15 @@ sphinxcontrib-typst is a Sphinx extension that enables generating Typst document
 ### From PyPI (Beta Release)
 
 ```bash
-pip install sphinxcontrib-typst
+pip install typsphinx
 ```
 
 ### Using uv (recommended for development)
 
 ```bash
 # Clone the repository
-git clone https://github.com/YuSabo90002/sphinxcontrib-typst.git
-cd sphinxcontrib-typst
+git clone https://github.com/YuSabo90002/typsphinx.git
+cd typsphinx
 
 # Install dependencies with uv
 uv sync
@@ -65,9 +65,9 @@ Configure Typst output in your `conf.py`:
 ```python
 # conf.py
 
-# Note: sphinxcontrib-typst is auto-discovered via entry points.
+# Note: typsphinx is auto-discovered via entry points.
 # Adding to extensions list is optional but recommended for clarity.
-# extensions = ['sphinxcontrib.typst']
+# extensions = ['typsphinx']
 
 # Optional: Configure Typst builder
 typst_use_mitex = True  # Use mitex for LaTeX math (default: True)
@@ -168,7 +168,7 @@ This generates `#include()` directives in Typst with proper heading level adjust
 
 ### Working with Third-Party Extensions
 
-sphinxcontrib-typst integrates with Sphinx's standard extension mechanism. For custom nodes from third-party extensions (e.g., sphinxcontrib-mermaid), you can register Typst handlers in your `conf.py`:
+typsphinx integrates with Sphinx's standard extension mechanism. For custom nodes from third-party extensions (e.g., sphinxcontrib-mermaid), you can register Typst handlers in your `conf.py`:
 
 ```python
 # conf.py
@@ -190,7 +190,7 @@ def setup(app):
 ```
 
 **How it works**:
-- sphinxcontrib-typst uses Sphinx's standard `app.add_node()` API (no custom registry needed)
+- typsphinx uses Sphinx's standard `app.add_node()` API (no custom registry needed)
 - Unknown nodes trigger `unknown_visit()` which logs a warning and extracts text content
 - Users can add Typst support for any extension by registering handlers in `conf.py`
 
@@ -220,7 +220,7 @@ uv sync --extra dev
 uv run pytest
 
 # Run tests with coverage report
-uv run pytest --cov=sphinxcontrib.typst --cov-report=html
+uv run pytest --cov=typsphinx --cov-report=html
 
 # Run tests across multiple Python versions
 uv run tox
@@ -241,7 +241,7 @@ uv run mypy sphinxcontrib/
 ### Project Structure
 
 ```
-sphinxcontrib-typst/
+typsphinx/
 ├── sphinxcontrib/typst/    # Main package
 │   ├── builder.py          # Typst builder
 │   ├── writer.py           # Doctree writer

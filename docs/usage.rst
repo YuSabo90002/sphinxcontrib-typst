@@ -2,7 +2,7 @@
 Usage
 =====
 
-This guide covers common usage patterns and workflows for sphinxcontrib-typst.
+This guide covers common usage patterns and workflows for typsphinx.
 
 Quick Start
 ===========
@@ -10,17 +10,17 @@ Quick Start
 Basic Setup
 -----------
 
-1. **Install sphinxcontrib-typst**:
+1. **Install typsphinx**:
 
    .. code-block:: bash
 
-      pip install sphinxcontrib-typst
+      pip install typsphinx
 
 2. **Configure Typst output** (``conf.py``):
 
    .. note::
 
-      sphinxcontrib-typst builders are automatically discovered via entry points.
+      typsphinx builders are automatically discovered via entry points.
       Adding to ``extensions`` list is optional but recommended for clarity.
 
    .. code-block:: python
@@ -296,7 +296,7 @@ For CI/CD pipelines:
 
          - name: Install dependencies
            run: |
-             pip install sphinx sphinxcontrib-typst
+             pip install sphinx typsphinx
 
          - name: Build Typst documentation
            run: |
@@ -469,11 +469,11 @@ Build Fails
 
 **Solutions:**
 
-- Verify sphinxcontrib-typst is installed:
+- Verify typsphinx is installed:
 
   .. code-block:: bash
 
-     pip list | grep sphinxcontrib-typst
+     pip list | grep typsphinx
 
 - Check conf.py syntax:
 
@@ -552,7 +552,7 @@ Getting Help
 If you encounter issues:
 
 1. **Check documentation**: Review :doc:`configuration` and examples
-2. **Search GitHub issues**: https://github.com/your-repo/sphinxcontrib-typst/issues
+2. **Search GitHub issues**: https://github.com/your-repo/typsphinx/issues
 3. **Enable debug mode**: Set ``typst_debug = True`` in conf.py
 4. **Ask for help**: Create a GitHub issue with minimal reproduction
 
@@ -603,4 +603,4 @@ Now that you're familiar with basic usage:
 3. **Customize templates** for your project
 4. **Integrate with CI/CD** for automated builds
 
-Happy documenting with sphinxcontrib-typst!
+Happy documenting with typsphinx!

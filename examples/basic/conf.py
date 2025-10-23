@@ -1,6 +1,6 @@
 # Configuration file for the Sphinx documentation builder.
 #
-# This is a basic example of using sphinxcontrib-typst to generate
+# This is a basic example of using typsphinx to generate
 # Typst output from Sphinx documentation.
 
 # -- Project information -----------------------------------------------------
@@ -13,7 +13,7 @@ release = "0.1.0"
 # -- General configuration ---------------------------------------------------
 
 extensions = [
-    "sphinxcontrib.typst",
+    "typsphinx",
 ]
 
 templates_path = ["_templates"]

@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: Documentation
-    url: https://github.com/YuSabo90002/sphinxcontrib-typst/blob/main/README.md
+    url: https://github.com/YuSabo90002/typsphinx/blob/main/README.md
     about: Check the documentation for usage instructions and examples
   - name: Discussions
-    url: https://github.com/YuSabo90002/sphinxcontrib-typst/discussions
+    url: https://github.com/YuSabo90002/typsphinx/discussions
     about: Ask questions and discuss ideas with the community

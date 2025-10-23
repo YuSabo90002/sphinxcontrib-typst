@@ -7,7 +7,7 @@ from sphinx.builders import Builder
 
 def test_typst_builder_can_be_imported():
     """Test that TypstBuilder can be imported."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     assert TypstBuilder is not None
     assert issubclass(TypstBuilder, Builder)
@@ -15,7 +15,7 @@ def test_typst_builder_can_be_imported():
 
 def test_typst_builder_has_correct_attributes():
     """Test that TypstBuilder has the correct class attributes."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     assert TypstBuilder.name == "typst"
     assert TypstBuilder.format == "typst"
@@ -24,7 +24,7 @@ def test_typst_builder_has_correct_attributes():
 
 def test_typst_builder_has_required_methods():
     """Test that TypstBuilder implements required methods."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     # Check that required methods exist
     assert hasattr(TypstBuilder, "init")
@@ -37,7 +37,7 @@ def test_typst_builder_has_required_methods():
 
 def test_typst_builder_registration(temp_sphinx_app):
     """Test that TypstBuilder can be registered with Sphinx."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     app = temp_sphinx_app
 
@@ -49,7 +49,7 @@ def test_typst_builder_registration(temp_sphinx_app):
 
 def test_typst_builder_initialization(temp_sphinx_app):
     """Test that TypstBuilder can be initialized."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     app = temp_sphinx_app
 
@@ -63,7 +63,7 @@ def test_typst_builder_initialization(temp_sphinx_app):
 
 def test_get_outdated_docs_returns_iterator(temp_sphinx_app):
     """Test that get_outdated_docs returns an iterator."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     app = temp_sphinx_app
     builder = TypstBuilder(app, app.env)
@@ -78,7 +78,7 @@ def test_get_outdated_docs_returns_iterator(temp_sphinx_app):
 
 def test_get_target_uri_returns_string(temp_sphinx_app):
     """Test that get_target_uri returns a string."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     app = temp_sphinx_app
     builder = TypstBuilder(app, app.env)
@@ -93,7 +93,7 @@ def test_get_target_uri_returns_string(temp_sphinx_app):
 
 def test_prepare_writing_accepts_docnames(temp_sphinx_app):
     """Test that prepare_writing can be called with a set of docnames."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     app = temp_sphinx_app
     builder = TypstBuilder(app, app.env)
@@ -112,7 +112,7 @@ def test_write_doc_creates_output_file(temp_sphinx_app, sample_doctree):
     """Test that write_doc creates an output file."""
     from pathlib import Path
 
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     app = temp_sphinx_app
     builder = TypstBuilder(app, app.env)
@@ -134,7 +134,7 @@ def test_write_doc_generates_typst_content(temp_sphinx_app, sample_doctree):
     """Test that write_doc generates Typst content."""
     from pathlib import Path
 
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     app = temp_sphinx_app
     builder = TypstBuilder(app, app.env)
@@ -158,7 +158,7 @@ def test_write_doc_generates_typst_content(temp_sphinx_app, sample_doctree):
 
 def test_finish_completes_build(temp_sphinx_app, sample_doctree):
     """Test that finish completes the build process."""
-    from sphinxcontrib.typst.builder import TypstBuilder
+    from typsphinx.builder import TypstBuilder
 
     app = temp_sphinx_app
     builder = TypstBuilder(app, app.env)

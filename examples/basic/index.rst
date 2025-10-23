@@ -1,7 +1,7 @@
 Basic Sphinx-Typst Example
 ===========================
 
-Welcome to the basic example of sphinxcontrib-typst!
+Welcome to the basic example of typsphinx!
 
 This example demonstrates how to use Sphinx with the Typst builder
 to generate beautiful Typst documents from reStructuredText sources.
@@ -9,7 +9,7 @@ to generate beautiful Typst documents from reStructuredText sources.
 Introduction
 ------------
 
-sphinxcontrib-typst is a Sphinx extension that allows you to:
+typsphinx is a Sphinx extension that allows you to:
 
 - Convert Sphinx documentation to Typst markup
 - Generate high-quality PDF output using Typst
@@ -105,7 +105,7 @@ Simple tables are supported:
 Conclusion
 ----------
 
-This example shows the basic usage of sphinxcontrib-typst. For more
+This example shows the basic usage of typsphinx. For more
 advanced features, check out the advanced examples in the ``examples/``
 directory.
 
@@ -113,4 +113,4 @@ directory.
 
    - `Sphinx Documentation <https://www.sphinx-doc.org/>`_
    - `Typst Documentation <https://typst.app/docs/>`_
-   - `sphinxcontrib-typst Repository <https://github.com/your-repo/sphinxcontrib-typst>`_
+   - `typsphinx Repository <https://github.com/your-repo/typsphinx>`_
