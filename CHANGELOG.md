@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Additional Code Block Options Support** ([#31](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/31))
+  - Added support for `:lineno-start:` option to specify starting line number for code blocks
+  - Added support for `:dedent:` option (handled automatically by Sphinx during parsing)
+  - `:lineno-start:` works with codly's `start` parameter to display custom line numbers
+  - Both options work correctly in combination with existing options (`:linenos:`, `:emphasize-lines:`, etc.)
+  - Sphinx now supports 6 out of 8 standard code-block directive options (75%)
+  - Added 7 comprehensive test cases covering various scenarios
+
 - **Raw Directive Support** ([#25](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/25))
   - Added support for docutils `raw` directive (`.. raw:: typst`)
   - Typst-specific content (`format='typst'`) is passed through to output
