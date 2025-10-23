@@ -1,12 +1,61 @@
 # Implementation Tasks
 
+## 0. 設定名の変更 (Breaking Change) - TDD サイクル
+
+### Phase 1: RED (Write Failing Test)
+- [ ] テストを作成: `typst_template_package` 設定が動作することを確認
+  - テスト名: `test_typst_template_package_config`
+  - テストファイル: `tests/test_template_engine.py`
+  - 期待動作: `typst_template_package` 設定で外部テンプレートが使用できる
+  - 初期状態: テストは失敗するはず（設定名がまだ存在しない）
+
+- [ ] テストを作成: `typst_package` 設定がエラーを出すことを確認
+  - テスト名: `test_typst_package_deprecated_error`
+  - テストファイル: `tests/test_template_engine.py`
+  - 期待動作: `typst_package` 使用時にエラーメッセージが表示される
+  - 初期状態: テストは失敗するはず
+
+### Phase 2: Confirm RED
+- [ ] テストを実行して失敗を確認
+  ```bash
+  uv run pytest tests/test_template_engine.py::test_typst_template_package_config -xvs
+  uv run pytest tests/test_template_engine.py::test_typst_package_deprecated_error -xvs
+  ```
+  **期待結果**: テストが正しい理由で失敗する
+
+### Phase 3: GREEN (Implement)
+- [ ] `typsphinx/template_engine.py` で設定名を変更
+  - ファイル: `typsphinx/template_engine.py`
+  - 変更内容:
+    - `self.typst_package` → `self.typst_template_package` に変更
+    - `typst_package` が使用されている場合はエラーを発生させる
+    - エラーメッセージ: 「`typst_package` is deprecated. Use `typst_template_package` instead.」
+
+- [ ] `typsphinx/builder.py` で設定オプションを更新
+  - ファイル: `typsphinx/builder.py`
+  - 変更内容:
+    - `typst_package` を削除
+    - `typst_template_package` を追加（デフォルト: `None`）
+
+### Phase 4: Confirm GREEN
+- [ ] テストを実行して成功を確認
+  ```bash
+  uv run pytest tests/test_template_engine.py::test_typst_template_package_config -xvs
+  uv run pytest tests/test_template_engine.py::test_typst_package_deprecated_error -xvs
+  ```
+  **期待結果**: テストが成功する
+
+### Phase 5: REFACTOR (Optional)
+- [ ] エラーメッセージの表示方法を改善（必要に応じて）
+- [ ] リファクタリング後もテストが成功することを確認
+
 ## 1. 外部パッケージ使用時のテンプレートファイルインポートスキップ - TDD サイクル
 
 ### Phase 1: RED (Write Failing Test)
 - [ ] テストを作成: 外部パッケージ使用時に `_template.typ` からのインポートが生成されないことを確認
   - テスト名: `test_skip_template_file_import_with_external_package`
   - テストファイル: `tests/test_template_engine.py`
-  - 期待動作: `typst_package` 設定時は `#import "_template.typ"` が生成されない
+  - 期待動作: `typst_template_package` 設定時は `#import "_template.typ"` が生成されない
   - 初期状態: テストは失敗するはず
 
 ### Phase 2: Confirm RED
@@ -20,8 +69,8 @@
 - [ ] `typsphinx/template_engine.py:render()` メソッドを修正
   - ファイル: `typsphinx/template_engine.py`
   - 変更内容:
-    - `typst_package` が設定されている場合、`_template.typ` からのインポートをスキップ
-    - 条件: `if template_file and not self.typst_package:`
+    - `typst_template_package` が設定されている場合、`_template.typ` からのインポートをスキップ
+    - 条件: `if template_file and not self.typst_template_package:`
   - 位置: 約285-286行目付近
 
 ### Phase 4: Confirm GREEN
@@ -199,22 +248,33 @@
 
 ## 8. Documentation
 - [ ] CHANGELOG.md を更新
-  - 新機能セクションに以下を追加:
-    - Typst Universe テンプレートのサポート
+  - Breaking Changes セクション:
+    - **BREAKING**: `typst_package` → `typst_template_package` に名称変更
+    - 移行方法を明記
+  - 新機能セクション:
+    - Typst Universe テンプレートの完全サポート
+    - `typst_template_package` 設定（旧 `typst_package` から名称変更）
     - `typst_authors_format`, `typst_author_fields`, `typst_author_params` 設定オプション
     - `typst_template_params` 設定オプション
     - charged-ieee example の追加
 
 - [ ] README.md を更新（必要に応じて）
   - Typst Universe テンプレートのサポートを言及
+  - Breaking change の注意事項
+
+- [ ] docs/configuration.rst を更新
+  - `typst_package` を削除
+  - `typst_template_package` を追加
+  - 新しい設定オプションを追加
 
 - [ ] charged-ieee example に README を追加
   - `examples/charged-ieee/README.md`
   - 設定方法と使用方法を説明
 
 ## Task Dependencies
+- Section 0 (設定名変更) は最優先で実施（すべての後続タスクに影響）
 - Phase 1-2 (RED) は Phase 3-4 (GREEN) より前に完了する必要がある
 - Phase 5 (REFACTOR) はオプションだが推奨
-- Section 4 (Regression Testing) は Section 1-3 の GREEN フェーズ後に実行
-- Section 5 (Integration Verification) は Section 1-4 の後に実行
+- Section 4 (Regression Testing) は Section 0-3 の GREEN フェーズ後に実行
+- Section 5 (Integration Verification) は Section 0-4 の後に実行
 - Section 6-8 は Section 5 の後に並行実行可能

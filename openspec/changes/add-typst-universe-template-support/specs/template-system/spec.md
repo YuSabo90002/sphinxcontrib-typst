@@ -2,15 +2,41 @@
 
 ## ADDED Requirements
 
+### Requirement: テンプレート設定名の明確化
+
+テンプレート専用の設定は、その用途が明確にわかる名称を使用しなければならない（MUST）。
+
+#### Scenario: typst_template_package 設定の使用
+
+- **GIVEN** ユーザーが charged-ieee などの外部テンプレートを使用したい
+- **WHEN** `conf.py` でテンプレート設定を行う
+- **THEN** `typst_template_package` 設定を使用する
+- **AND** 設定名から「テンプレート用」であることが明確にわかる
+
+#### Scenario: 旧設定名 typst_package の非サポート
+
+- **GIVEN** `conf.py` に `typst_package` 設定が存在する
+- **WHEN** Sphinx ビルドを実行する
+- **THEN** エラーメッセージが表示される
+- **AND** エラーメッセージに「`typst_package` は `typst_template_package` に名称変更されました」と記載される
+- **AND** 移行方法が明示される
+
+#### Scenario: typst_package_imports は変更なし
+
+- **GIVEN** `conf.py` に `typst_package_imports` 設定が存在する
+- **WHEN** Sphinx ビルドを実行する
+- **THEN** `typst_package_imports` は引き続き正常に動作する
+- **AND** 複数の汎用パッケージが正しくインポートされる
+
 ### Requirement: 外部パッケージ使用時のテンプレートファイルインポートスキップ
 
-外部 Typst パッケージ（`typst_package` 設定）を使用する場合、ローカルテンプレートファイル（`_template.typ`）からのインポートをスキップしなければならない（MUST）。
+外部 Typst パッケージ（`typst_template_package` 設定）を使用する場合、ローカルテンプレートファイル（`_template.typ`）からのインポートをスキップしなければならない（MUST）。
 
 #### Scenario: 外部パッケージのみを使用する場合
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  typst_package = "@preview/charged-ieee:0.1.4"
+  typst_template_package = "@preview/charged-ieee:0.1.4"
   typst_template_function = "ieee"
   ```
 - **AND** ローカルテンプレートファイル `_template.typ` が存在しない
@@ -21,7 +47,7 @@
 
 #### Scenario: ローカルテンプレートのみを使用する場合
 
-- **GIVEN** `conf.py` に `typst_package` 設定が存在しない
+- **GIVEN** `conf.py` に `typst_template_package` 設定が存在しない
 - **AND** `typst_template_function = "project"` が設定されている
 - **AND** ローカルテンプレートファイル `_template.typ` が存在する
 - **WHEN** Typst ビルドを実行する
@@ -32,7 +58,7 @@
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  typst_package = "@preview/gentle-clues:1.0.0"
+  typst_template_package = "@preview/gentle-clues:1.0.0"
   ```
 - **AND** ローカルテンプレートファイル `_template.typ` が存在する
 - **AND** `typst_template_function` が設定されていない
@@ -121,7 +147,7 @@ charged-ieee などのテンプレートが要求する固有のパラメータ�
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  typst_package = "@preview/charged-ieee:0.1.4"
+  typst_template_package = "@preview/charged-ieee:0.1.4"
   typst_template_function = "ieee"
   typst_template_params = {
       "abstract": "This paper presents novel approaches to neural network architectures."
@@ -194,7 +220,7 @@ Typst Universe テンプレートの使用方法をドキュメントに記載�
 - **GIVEN** プロジェクトドキュメントが存在する
 - **WHEN** Typst Universe テンプレートのセクションを確認する
 - **THEN** 基本的な設定手順が説明されている
-  - `typst_package` の指定方法
+  - `typst_template_package` の指定方法
   - `typst_template_function` の指定方法
   - パッケージバージョンの指定方法
 
