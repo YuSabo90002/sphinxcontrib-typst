@@ -24,18 +24,51 @@
   **期待結果**: テストが正しい理由で失敗する
 
 ### Phase 3: GREEN (Implement)
+- [ ] `typsphinx/__init__.py` で設定オプションを更新
+  - ファイル: `typsphinx/__init__.py:47`
+  - 変更内容:
+    - `typst_package` → `typst_template_package` に変更
+    - `typst_package_imports` は変更なし（汎用パッケージ用として継続）
+
 - [ ] `typsphinx/template_engine.py` で設定名を変更
   - ファイル: `typsphinx/template_engine.py`
+  - 影響箇所:
+    - Line 47: パラメータ名 `typst_package` → `typst_template_package`
+    - Line 60: docstring 更新
+    - Line 71: `self.typst_package` → `self.typst_template_package`
+    - Line 186, 190, 193, 196, 199, 306: すべての `self.typst_package` 参照を更新
   - 変更内容:
-    - `self.typst_package` → `self.typst_template_package` に変更
-    - `typst_package` が使用されている場合はエラーを発生させる
-    - エラーメッセージ: 「`typst_package` is deprecated. Use `typst_template_package` instead.」
+    - すべての `typst_package` パラメータ/属性を `typst_template_package` に変更
+    - `typst_package_imports` は変更なし
+    - docstring を更新して「テンプレート専用」であることを明記
 
-- [ ] `typsphinx/builder.py` で設定オプションを更新
+- [ ] `typsphinx/builder.py` で設定名を更新
   - ファイル: `typsphinx/builder.py`
+  - 影響箇所:
+    - Line 191-192: `typst_package` → `typst_template_package`
+    - Line 200: パラメータ名更新
   - 変更内容:
-    - `typst_package` を削除
-    - `typst_template_package` を追加（デフォルト: `None`）
+    - config から `typst_template_package` を取得
+    - TemplateEngine に渡すパラメータ名を更新
+
+- [ ] `typsphinx/writer.py` で設定名を更新
+  - ファイル: `typsphinx/writer.py:117`
+  - 変更内容:
+    - config から `typst_template_package` を取得
+    - TemplateEngine に渡すパラメータ名を更新
+
+- [ ] 既存テストを更新: `typst_package` → `typst_template_package`
+  - 影響を受けるテストファイル:
+    - `tests/test_config_other_options.py`: 4つのテスト関数
+      - `test_typst_package_config_registered` → `test_typst_template_package_config_registered`
+      - `test_typst_package_default_none` → `test_typst_template_package_default_none`
+    - `tests/test_template_engine.py`: 複数のテスト
+    - `tests/test_documentation_configuration.py`: 設定リスト
+  - 変更内容:
+    - すべての `typst_package` を `typst_template_package` に置換
+    - テスト関数名も更新
+    - docstring も更新
+  - 注意: 既存テストはすべてテンプレート用途なので変更は適切（charged-ieee, diagraph など）
 
 ### Phase 4: Confirm GREEN
 - [ ] テストを実行して成功を確認
