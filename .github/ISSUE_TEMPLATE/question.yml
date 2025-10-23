@@ -1,5 +1,5 @@
 name: Question
-description: Ask a question about using sphinxcontrib-typst
+description: Ask a question about using typsphinx
 title: "[Q] "
 labels: ["question"]
 body:
@@ -35,7 +35,7 @@ body:
       label: Environment (Optional)
       description: Information about your environment if relevant
       value: |
-        - sphinxcontrib-typst version:
+        - typsphinx version:
         - Python version:
         - Sphinx version:
         - OS:

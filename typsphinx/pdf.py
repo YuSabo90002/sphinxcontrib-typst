@@ -73,8 +73,8 @@ def check_typst_available() -> None:
         raise ImportError(
             "typst package not found. Please install it:\n"
             "  pip install typst\n"
-            "Or install sphinxcontrib-typst with PDF support:\n"
-            "  pip install sphinxcontrib-typst[pdf]"
+            "Or install typsphinx with PDF support:\n"
+            "  pip install typsphinx[pdf]"
         ) from e
 
 

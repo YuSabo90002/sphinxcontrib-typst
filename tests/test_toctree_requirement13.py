@@ -52,7 +52,7 @@ def test_toctree_generates_include_directives(simple_document, mock_builder):
     THEN 参照された各ドキュメントに対して `#include("relative/path/to/doc.typ")`
     SHALL 生成される
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -88,7 +88,7 @@ def test_toctree_with_heading_offset(simple_document, mock_builder):
     THEN Typst SHALL `#[ #set heading(offset: 1); #include("doc.typ") ]` のように
     コンテンツブロック内で `#set heading(offset: 1)` を適用する
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -118,7 +118,7 @@ def test_toctree_with_nested_path(simple_document, mock_builder):
     "chapter1/section" の場合 THEN Typst SHALL
     `#include("chapter1/section.typ")` を生成する
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -144,7 +144,7 @@ def test_toctree_empty_entries(simple_document, mock_builder):
     """
     Test that toctree with no entries generates no output.
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -170,7 +170,7 @@ def test_toctree_skip_node_raised(simple_document, mock_builder):
     `addnodes.toctree` ノードが `raise nodes.SkipNode` を実行
     THEN 子ノードの処理 SHALL スキップされる
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -191,7 +191,7 @@ def test_toctree_single_content_block_multiple_includes(simple_document, mock_bu
     WHEN toctree has multiple entries
     THEN a single content block #[...] SHALL contain all #include() directives
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -240,7 +240,7 @@ def test_toctree_heading_offset_appears_once(simple_document, mock_builder):
     """
     import re
 
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -275,7 +275,7 @@ def test_toctree_reduced_line_count(simple_document, mock_builder):
     WHEN toctree with 3 entries is processed
     THEN the output SHALL have approximately 5-6 lines (reduced from ~12 lines)
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -315,7 +315,7 @@ def test_toctree_single_entry_with_single_block(simple_document, mock_builder):
     WHEN toctree has a single entry
     THEN a single content block #[...] SHALL be generated
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 

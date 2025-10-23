@@ -18,7 +18,7 @@ def multifile_srcdir(tmp_path):
     # conf.py
     conf_py = srcdir / "conf.py"
     conf_py.write_text(
-        "extensions = ['sphinxcontrib.typst']\n"
+        "extensions = ['typsphinx']\n"
         "project = 'Multi-File Test'\n"
         "author = 'Test Author'\n"
     )

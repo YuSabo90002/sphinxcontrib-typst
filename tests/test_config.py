@@ -29,7 +29,7 @@ def test_custom_typst_documents_config(tmp_path):
     # Create conf.py with custom typst_documents
     conf_py = srcdir / "conf.py"
     conf_py.write_text(
-        "extensions = ['sphinxcontrib.typst']\n"
+        "extensions = ['typsphinx']\n"
         "project = 'Test Project'\n"
         "author = 'Test Author'\n"
         "typst_documents = [\n"
@@ -86,7 +86,7 @@ def test_custom_typst_use_mitex_config(tmp_path):
     # Create conf.py with custom typst_use_mitex
     conf_py = srcdir / "conf.py"
     conf_py.write_text(
-        "extensions = ['sphinxcontrib.typst']\n"
+        "extensions = ['typsphinx']\n"
         "project = 'Test Project'\n"
         "author = 'Test Author'\n"
         "typst_use_mitex = False\n"
@@ -129,7 +129,7 @@ def test_custom_typst_elements_config(tmp_path):
     # Create conf.py with custom typst_elements
     conf_py = srcdir / "conf.py"
     conf_py.write_text(
-        "extensions = ['sphinxcontrib.typst']\n"
+        "extensions = ['typsphinx']\n"
         "project = 'Test Project'\n"
         "author = 'Test Author'\n"
         "typst_elements = {\n"

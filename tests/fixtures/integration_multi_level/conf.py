@@ -6,7 +6,7 @@ author = "Test Author"
 release = "1.0.0"
 
 extensions = [
-    "sphinxcontrib.typst",
+    "typsphinx",
 ]
 
 # Typst configuration

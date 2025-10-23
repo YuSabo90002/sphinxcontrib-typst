@@ -1,6 +1,6 @@
 # Advanced Sphinx-Typst Example
 
-This advanced example demonstrates the full capabilities of `sphinxcontrib-typst`, including:
+This advanced example demonstrates the full capabilities of `typsphinx`, including:
 
 - Multi-document projects with toctree
 - Advanced mathematics with mitex
@@ -29,20 +29,20 @@ advanced/
 
 - Python 3.9 or higher
 - Sphinx 5.0 or higher
-- sphinxcontrib-typst installed
+- typsphinx installed
 
 ## Installation
 
-If you haven't installed sphinxcontrib-typst yet:
+If you haven't installed typsphinx yet:
 
 ```bash
-pip install sphinxcontrib-typst
+pip install typsphinx
 ```
 
 Or install from source:
 
 ```bash
-cd /path/to/sphinxcontrib-typst
+cd /path/to/typsphinx
 pip install -e .
 ```
 
@@ -210,7 +210,7 @@ Key configuration options in `conf.py`:
 
 ```python
 # Typst builder extension
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 # Define output documents
 typst_documents = [
@@ -308,11 +308,11 @@ After exploring this example:
 - [Typst Documentation](https://typst.app/docs/)
 - [mitex Package](https://typst.app/universe/package/mitex)
 - [codly Package](https://typst.app/universe/package/codly)
-- [sphinxcontrib-typst Repository](https://github.com/your-repo/sphinxcontrib-typst)
+- [typsphinx Repository](https://github.com/your-repo/typsphinx)
 
 ## Support
 
 For issues and questions:
 
-- GitHub Issues: https://github.com/your-repo/sphinxcontrib-typst/issues
-- Documentation: https://sphinxcontrib-typst.readthedocs.io/
+- GitHub Issues: https://github.com/your-repo/typsphinx/issues
+- Documentation: https://typsphinx.readthedocs.io/

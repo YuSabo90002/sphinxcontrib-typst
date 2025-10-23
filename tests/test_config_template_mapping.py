@@ -13,7 +13,7 @@ def test_typst_template_mapping_config_registered(make_app, tmp_path):
 
     # Create minimal conf.py with custom mapping
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test Project'
 author = 'Test Author'
@@ -49,7 +49,7 @@ def test_default_typst_template_mapping(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 project = 'Test Project'
 """
     (srcdir / "conf.py").write_text(conf_content)
@@ -71,7 +71,7 @@ def test_custom_mapping_applied_to_template(make_app, tmp_path):
     outdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'My Custom Project'
 author = 'Custom Author'
@@ -122,7 +122,7 @@ def test_partial_custom_mapping(make_app, tmp_path):
     outdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test Project'
 author = 'Test Author'
@@ -162,7 +162,7 @@ def test_invalid_mapping_type(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 
@@ -186,7 +186,7 @@ def test_empty_mapping(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 
@@ -209,7 +209,7 @@ def test_mapping_with_typst_elements(make_app, tmp_path):
     srcdir.mkdir()
 
     conf_content = """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 
 project = 'Test'
 author = 'Author'

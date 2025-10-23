@@ -26,14 +26,14 @@ class TestTypstPackageIntegration:
 
     def test_check_typst_available_helper(self):
         """Test helper function to check typst availability"""
-        from sphinxcontrib.typst.pdf import check_typst_available
+        from typsphinx.pdf import check_typst_available
 
         # Should not raise any exception
         check_typst_available()
 
     def test_get_typst_version(self):
         """Test getting typst version information"""
-        from sphinxcontrib.typst.pdf import get_typst_version
+        from typsphinx.pdf import get_typst_version
 
         version = get_typst_version()
 
@@ -48,31 +48,31 @@ class TestTypstPDFBuilder:
 
     def test_builder_name_is_typstpdf(self):
         """Test that builder name is 'typstpdf'"""
-        from sphinxcontrib.typst.builder import TypstPDFBuilder
+        from typsphinx.builder import TypstPDFBuilder
 
         assert TypstPDFBuilder.name == "typstpdf"
 
     def test_builder_format_is_pdf(self):
         """Test that output format is 'pdf'"""
-        from sphinxcontrib.typst.builder import TypstPDFBuilder
+        from typsphinx.builder import TypstPDFBuilder
 
         assert TypstPDFBuilder.format == "pdf"
 
     def test_builder_out_suffix_is_pdf(self):
         """Test that output file suffix is '.pdf'"""
-        from sphinxcontrib.typst.builder import TypstPDFBuilder
+        from typsphinx.builder import TypstPDFBuilder
 
         assert TypstPDFBuilder.out_suffix == ".pdf"
 
     def test_builder_inherits_from_typst_builder(self):
         """Test that TypstPDFBuilder inherits from TypstBuilder"""
-        from sphinxcontrib.typst.builder import TypstBuilder, TypstPDFBuilder
+        from typsphinx.builder import TypstBuilder, TypstPDFBuilder
 
         assert issubclass(TypstPDFBuilder, TypstBuilder)
 
     def test_builder_initialization(self, temp_sphinx_app):
         """Test builder can be initialized"""
-        from sphinxcontrib.typst.builder import TypstPDFBuilder
+        from typsphinx.builder import TypstPDFBuilder
 
         builder = TypstPDFBuilder(temp_sphinx_app, temp_sphinx_app.env)
 
@@ -82,7 +82,7 @@ class TestTypstPDFBuilder:
 
     def test_builder_finish_generates_pdf(self, temp_sphinx_app, tmp_path):
         """Test that finish() method generates PDF from Typst content"""
-        from sphinxcontrib.typst.builder import TypstPDFBuilder
+        from typsphinx.builder import TypstPDFBuilder
 
         # Setup builder
         builder = TypstPDFBuilder(temp_sphinx_app, temp_sphinx_app.env)
@@ -100,9 +100,7 @@ class TestTypstPDFBuilder:
             typ_file.write_text("= Test Document\n\nThis is a test.\n")
 
             # Mock compile_typst_to_pdf
-            with patch(
-                "sphinxcontrib.typst.builder.compile_typst_to_pdf"
-            ) as mock_compile:
+            with patch("typsphinx.builder.compile_typst_to_pdf") as mock_compile:
                 mock_compile.return_value = b"%PDF-1.4 mock pdf content"
 
                 builder.finish()
@@ -116,7 +114,7 @@ class TestPDFCompilationIntegration:
 
     def test_compile_simple_typst_content(self):
         """Test compiling simple Typst content to PDF"""
-        from sphinxcontrib.typst.pdf import compile_typst_to_pdf
+        from typsphinx.pdf import compile_typst_to_pdf
 
         typst_content = "= Test Document\n\nThis is a test.\n"
 
@@ -130,7 +128,7 @@ class TestPDFCompilationIntegration:
 
     def test_compile_with_root_dir(self, tmp_path):
         """Test compiling with root directory for includes"""
-        from sphinxcontrib.typst.pdf import compile_typst_to_pdf
+        from typsphinx.pdf import compile_typst_to_pdf
 
         # Create a simple image file in tmp_path
         image_file = tmp_path / "test.png"
@@ -150,7 +148,7 @@ class TestPDFCompilationIntegration:
 
     def test_compile_with_template(self):
         """Test compiling Typst content with template function"""
-        from sphinxcontrib.typst.pdf import compile_typst_to_pdf
+        from typsphinx.pdf import compile_typst_to_pdf
 
         typst_content = """
 #let project(title: "", body) = {
@@ -181,7 +179,7 @@ This is the content.
 
     def test_compile_error_handling(self):
         """Test that compilation errors are handled properly"""
-        from sphinxcontrib.typst.pdf import compile_typst_to_pdf
+        from typsphinx.pdf import compile_typst_to_pdf
 
         # Invalid Typst syntax
         invalid_typst = "#let x = \n"
@@ -195,7 +193,7 @@ class TestPDFErrorHandling:
 
     def test_typst_compilation_error_detection(self):
         """Test that Typst compilation errors are properly detected"""
-        from sphinxcontrib.typst.pdf import TypstCompilationError, compile_typst_to_pdf
+        from typsphinx.pdf import TypstCompilationError, compile_typst_to_pdf
 
         # Invalid Typst syntax - unmatched bracket
         invalid_typst = "= Test\n\n#let func(x) = { x + \n"
@@ -210,7 +208,7 @@ class TestPDFErrorHandling:
 
     def test_error_message_includes_context(self):
         """Test that error messages include helpful context"""
-        from sphinxcontrib.typst.pdf import TypstCompilationError, compile_typst_to_pdf
+        from typsphinx.pdf import TypstCompilationError, compile_typst_to_pdf
 
         # Invalid function call
         invalid_typst = "= Test\n\n#unknownfunction()"
@@ -229,7 +227,7 @@ class TestPDFErrorHandling:
         """Test that builder continues processing other files after one fails"""
         from unittest.mock import patch
 
-        from sphinxcontrib.typst.builder import TypstPDFBuilder
+        from typsphinx.builder import TypstPDFBuilder
 
         builder = TypstPDFBuilder(temp_sphinx_app, temp_sphinx_app.env)
         builder.outdir = str(tmp_path)
@@ -248,7 +246,7 @@ class TestPDFErrorHandling:
         invalid_file.write_text("#let x = \n")  # Syntax error
 
         # Mock logger to capture error messages
-        with patch("sphinxcontrib.typst.builder.logger") as mock_logger:
+        with patch("typsphinx.builder.logger") as mock_logger:
             builder.finish()
 
             # Should have logged errors for the invalid file
@@ -256,7 +254,7 @@ class TestPDFErrorHandling:
 
     def test_error_includes_source_location(self):
         """Test that errors include source file location information"""
-        from sphinxcontrib.typst.pdf import TypstCompilationError, compile_typst_to_pdf
+        from typsphinx.pdf import TypstCompilationError, compile_typst_to_pdf
 
         # Invalid Typst with specific line error
         invalid_typst = """= Test Document
@@ -279,7 +277,7 @@ More content here.
         """Test error handling when typst package is not installed"""
         from unittest.mock import patch
 
-        from sphinxcontrib.typst.pdf import check_typst_available
+        from typsphinx.pdf import check_typst_available
 
         # Mock import failure
         with patch(
@@ -298,7 +296,7 @@ class TestCICDEnvironment:
 
     def test_pdf_generation_without_external_cli(self):
         """Test that PDF generation works without external Typst CLI"""
-        from sphinxcontrib.typst.pdf import compile_typst_to_pdf
+        from typsphinx.pdf import compile_typst_to_pdf
 
         # This test verifies that we're using typst-py, not external CLI
         # If this passes, it means PDF generation works with pip install only
@@ -312,7 +310,7 @@ class TestCICDEnvironment:
 
     def test_typst_package_version_compatibility(self):
         """Test that typst package version is compatible"""
-        from sphinxcontrib.typst.pdf import get_typst_version
+        from typsphinx.pdf import get_typst_version
 
         version = get_typst_version()
 
@@ -325,7 +323,7 @@ class TestCICDEnvironment:
 
     def test_builder_works_in_minimal_environment(self, temp_sphinx_app, tmp_path):
         """Test that TypstPDFBuilder works with minimal dependencies"""
-        from sphinxcontrib.typst.builder import TypstPDFBuilder
+        from typsphinx.builder import TypstPDFBuilder
 
         # Create builder - should work with just pip installed packages
         builder = TypstPDFBuilder(temp_sphinx_app, temp_sphinx_app.env)
@@ -352,7 +350,7 @@ class TestCICDEnvironment:
         """Test that core module can be imported without PDF dependencies"""
         # This tests that the module structure allows graceful degradation
         try:
-            from sphinxcontrib.typst import builder, translator, writer
+            from typsphinx import builder, translator, writer
 
             assert builder is not None
             assert writer is not None
@@ -364,7 +362,7 @@ class TestCICDEnvironment:
         """Test that missing typst package provides helpful error"""
         from unittest.mock import patch
 
-        from sphinxcontrib.typst.pdf import check_typst_available
+        from typsphinx.pdf import check_typst_available
 
         with patch(
             "builtins.__import__", side_effect=ImportError("No module named 'typst'")
@@ -376,4 +374,4 @@ class TestCICDEnvironment:
                 error_msg = str(e)
                 # Error should mention both installation methods
                 assert "pip install typst" in error_msg
-                assert "sphinxcontrib-typst" in error_msg
+                assert "typsphinx" in error_msg

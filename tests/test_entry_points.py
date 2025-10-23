@@ -50,11 +50,11 @@ def test_entry_point_value():
     # Check typst entry point
     assert typst_ep is not None, "'typst' entry point not found"
     assert (
-        typst_ep.value == "sphinxcontrib.typst"
-    ), f"Entry point value should be 'sphinxcontrib.typst', got '{typst_ep.value}'"
+        typst_ep.value == "typsphinx"
+    ), f"Entry point value should be 'typsphinx', got '{typst_ep.value}'"
 
     # Check typstpdf entry point
     assert typstpdf_ep is not None, "'typstpdf' entry point not found"
     assert (
-        typstpdf_ep.value == "sphinxcontrib.typst"
-    ), f"Entry point value should be 'sphinxcontrib.typst', got '{typstpdf_ep.value}'"
+        typstpdf_ep.value == "typsphinx"
+    ), f"Entry point value should be 'typsphinx', got '{typstpdf_ep.value}'"

@@ -9,8 +9,8 @@ from typing import Any
 
 from docutils import writers
 
-from sphinxcontrib.typst.template_engine import TemplateEngine
-from sphinxcontrib.typst.translator import TypstTranslator
+from typsphinx.template_engine import TemplateEngine
+from typsphinx.translator import TypstTranslator
 
 
 class TypstWriter(writers.Writer):

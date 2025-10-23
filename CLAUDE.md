@@ -25,8 +25,8 @@ OpenSpec-based spec-driven development. See `openspec/AGENTS.md` for detailed wo
 
 ### Repository Information
 - Owner: `YuSabo90002`
-- Repository: `sphinxcontrib-typst`
-- GitHub URL: https://github.com/YuSabo90002/sphinxcontrib-typst
+- Repository: `typsphinx`
+- GitHub URL: https://github.com/YuSabo90002/typsphinx
 
 ### Key Files
 - **Project Context**: `openspec/project.md` - Project conventions, tech stack, and guidelines

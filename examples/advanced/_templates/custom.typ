@@ -1,5 +1,5 @@
 // Custom Typst Template for Sphinx-Typst
-// This is an example of a custom template that can be used with sphinxcontrib-typst
+// This is an example of a custom template that can be used with typsphinx
 //
 // To use this template, uncomment the following line in conf.py:
 //   typst_template = '_templates/custom.typ'
@@ -104,7 +104,7 @@
 }
 
 // Main template function
-// This function is called by sphinxcontrib-typst with the document content
+// This function is called by typsphinx with the document content
 #let project(
   title: "Document Title",
   authors: (),
@@ -138,5 +138,5 @@
   body
 }
 
-// Note: The actual document content will be inserted by sphinxcontrib-typst
+// Note: The actual document content will be inserted by typsphinx
 // When using this template, make sure to wrap your content with the project() function

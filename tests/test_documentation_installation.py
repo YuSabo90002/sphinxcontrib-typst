@@ -46,8 +46,8 @@ def test_installation_mentions_pip_install():
         "pip install" in content
     ), "installation.rst should mention 'pip install' command"
     assert (
-        "sphinxcontrib-typst" in content
-    ), "installation.rst should mention the package name 'sphinxcontrib-typst'"
+        "typsphinx" in content
+    ), "installation.rst should mention the package name 'typsphinx'"
 
 
 def test_installation_mentions_dependencies():

@@ -1,6 +1,6 @@
 # Configuration file for the Sphinx documentation builder (Advanced Example).
 #
-# This example demonstrates advanced features of sphinxcontrib-typst:
+# This example demonstrates advanced features of typsphinx:
 # - Multiple document support with toctree
 # - Custom templates
 # - Math support with mitex
@@ -18,7 +18,7 @@ release = "1.0.0"
 # -- General configuration ---------------------------------------------------
 
 extensions = [
-    "sphinxcontrib.typst",
+    "typsphinx",
 ]
 
 templates_path = ["_templates"]

@@ -1,5 +1,5 @@
 """
-pytest configuration and fixtures for sphinxcontrib-typst tests.
+pytest configuration and fixtures for typsphinx tests.
 """
 
 from pathlib import Path
@@ -59,7 +59,7 @@ def temp_sphinx_app(tmp_path: Path) -> SphinxTestApp:
     # Create minimal conf.py
     conf_py = srcdir / "conf.py"
     conf_py.write_text(
-        "extensions = ['sphinxcontrib.typst']\n"
+        "extensions = ['typsphinx']\n"
         "project = 'Test Project'\n"
         "author = 'Test Author'\n"
     )

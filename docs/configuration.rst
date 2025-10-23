@@ -2,12 +2,12 @@
 Configuration
 =============
 
-This document provides a complete reference for all configuration options available in sphinxcontrib-typst.
+This document provides a complete reference for all configuration options available in typsphinx.
 
 Overview
 ========
 
-sphinxcontrib-typst is configured through your Sphinx project's ``conf.py`` file. All configuration values are prefixed with ``typst_`` to avoid conflicts with other extensions.
+typsphinx is configured through your Sphinx project's ``conf.py`` file. All configuration values are prefixed with ``typst_`` to avoid conflicts with other extensions.
 
 Quick Start
 -----------
@@ -314,7 +314,7 @@ Here's a complete ``conf.py`` example with common settings:
        'sphinx.ext.napoleon',
    ]
 
-   # sphinxcontrib-typst configuration
+   # typsphinx configuration
 
    # Define documents to build
    typst_documents = [
@@ -488,10 +488,10 @@ Yes! Use the ``typst_package`` or ``typst_package_imports`` configuration:
        '#import "@preview/gentle-clues:0.3.0": *',
    ]
 
-Does sphinxcontrib-typst support all Sphinx features?
+Does typsphinx support all Sphinx features?
 ------------------------------------------------------
 
-sphinxcontrib-typst supports most common Sphinx features including:
+typsphinx supports most common Sphinx features including:
 
 - Standard reStructuredText directives
 - Code blocks with syntax highlighting

@@ -56,12 +56,12 @@ class TestBasicExampleConfiguration:
     """Test that conf.py has valid configuration."""
 
     def test_conf_py_has_sphinxcontrib_typst(self, basic_example_dir):
-        """Test that conf.py includes 'sphinxcontrib.typst' extension."""
+        """Test that conf.py includes 'typsphinx' extension."""
         conf_py = basic_example_dir / "conf.py"
         content = conf_py.read_text()
         assert (
-            "sphinxcontrib.typst" in content
-        ), "conf.py should include 'sphinxcontrib.typst' in extensions"
+            "typsphinx" in content
+        ), "conf.py should include 'typsphinx' in extensions"
 
     def test_conf_py_has_project_metadata(self, basic_example_dir):
         """Test that conf.py defines project metadata."""

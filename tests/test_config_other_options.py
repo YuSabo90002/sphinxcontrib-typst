@@ -14,7 +14,7 @@ def test_typst_package_config_registered(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 typst_package = "@preview/diagraph:0.2.5"
 """
     )
@@ -37,7 +37,7 @@ def test_typst_package_imports_config_registered(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 typst_package_imports = [
     '#import "@preview/diagraph:0.2.5": *',
     '#import "@preview/tablex:0.1.0": *',
@@ -67,7 +67,7 @@ def test_typst_template_function_config_registered(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 typst_template_function = "custom_template"
 """
     )
@@ -90,7 +90,7 @@ def test_typst_package_default_none(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 """
     )
 
@@ -112,7 +112,7 @@ def test_typst_package_imports_default_none(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 """
     )
 
@@ -134,7 +134,7 @@ def test_typst_template_function_default_none(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 """
     )
 
@@ -156,7 +156,7 @@ def test_typst_output_dir_config_registered(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 typst_output_dir = '_custom/typst'
 """
     )
@@ -179,7 +179,7 @@ def test_typst_output_dir_default_value(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 """
     )
 
@@ -201,7 +201,7 @@ def test_typst_debug_config_registered(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 typst_debug = True
 """
     )
@@ -224,7 +224,7 @@ def test_typst_debug_default_false(make_app, tmp_path):
     conf_py = tmp_path / "conf.py"
     conf_py.write_text(
         """
-extensions = ['sphinxcontrib.typst']
+extensions = ['typsphinx']
 """
     )
 

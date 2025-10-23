@@ -17,13 +17,7 @@ class TestTemplateMitexIntegration:
     @pytest.fixture
     def template_path(self):
         """Get path to base template."""
-        return (
-            Path(__file__).parent.parent
-            / "sphinxcontrib"
-            / "typst"
-            / "templates"
-            / "base.typ"
-        )
+        return Path(__file__).parent.parent / "typsphinx" / "templates" / "base.typ"
 
     @pytest.fixture
     def template_content(self, template_path):

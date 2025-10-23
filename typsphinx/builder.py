@@ -14,8 +14,8 @@ from sphinx.builders import Builder
 from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
 
-from sphinxcontrib.typst.pdf import compile_typst_to_pdf
-from sphinxcontrib.typst.writer import TypstWriter
+from typsphinx.pdf import compile_typst_to_pdf
+from typsphinx.writer import TypstWriter
 
 logger = logging.getLogger(__name__)
 
@@ -175,7 +175,7 @@ class TypstBuilder(Builder):
         This writes a separate template.typ file that master documents can import.
         Only writes if a template is configured (not using Typst Universe packages).
         """
-        from sphinxcontrib.typst.template_engine import TemplateEngine
+        from typsphinx.template_engine import TemplateEngine
 
         config = self.config
 

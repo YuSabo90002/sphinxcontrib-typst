@@ -14,7 +14,7 @@ from docutils import nodes
 from docutils.parsers.rst import states
 from docutils.utils import Reporter
 
-from sphinxcontrib.typst.translator import TypstTranslator
+from typsphinx.translator import TypstTranslator
 
 
 @pytest.fixture

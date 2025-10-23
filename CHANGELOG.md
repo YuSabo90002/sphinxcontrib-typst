@@ -7,10 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-10-23
+
+### Changed (Breaking)
+- **パッケージ名変更**: `sphinxcontrib-typst` → `typsphinx`
+  - よりシンプルでユニークな名前に変更
+  - Builderとしての性質を反映
+  - PyPIパッケージ名: `typsphinx`
+  - Python import: `import typsphinx`
+  - Sphinx拡張名: `extensions = ['typsphinx']`
+  - パッケージ構造: `sphinxcontrib/typst/` → `typsphinx/`
+  - **移行方法**:
+    1. `pip uninstall sphinxcontrib-typst`
+    2. `pip install typsphinx`
+    3. `conf.py`で`extensions = ['sphinxcontrib.typst']` → `extensions = ['typsphinx']`
+
+### Rationale
+- `sphinxcontrib-*`は伝統的にディレクティブやロールを追加する拡張機能向けの名前空間
+- このパッケージは主にビルダー（Sphinx→Typst変換）であり、より適切な名前が必要
+- ユーザー数が少ない現段階での変更が最適なタイミング
+- TypstとSphinxの統合を示すユニークで覚えやすい名前
+
 ## [0.2.2] - 2025-10-23
 
 ### Added
-- **Additional Code Block Options Support** ([#31](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/31))
+- **Additional Code Block Options Support** ([#31](https://github.com/YuSabo90002/typsphinx/issues/31))
   - Added support for `:lineno-start:` option to specify starting line number for code blocks
   - Added support for `:dedent:` option (handled automatically by Sphinx during parsing)
   - `:lineno-start:` works with codly's `start` parameter to display custom line numbers
@@ -18,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Sphinx now supports 6 out of 8 standard code-block directive options (75%)
   - Added 7 comprehensive test cases covering various scenarios
 
-- **Raw Directive Support** ([#25](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/25))
+- **Raw Directive Support** ([#25](https://github.com/YuSabo90002/typsphinx/issues/25))
   - Added support for docutils `raw` directive (`.. raw:: typst`)
   - Typst-specific content (`format='typst'`) is passed through to output
   - Other formats (html, latex, etc.) are skipped and logged
@@ -27,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added 6 comprehensive test cases covering various scenarios
 
 ### Fixed
-- **Code Block Directive Options Support** ([#20](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/20))
+- **Code Block Directive Options Support** ([#20](https://github.com/YuSabo90002/typsphinx/issues/20))
   - Fixed `:linenos:` option being ignored - now properly controls line number display in code blocks
   - Fixed `:caption:` and `:name:` options causing "unknown node type: container" warnings
   - Code blocks with `:caption:` now wrapped in `#figure()` with proper caption
@@ -39,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All four options (`:linenos:`, `:caption:`, `:name:`, `:emphasize-lines:`) now work correctly together
   - Added comprehensive test coverage for all code block option combinations
 
-- **PDF Builder codly Import Missing** ([#28](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/28))
+- **PDF Builder codly Import Missing** ([#28](https://github.com/YuSabo90002/typsphinx/issues/28))
   - Fixed `typstpdf` builder failing with "unknown variable: codly" error
   - Added codly package imports to document-level essential imports in `template_engine.py`
   - Document files now include `#import "@preview/codly:1.3.0": *` and `#import "@preview/codly-languages:0.1.1": *`
@@ -47,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - No breaking changes - only adds imports alongside existing mitex/gentle-clues imports
 
 ### Documentation
-- **README Math Example Fix** ([#33](https://github.com/YuSabo90002/sphinxcontrib-typst/pull/33))
+- **README Math Example Fix** ([#33](https://github.com/YuSabo90002/typsphinx/pull/33))
   - Fixed incorrect double-escaped backslashes in math directive example
   - Changed `\\int` to `\int` for correct reStructuredText syntax
   - Helps users write proper reStructuredText files
@@ -55,14 +76,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.1] - 2025-10-18
 
 ### Fixed
-- **Table Content Duplication** ([#19](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/19))
+- **Table Content Duplication** ([#19](https://github.com/YuSabo90002/typsphinx/issues/19))
   - Fixed duplicate table content in Typst output where cell content appeared both as plain text and inside `#table()` structure
   - Affects all reStructuredText table formats: list-table, grid table, simple table, csv-table
   - Modified `add_text()` method to route text to `table_cell_content` when inside table cells
   - Modified `depart_table()` to use `self.body.append()` directly for table structure output
   - Added comprehensive test coverage for all table formats
 
-- **RST Comments Rendered as Plain Text** ([#21](https://github.com/YuSabo90002/sphinxcontrib-typst/issues/21))
+- **RST Comments Rendered as Plain Text** ([#21](https://github.com/YuSabo90002/typsphinx/issues/21))
   - Fixed reStructuredText comments appearing as plain text in Typst output
   - Comments (lines starting with `..`) are now properly skipped during conversion
   - Resolved "unknown node type: comment" warning messages
@@ -324,6 +345,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[0.2.0]: https://github.com/YuSabo90002/sphinxcontrib-typst/releases/tag/v0.2.0
-[0.1.0b1]: https://github.com/YuSabo90002/sphinxcontrib-typst/releases/tag/v0.1.0b1
-[Unreleased]: https://github.com/YuSabo90002/sphinxcontrib-typst/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/YuSabo90002/typsphinx/releases/tag/v0.2.0
+[0.1.0b1]: https://github.com/YuSabo90002/typsphinx/releases/tag/v0.1.0b1
+[Unreleased]: https://github.com/YuSabo90002/typsphinx/compare/v0.2.0...HEAD

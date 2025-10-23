@@ -31,7 +31,7 @@ def test_inline_typst_native_math(simple_document, mock_builder):
     Requirement 5.2: Inline math should use $...$ format
     Task 6.4: Typst native math識別
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -57,7 +57,7 @@ def test_block_typst_native_math(simple_document, mock_builder):
     Requirement 5.2: Block math should use $ ... $ format
     Task 6.4: Typst native math識別
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -83,7 +83,7 @@ def test_typst_native_math_with_label(simple_document, mock_builder):
     Requirement 5.4: Typst native math with labels
     Task 6.4: Label support for native math
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -110,7 +110,7 @@ def test_typst_native_special_functions(simple_document, mock_builder):
     Requirement 5.3: Typst特有の数式機能の保持
     Task 6.4: Typst native math features
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -137,7 +137,7 @@ def test_mixed_latex_and_typst_native_math(simple_document, mock_builder):
     Requirement 5.5: LaTeX数式とTypstネイティブ数式の混在対応
     Task 6.4: Mixed math support
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
@@ -174,7 +174,7 @@ def test_latex_math_without_typst_native_class(simple_document, mock_builder):
 
     Task 6.4: Default behavior preservation
     """
-    from sphinxcontrib.typst.translator import TypstTranslator
+    from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-sphinxcontrib-typst は、Sphinx ドキュメントジェネレータと Typst タイプセッティングシステムを統合する拡張機能です。Sphinx の強力なドキュメント生成機能と Typst のモダンな組版機能を組み合わせ、高品質な技術文書の作成を可能にします。
+typsphinx は、Sphinx ドキュメントジェネレータと Typst タイプセッティングシステムを統合する拡張機能です。Sphinx の強力なドキュメント生成機能と Typst のモダンな組版機能を組み合わせ、高品質な技術文書の作成を可能にします。
 
 ### Core Features
 
@@ -73,8 +73,8 @@ from sphinx.application import Sphinx
 from sphinx.builders import Builder
 
 # 3. ローカルモジュール
-from sphinxcontrib.typst import utils
-from sphinxcontrib.typst.config import TypstConfig
+from typsphinx import utils
+from typsphinx.config import TypstConfig
 ```
 
 ### Documentation
@@ -222,7 +222,7 @@ All packages are downloaded automatically by Typst compiler:
 ## Project Structure
 
 ```
-sphinxcontrib-typst/
+typsphinx/
 ├── openspec/                   # OpenSpec spec-driven development
 │   ├── project.md              # This file
 │   ├── AGENTS.md               # AI assistant instructions
@@ -285,6 +285,6 @@ sphinx-build -b typstpdf source/ build/pdf
 - **Status**: Production-ready
 - **All 13 requirements**: Fully implemented (100%)
 - **Test Coverage**: 94% (317 tests)
-- **Distribution**: PyPI - `pip install sphinxcontrib-typst`
+- **Distribution**: PyPI - `pip install typsphinx`
 - **CI/CD**: Validated on Linux, macOS, Windows
 - **Python Support**: 3.9, 3.10, 3.11, 3.12
