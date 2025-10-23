@@ -818,6 +818,224 @@ def test_literal_block_unsupported_language_warning(simple_document, mock_builde
     assert "```obscure-language-xyz" in output or "```" in output
 
 
+def test_literal_block_with_lineno_start(simple_document, mock_builder):
+    """Test literal block with :lineno-start: option (Issue #31).
+
+    Note: Sphinx stores :lineno-start: in highlight_args['linenostart'].
+    """
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a literal block with linenos and lineno-start options
+    # Sphinx stores lineno-start in highlight_args
+    literal_block = nodes.literal_block(text='def my_function():\n    return "line 42"')
+    literal_block["language"] = "python"
+    literal_block["linenos"] = True
+    literal_block["highlight_args"] = {"linenostart": 42}
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(nodes.Text('def my_function():\n    return "line 42"'))
+    translator.depart_Text(nodes.Text('def my_function():\n    return "line 42"'))
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+    # Should generate #codly(start: 42)
+    assert "#codly(start: 42)" in output, "Should generate #codly(start: 42)"
+    assert "```python" in output, "Should still use code block with language"
+
+
+def test_literal_block_with_lineno_start_without_linenos(simple_document, mock_builder):
+    """Test that :lineno-start: without :linenos: is ignored (Issue #31).
+
+    Note: Sphinx stores :lineno-start: in highlight_args['linenostart'].
+    """
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a literal block with lineno-start but without linenos
+    literal_block = nodes.literal_block(text='def my_function():\n    return "test"')
+    literal_block["language"] = "python"
+    literal_block["highlight_args"] = {"linenostart": 42}
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(nodes.Text('def my_function():\n    return "test"'))
+    translator.depart_Text(nodes.Text('def my_function():\n    return "test"'))
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+    # Should not generate #codly(start: ...)
+    assert (
+        "#codly(start:" not in output
+    ), "Should not generate start parameter without linenos"
+    # Should disable line numbers
+    assert "#codly(number-format: none)" in output
+    assert "```python" in output
+
+
+def test_literal_block_with_lineno_start_and_emphasize(simple_document, mock_builder):
+    """Test literal block with :lineno-start: and :emphasize-lines: (Issue #31).
+
+    Note: Sphinx stores :lineno-start: in highlight_args['linenostart'].
+    """
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a literal block with linenos, lineno-start, and highlights
+    # Sphinx stores both linenostart and hl_lines in highlight_args
+    literal_block = nodes.literal_block(
+        text="def process_data(data):\n    result = transform(data)\n    return result"
+    )
+    literal_block["language"] = "python"
+    literal_block["linenos"] = True
+    literal_block["highlight_args"] = {"hl_lines": [2], "linenostart": 100}
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(
+        nodes.Text(
+            "def process_data(data):\n    result = transform(data)\n    return result"
+        )
+    )
+    translator.depart_Text(
+        nodes.Text(
+            "def process_data(data):\n    result = transform(data)\n    return result"
+        )
+    )
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+    # Should generate both #codly(start: 100) and #codly-range(highlight: ...)
+    assert "#codly(start: 100)" in output, "Should generate start parameter"
+    assert "#codly-range(highlight:" in output, "Should generate highlight parameter"
+    assert "2" in output, "Should include highlighted line number"
+    assert "```python" in output
+
+
+def test_literal_block_with_dedent_numeric(simple_document, mock_builder):
+    """Test literal block with numeric :dedent: option (Issue #31).
+
+    Note: Sphinx processes :dedent: during parsing, so the text reaching
+    the translator is already dedented. This test verifies that dedented
+    text is correctly handled.
+    """
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Simulate Sphinx's behavior: text is already dedented by Sphinx parser
+    # Original: "    def nested_function():\n        print(\"indented\")"
+    # After :dedent: 4 processing by Sphinx:
+    literal_block = nodes.literal_block(
+        text='def nested_function():\n    print("indented")'
+    )
+    literal_block["language"] = "python"
+    literal_block["dedent"] = 4  # This is stored but text is already processed
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(nodes.Text('def nested_function():\n    print("indented")'))
+    translator.depart_Text(nodes.Text('def nested_function():\n    print("indented")'))
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+    # Should have dedented content (already processed by Sphinx)
+    assert "def nested_function():" in output, "Should have dedented first line"
+    assert '    print("indented")' in output, "Should preserve relative indentation"
+
+
+def test_literal_block_with_dedent_auto(simple_document, mock_builder):
+    """Test literal block with auto :dedent: option (Issue #31).
+
+    Note: Sphinx processes :dedent: during parsing using textwrap.dedent().
+    The text reaching the translator is already auto-dedented.
+    """
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Simulate Sphinx's behavior: text is already auto-dedented by Sphinx
+    # Original: "    def nested_function():\n        print(\"auto dedent\")"
+    # After :dedent: (auto) processing by Sphinx:
+    literal_block = nodes.literal_block(
+        text='def nested_function():\n    print("auto dedent")'
+    )
+    literal_block["language"] = "python"
+    literal_block["dedent"] = True
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(
+        nodes.Text('def nested_function():\n    print("auto dedent")')
+    )
+    translator.depart_Text(
+        nodes.Text('def nested_function():\n    print("auto dedent")')
+    )
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+    # Should have auto-dedented content (already processed by Sphinx)
+    assert "def nested_function():" in output, "Should have auto-dedented first line"
+    assert '    print("auto dedent")' in output, "Should preserve relative indentation"
+
+
+def test_literal_block_with_dedent_and_other_options(simple_document, mock_builder):
+    """Test literal block with :dedent: and other options (Issue #31).
+
+    Note: Sphinx processes :dedent: before other options are applied.
+    This test verifies that dedented content works with linenos and highlights.
+    """
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Simulate Sphinx's behavior: text is already dedented
+    # Original: "        def inner_function():\n            return \"dedented\""
+    # After :dedent: 8 processing by Sphinx:
+    literal_block = nodes.literal_block(
+        text='def inner_function():\n    return "dedented"'
+    )
+    literal_block["language"] = "python"
+    literal_block["dedent"] = 8
+    literal_block["linenos"] = True
+    literal_block["highlight_args"] = {"hl_lines": [1]}
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(nodes.Text('def inner_function():\n    return "dedented"'))
+    translator.depart_Text(nodes.Text('def inner_function():\n    return "dedented"'))
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+    # Should have dedented content with line numbers and highlights
+    assert "def inner_function():" in output, "Should have dedented content"
+    assert '    return "dedented"' in output, "Should preserve relative indentation"
+    assert "#codly-range(highlight:" in output, "Should have highlights"
+    assert "```python" in output
+
+
+def test_literal_block_with_dedent_short_lines(simple_document, mock_builder):
+    """Test literal block with :dedent: on short lines (Issue #31).
+
+    Note: Sphinx handles edge cases like empty lines and short lines correctly.
+    This test verifies that such content is properly rendered.
+    """
+    from sphinxcontrib.typst.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Simulate Sphinx's behavior: text is already dedented
+    # Original: "    def foo():\n\n    pass"
+    # After :dedent: 4 processing by Sphinx:
+    literal_block = nodes.literal_block(text="def foo():\n\npass")
+    literal_block["language"] = "python"
+    literal_block["dedent"] = 4
+    translator.visit_literal_block(literal_block)
+    translator.visit_Text(nodes.Text("def foo():\n\npass"))
+    translator.depart_Text(nodes.Text("def foo():\n\npass"))
+    translator.depart_literal_block(literal_block)
+
+    output = translator.astext()
+    # Should handle dedented content with empty lines
+    assert "def foo():" in output, "Should have dedented first line"
+    assert "pass" in output, "Should have dedented last line"
+    # Empty line should remain empty
+    lines = output.split("\n")
+    assert any(line == "" for line in lines), "Should preserve empty lines"
+
+
 def test_definition_list_conversion(simple_document, mock_builder):
     """Test that definition lists are converted correctly."""
     from sphinxcontrib.typst.translator import TypstTranslator

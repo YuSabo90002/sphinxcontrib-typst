@@ -490,6 +490,7 @@ class TypstTranslator(SphinxTranslator):
         Design 3.5: All code blocks use codly, with #codly-range() for highlights
         Requirements 7.3, 7.4: Support line numbers and highlighted lines
         Issue #20: Support :linenos:, :caption:, and :name: options
+        Issue #31: Support :lineno-start: and :dedent: options
 
         Args:
             node: The literal block node
@@ -512,6 +513,12 @@ class TypstTranslator(SphinxTranslator):
         # Extract highlight_args if present (Task 4.2.2)
         highlight_args = node.get("highlight_args", {})
         hl_lines = highlight_args.get("hl_lines", [])
+
+        # Issue #31: Support :lineno-start: option
+        # Sphinx stores lineno-start in highlight_args['linenostart']
+        lineno_start = highlight_args.get("linenostart")
+        if linenos and lineno_start is not None:
+            self.add_text(f"#codly(start: {lineno_start})\n")
 
         # Generate #codly-range() if highlight lines are specified
         if hl_lines:
