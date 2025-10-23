@@ -296,9 +296,18 @@
   - Breaking change の注意事項
 
 - [ ] docs/configuration.rst を更新
-  - `typst_package` を削除
-  - `typst_template_package` を追加
-  - 新しい設定オプションを追加
+  - **構成変更**: `typst_package` を "Typst Packages" セクションから "Template Configuration" セクションに移動
+    - 現在: "Typst Packages" セクション (line 214-231)
+    - 移動先: "Template Configuration" セクション (line 62-135)
+  - `typst_package` → `typst_template_package` に名称変更
+  - `typst_package_imports` は "Typst Packages" セクションに残す（汎用パッケージ用）
+  - 新しい設定オプションを "Template Configuration" セクションに追加:
+    - `typst_template_package`: 外部テンプレートパッケージの指定
+    - `typst_authors_format`: 著者情報のフォーマット形式
+    - `typst_author_fields`: 辞書形式の著者情報フィールド
+    - `typst_author_params`: 著者ごとの詳細情報
+    - `typst_template_params`: テンプレート固有パラメータ
+  - 各設定オプションに charged-ieee などの使用例を追加
 
 - [ ] charged-ieee example に README を追加
   - `examples/charged-ieee/README.md`
