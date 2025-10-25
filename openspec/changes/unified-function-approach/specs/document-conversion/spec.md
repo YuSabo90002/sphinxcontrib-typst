@@ -288,6 +288,45 @@ AND NOT `*Returns:*` (no sugar syntax)
 
 ---
 
+### Requirement: 段落の `par()` 関数化
+
+段落ノードは `par()` 関数で包まれなければならない (MUST)。コードモード内では空行による段落区切りは自動認識されないため (MUST NOT rely on blank lines)、`par()` で明示的に段落境界をマークしなければならない (MUST)。
+
+**Rationale**: Code mode doesn't automatically recognize paragraph breaks from blank lines. Without `par()`, multiple text blocks merge into a single paragraph, breaking document structure.
+
+#### Scenario: 単純な段落の変換
+
+```gherkin
+GIVEN a Sphinx document with a paragraph containing text "This is a paragraph."
+WHEN the translator processes the paragraph node inside code mode
+THEN the output MUST be `par(text("This is a paragraph."))`
+AND NOT just `text("This is a paragraph.")` (missing par wrapper)
+```
+
+#### Scenario: インライン要素を含む段落
+
+```gherkin
+GIVEN a paragraph with text, emphasis, and strong elements
+WHEN the translator processes the paragraph node
+THEN the output MUST be `par(text("This is ") + emph(text("emphasized")) + text(" and ") + strong(text("strong")) + text("."))`
+AND all inline content MUST be within a single par() call
+```
+
+#### Scenario: 複数段落の区切り
+
+```gherkin
+GIVEN a Sphinx document with 3 consecutive paragraphs
+WHEN the translator processes all paragraph nodes
+THEN the output MUST have 3 separate par() calls
+AND each paragraph MUST be independently wrapped
+THEN the structure MUST be:
+  par(text("First paragraph"))
+  par(text("Second paragraph"))
+  par(text("Third paragraph"))
+```
+
+---
+
 ### Requirement: テキストノードの `text()` 関数化
 
 テキストノードは `text("...")` 関数で包まれなければならない (MUST)。`[...]` マークアップモードを使用してはならない (MUST NOT)。
@@ -492,6 +531,38 @@ self.add_text("#emph[")
 self.add_text("emph[")
 ```
 
+### Paragraph Wrapping with `par()` Function
+
+Wrap each paragraph in `par()` function to mark paragraph boundaries:
+
+```python
+# visit_paragraph()
+def visit_paragraph(self, node):
+    self.add_text("par(")
+
+# depart_paragraph()
+def depart_paragraph(self, node):
+    self.add_text(")\n")
+```
+
+**Why `par()` is necessary:**
+- Code mode doesn't auto-recognize paragraph breaks from blank lines
+- Without `par()`, consecutive text blocks merge into single paragraph
+- `par()` explicitly marks each paragraph boundary
+
+**Example output structure:**
+```typst
+#[
+  heading(level: 1, text("Title"))
+
+  par(text("First paragraph content."))
+
+  par(text("Second paragraph with ") + emph(text("emphasis")) + text("."))
+
+  par(text("Third paragraph."))
+]
+```
+
 ### Text Node Wrapping with `text()` Function
 
 Wrap ALL text in `text()` function to avoid escaping issues:
@@ -510,13 +581,15 @@ def visit_Text(self, node):
 - `[...]` uses markup mode → requires escaping special characters
 - Example: `text("$100 #1")` works, `[$100 #1]` breaks
 
-**For concatenation**:
+**For concatenation** (within a paragraph):
 ```python
-# Multiple text + formatting nodes
-# Output: text("This is ") + emph(text("important")) + text(" text")
+# Multiple text + formatting nodes inside par()
+# Output: par(text("This is ") + emph(text("important")) + text(" text"))
+# visit_paragraph() already added "par("
 self.add_text('text("This is ") + ')
 self.add_text('emph(text("important")) + ')
 self.add_text('text(" text")')
+# depart_paragraph() will add ")"
 ```
 
 ### List State Redesign

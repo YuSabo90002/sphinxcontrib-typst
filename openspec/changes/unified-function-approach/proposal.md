@@ -23,7 +23,7 @@ This is an **architectural principle**, not just a set of individual conversions
 #[
 heading(level: 1, text("Introduction"))
 
-text("This is ") + emph(text("emphasized")) + text(" and ") + strong(text("strong")) + text(" text.")
+par(text("This is ") + emph(text("emphasized")) + text(" and ") + strong(text("strong")) + text(" text."))
 
 list(
   text("First item"),
@@ -98,11 +98,17 @@ The current implementation mixes three different approaches:
 Inside the code mode block:
 1. ALL function calls use bare function names (e.g., `heading()`, `emph()`, `strong()`)
 2. **Text nodes MUST use `text()` function** (NOT `[...]` markup mode)
-3. Sugar syntax is NOT used (no `=`, `_`, `*`, `-`, `+`)
+3. **Paragraphs MUST use `par()` function** to explicitly mark paragraph boundaries
+4. Sugar syntax is NOT used (no `=`, `_`, `*`, `-`, `+`)
 
 **Why `text()` instead of `[...]`?**
 - `[...]` = markup mode → requires escaping `#`, `*`, `_`, `$`, `[`, `]`
 - `text("...")` = string mode → no escaping, all characters literal
+
+**Why `par()` function?**
+- Code mode doesn't automatically recognize paragraph breaks from blank lines
+- `par()` explicitly marks paragraph boundaries
+- Without `par()`, multiple text blocks merge into a single paragraph
 
 ### Document Structure
 
@@ -110,9 +116,12 @@ Inside the code mode block:
 #[
   // All content here uses function calls without # prefix
   // All text uses text() function to avoid markup escaping
+  // All paragraphs use par() function to mark boundaries
   heading(level: 1, text("Title"))
-  text("Plain text content")
-  emph(text("emphasized"))
+
+  par(text("Plain text content in first paragraph."))
+
+  par(text("Second paragraph with ") + emph(text("emphasized")) + text(" text."))
 ]
 ```
 
@@ -168,27 +177,34 @@ Inside the code mode block:
 **Rationale**: `text()` uses string mode → no escaping needed for `#`, `*`, `_`, `$`, `[`, `]`
 **Note**: For adjacent text + formatting, use `+` operator: `text("This is ") + emph(text("emphasized"))`
 
-#### 10. Inline Code (NEW)
+#### 10. Paragraphs (NEW - CRITICAL)
+**Current**: Blank lines separate paragraphs (markup mode behavior)
+**Target**: `par(...)` function wrapping paragraph content
+**Location**: `translator.py:320` (`visit_paragraph`, `depart_paragraph`)
+**Rationale**: Code mode doesn't auto-recognize paragraph breaks; `par()` explicitly marks boundaries
+**Note**: Each paragraph's content (text + inline elements) should be wrapped in a single `par()` call
+
+#### 11. Inline Code (NEW)
 **Current**: `` `code` ``
 **Target**: `raw("code")` (NO `#` prefix)
 **Location**: `translator.py:374` (`visit_literal`)
 **Rationale**: Codly compatible, consistent with function approach
 
-#### 11. Code Blocks (NEW)
+#### 12. Code Blocks (NEW)
 **Current**: ` ```lang ... ``` ` with `#codly()`, `#codly-range()` calls
 **Target**: `raw(block: true, lang: "...", "code")` with `codly()`, `codly-range()` calls (NO `#` prefix)
 **Location**: `translator.py:536` (`visit_literal_block`)
 **Rationale**: Codly uses `show raw.where(block: true)` and `raw.line` internally
 **Note**: Preserve existing codly features (line numbers, highlighting, captions)
 
-#### 12. Definition Lists (NEW)
+#### 13. Definition Lists (NEW)
 **Current**: `/ term: definition`
 **Target**: `terms.item(text("term"), text("definition"))` (NO `#` prefix)
 **Location**: `translator.py:616` (`visit_term`, `visit_definition`)
 **Rationale**: Typst has `terms.item()` function for programmatic term list creation
 **Note**: Requires collecting term-definition pairs before generating `terms()`
 
-#### 13. Existing Function Calls (MODIFIED)
+#### 14. Existing Function Calls (MODIFIED)
 **Current**: `#sub[text]`, `#super[text]`, `#quote[...]`, `#image()`, etc.
 **Target**: Remove `#` prefix + use `text()` → `sub(text("text"))`, `super(text("text"))`, `quote(...)`, `image()`, etc.
 **Location**: Multiple locations (subscript:393, superscript:412, block_quote:944, image:997, etc.)
@@ -305,11 +321,13 @@ Inside the code mode block:
   - Admonitions: `#info[...]`, `#warning[...]`, `#tip[...]` → `info[...]`, `warning[...]`, `tip[...]`
   - Math: `#mi(...)`, `#mitex(...)` → `mi(...)`, `mitex(...)`
 
-### Phase 2: Text Node Wrapping with `text()` Function
+### Phase 2: Text Node and Paragraph Wrapping
 - Update `visit_Text()` to wrap text in `text("...")` function
 - Handle string escaping (quotes, backslashes)
 - Implement concatenation with `+` operator for adjacent nodes
 - Handle edge cases: empty text, whitespace-only text
+- Update `visit_paragraph()` to output `par(` and `depart_paragraph()` to output `)`
+- Ensure paragraph content (all inline elements) is wrapped in single `par()` call
 
 ### Phase 3: Convert Sugar Syntax Elements
 1. Emphasis: `_text_` → `emph(text("text"))` (NO `#`)
