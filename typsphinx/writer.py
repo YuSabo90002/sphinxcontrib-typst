@@ -72,6 +72,13 @@ class TypstWriter(writers.Writer):
         self.document.walkabout(self.visitor)
         body = self.visitor.astext()
 
+        # WORKAROUND: For some Sphinx documents, visit_document may not be called
+        # Ensure body is wrapped in code mode block
+        if not body.startswith("#{"):
+            body = "#{\n" + body
+        if not body.endswith("}\n"):
+            body = body + "}\n"
+
         # Get current document name
         docname = self.builder.current_docname
 
