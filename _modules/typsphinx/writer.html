@@ -336,6 +336,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">document</span><span class="o">.</span><span class="n">walkabout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visitor</span><span class="p">)</span>
         <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visitor</span><span class="o">.</span><span class="n">astext</span><span class="p">()</span>
 
+        <span class="c1"># WORKAROUND: For some Sphinx documents, visit_document may not be called</span>
+        <span class="c1"># Ensure body is wrapped in code mode block</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">body</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#{&quot;</span><span class="p">):</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;#{</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">body</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">body</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="n">body</span> <span class="o">+</span> <span class="s2">&quot;}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
         <span class="c1"># Get current document name</span>
         <span class="n">docname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">current_docname</span>
 
