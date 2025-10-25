@@ -229,14 +229,17 @@ Inside the code mode block:
 **Target**:
 ```typst
 // Within document-level #{...}
-set heading(offset: 1)
-include("path/to/doc.typ")
+#[
+  #set heading(offset: 1)
+  #include("path/to/doc.typ")
+]
 ```
 **Location**: `translator.py:1230-1249` (`visit_toctree`)
 **Note**:
-- Remove nested `#[...]` block (document already wrapped)
-- Remove `#` prefix from `set` and `include()`
-- All toctree includes happen inside document-level code mode
+- **Keep nested `#[...]` content block** for scoping `set` rules
+- **Keep `#` prefix** on `set` and `include()` (required in content blocks)
+- Content block creates isolated scope for heading offset
+- Without content block, `set` would affect all subsequent headings in document
 
 #### 15. Existing Function Calls (MODIFIED)
 **Current**: `#sub[text]`, `#super[text]`, `#quote[...]`, `#image()`, etc.
