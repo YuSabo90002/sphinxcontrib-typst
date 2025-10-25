@@ -10,21 +10,21 @@ Foundation phase - establishes the code mode structure.
 
 ### 0.1 Import Zone (Builder)
 
-- [ ] Verify builder generates import zone BEFORE translator runs
-- [ ] Ensure `#import` statements stay at top level (outside `#{...}`)
-- [ ] Ensure `#show: project.with(...)` stays at top level
-- [ ] Test that import zone is generated correctly
-- [ ] Verify no changes needed (current implementation correct)
+- [x] Verify builder generates import zone BEFORE translator runs
+- [x] Ensure `#import` statements stay at top level (outside `#{...}`)
+- [x] Ensure `#show: project.with(...)` stays at top level
+- [x] Test that import zone is generated correctly
+- [x] Verify no changes needed (current implementation correct)
 
 **Estimated effort**: 1 hour (verification only)
 
 ### 0.2 Document Wrapper (Translator)
 
-- [ ] Update `visit_document()` to generate `#{\n`
-- [ ] Update `depart_document()` to generate `}\n`
-- [ ] Test document wrapper with simple content
-- [ ] Verify code block starts after import zone
-- [ ] Update test fixtures with `#{...}` wrapper
+- [x] Update `visit_document()` to generate `#{\n`
+- [x] Update `depart_document()` to generate `}\n`
+- [x] Test document wrapper with simple content
+- [x] Verify code block starts after import zone
+- [x] Update test fixtures with `#{...}` wrapper
 
 **Estimated effort**: 2 hours
 
@@ -36,20 +36,20 @@ Critical phase - all text must use `text()` function to avoid markup escaping.
 
 ### 1.1 Text Node Function
 
-- [ ] Update `visit_Text()` to generate `text("...")`
-- [ ] Implement string escaping: `\\`, `\"`, `\n`, `\r`, `\t`, `\u{...}`
-- [ ] Handle escaping order (backslash first, then others)
-- [ ] Handle empty text nodes
-- [ ] Handle whitespace-only text nodes
+- [x] Update `visit_Text()` to generate `text("...")`
+- [x] Implement string escaping: `\\`, `\"`, `\n`, `\r`, `\t`, `\u{...}`
+- [x] Handle escaping order (backslash first, then others)
+- [x] Handle empty text nodes
+- [x] Handle whitespace-only text nodes
 
 **Estimated effort**: 3 hours
 
 ### 1.2 Text Concatenation
 
-- [ ] Implement `+` operator for adjacent text and formatting nodes
-- [ ] Test concatenation: `text("A ") + emph(text("B")) + text(" C")`
-- [ ] Handle edge cases (start/end of paragraph)
-- [ ] Update test fixtures with concatenation
+- [x] Implement `+` operator for adjacent text and formatting nodes
+- [x] Test concatenation: `text("A ") + emph(text("B")) + text(" C")`
+- [x] Handle edge cases (start/end of paragraph)
+- [x] Update test fixtures with concatenation
 
 **Estimated effort**: 2 hours
 
@@ -61,19 +61,19 @@ Paragraphs must use `par()` function to mark boundaries in code mode.
 
 ### 2.1 Paragraph Function
 
-- [ ] Update `visit_paragraph()` to generate `par(`
-- [ ] Update `depart_paragraph()` to generate `)\n`
-- [ ] Test single paragraph with text only
-- [ ] Test paragraph with inline formatting (emph, strong)
-- [ ] Test multiple consecutive paragraphs
+- [x] Update `visit_paragraph()` to generate `par(`
+- [x] Update `depart_paragraph()` to generate `)\n`
+- [x] Test single paragraph with text only
+- [x] Test paragraph with inline formatting (emph, strong)
+- [x] Test multiple consecutive paragraphs
 
 **Estimated effort**: 2 hours
 
 ### 2.2 Paragraph Content Collection
 
-- [ ] Ensure all inline content stays within single `par()` call
-- [ ] Test complex paragraphs (text + emph + strong + code + math)
-- [ ] Update test fixtures for paragraph wrapping
+- [x] Ensure all inline content stays within single `par()` call
+- [x] Test complex paragraphs (text + emph + strong + code + math)
+- [x] Update test fixtures for paragraph wrapping
 
 **Estimated effort**: 2 hours
 
@@ -85,42 +85,42 @@ Convert inline formatting to use bare function names with `text()` content.
 
 ### 3.1 Emphasis Conversion
 
-- [ ] Update `visit_emphasis()` to generate `emph(` (no `#`)
-- [ ] Update `depart_emphasis()` to generate `)`
-- [ ] Ensure content uses `text()` function
-- [ ] Test nested emphasis (italic inside italic)
-- [ ] Update test fixtures
+- [x] Update `visit_emphasis()` to generate `emph(` (no `#`)
+- [x] Update `depart_emphasis()` to generate `)`
+- [x] Ensure content uses `text()` function
+- [x] Test nested emphasis (italic inside italic)
+- [x] Update test fixtures
 
 **Estimated effort**: 2 hours
 
 ### 3.2 Strong Conversion
 
-- [ ] Update `visit_strong()` to generate `strong(` (no `#`)
-- [ ] Update `depart_strong()` to generate `)`
-- [ ] Ensure content uses `text()` function
-- [ ] Test underscores in strong text (`file_name.txt`)
-- [ ] Test nested strong + emphasis
-- [ ] Update test fixtures
+- [x] Update `visit_strong()` to generate `strong(` (no `#`)
+- [x] Update `depart_strong()` to generate `)`
+- [x] Ensure content uses `text()` function
+- [x] Test underscores in strong text (`file_name.txt`)
+- [x] Test nested strong + emphasis
+- [x] Update test fixtures
 
 **Estimated effort**: 2 hours
 
 ### 3.3 Subtitle Conversion
 
-- [ ] Update `visit_subtitle()` to generate `emph(` (no `#`)
-- [ ] Update `depart_subtitle()` to generate `)`
-- [ ] Ensure content uses `text()` function
-- [ ] Test subtitle with special characters
-- [ ] Update test fixtures
+- [x] Update `visit_subtitle()` to generate `emph(` (no `#`)
+- [x] Update `depart_subtitle()` to generate `)`
+- [x] Ensure content uses `text()` function
+- [x] Test subtitle with special characters
+- [x] Update test fixtures
 
 **Estimated effort**: 1 hour
 
 ### 3.4 Field Name Conversion
 
-- [ ] Update `visit_field_name()` to generate `strong(` (no `#`)
-- [ ] Update `depart_field_name()` to generate `)`
-- [ ] Ensure content uses `text()` function
-- [ ] Test API documentation field names
-- [ ] Update test fixtures
+- [x] Update `visit_field_name()` to generate `strong(` (no `#`)
+- [x] Update `depart_field_name()` to generate `)`
+- [x] Ensure content uses `text()` function
+- [x] Test API documentation field names
+- [x] Update test fixtures
 
 **Estimated effort**: 1 hour
 
@@ -132,22 +132,22 @@ Headings use `heading(level: N, text("..."))` with no `#` prefix.
 
 ### 4.1 Heading Function
 
-- [ ] Update `visit_title()` to generate `heading(level: N, ` (no `#`)
-- [ ] Calculate level using `self.section_level`
-- [ ] Ensure heading text uses `text()` function
-- [ ] Update `depart_title()` to generate `)`
-- [ ] Handle levels 1-6
-- [ ] Handle deep nesting (level > 6)
+- [x] Update `visit_title()` to generate `heading(level: N, ` (no `#`)
+- [x] Calculate level using `self.section_level`
+- [x] Ensure heading text uses `text()` function
+- [x] Update `depart_title()` to generate `)`
+- [x] Handle levels 1-6
+- [x] Handle deep nesting (level > 6)
 
 **Estimated effort**: 3 hours
 
 ### 4.2 Heading Tests
 
-- [ ] Test all 6 heading levels
-- [ ] Test deeply nested sections
-- [ ] Test heading with special characters
-- [ ] Update integration tests
-- [ ] Update test fixtures
+- [x] Test all 6 heading levels
+- [x] Test deeply nested sections
+- [x] Test heading with special characters
+- [x] Update integration tests
+- [x] Update test fixtures
 
 **Estimated effort**: 2 hours
 
@@ -155,27 +155,25 @@ Headings use `heading(level: N, text("..."))` with no `#` prefix.
 
 ## Phase 5: Code Blocks (Backtick Raw Strings)
 
-Inline code and code blocks use `raw()` with backtick raw string literals.
+Inline code and code blocks use `raw()` with string escaping (not backtick raw strings for compatibility with `+` operator).
 
 ### 5.1 Inline Code Conversion
 
-- [ ] Update `visit_literal()` to generate `raw(\`...\`)` (no `#`, no escaping)
-- [ ] Implement backtick delimiter detection (`_count_max_consecutive_backticks`)
-- [ ] Use minimum 3 backticks when code contains backticks
-- [ ] Test inline code with quotes, backslashes
-- [ ] Test inline code with backticks
-- [ ] Update test fixtures
+- [x] Update `visit_literal()` to generate `raw("...")` (no `#`, with string escaping)
+- [x] Implement string escaping for inline code (backslash, quotes)
+- [x] Test inline code with quotes, backslashes
+- [x] Test inline code concatenation in paragraphs
+- [x] Update test fixtures
 
 **Estimated effort**: 3 hours
 
 ### 5.2 Code Block Conversion
 
-- [ ] Update `visit_literal_block()` to use `raw(block: true, lang: "...", \`...\`)` (no `#`)
-- [ ] Remove `#` prefix from `codly()` and `codly-range()` calls
-- [ ] Implement multi-line backtick raw strings
-- [ ] Test code blocks with various content (quotes, backslashes, backticks)
-- [ ] Test codly integration (line numbers, highlighting)
-- [ ] Update test fixtures
+- [x] Update `visit_literal_block()` to use sugar syntax with ` ```lang ` (kept for compatibility)
+- [x] Remove `#` prefix from `codly()` and `codly-range()` calls
+- [x] Test code blocks with various content (quotes, backslashes, backticks)
+- [x] Test codly integration (line numbers, highlighting)
+- [x] Update test fixtures
 
 **Estimated effort**: 4 hours
 
@@ -187,19 +185,19 @@ Math uses `mi()` for inline and `mitex()` for block, both with backtick raw stri
 
 ### 6.1 Inline Math Conversion
 
-- [ ] Update `visit_math()` to generate `mi(\`...\`)` (no `#`, backtick raw string)
-- [ ] Test LaTeX math with backslashes (`\frac{a}{b}`)
-- [ ] Verify mitex integration
-- [ ] Update test fixtures
+- [x] Update `visit_math()` to generate `mi(\`...\`)` (no `#`, backtick raw string)
+- [x] Test LaTeX math with backslashes (`\frac{a}{b}`)
+- [x] Verify mitex integration
+- [x] Update test fixtures
 
 **Estimated effort**: 1 hour
 
 ### 6.2 Block Math Conversion
 
-- [ ] Update `visit_math_block()` to generate `mitex(\`...\`)` (no `#`, backtick raw string)
-- [ ] Test LaTeX block math with multiple lines
-- [ ] Verify mitex integration
-- [ ] Update test fixtures
+- [x] Update `visit_math_block()` to generate `mitex(\`...\`)` (no `#`, backtick raw string)
+- [x] Test LaTeX block math with multiple lines
+- [x] Verify mitex integration
+- [x] Update test fixtures
 
 **Estimated effort**: 1 hour
 
@@ -211,44 +209,44 @@ Lists require collecting all items before generating function calls.
 
 ### 7.1 List State Infrastructure
 
-- [ ] Add `list_items_stack` to `__init__`
-- [ ] Design item collection mechanism
-- [ ] Handle nested list state (stack-based)
-- [ ] Design flush mechanism
+- [x] Add `list_items_stack` to `__init__`
+- [x] Design item collection mechanism
+- [x] Handle nested list state (stack-based)
+- [x] Design flush mechanism
 
 **Estimated effort**: 3 hours
 
 ### 7.2 Bullet List Conversion
 
-- [ ] Update `visit_bullet_list()` to initialize collection
-- [ ] Update `depart_bullet_list()` to generate `list(text("..."), ...)` (no `#`)
-- [ ] Update `visit_list_item()` to collect content
-- [ ] Ensure list items use `text()` for content
-- [ ] Test simple bullet lists
-- [ ] Test nested bullet lists
-- [ ] Update test fixtures
+- [x] Update `visit_bullet_list()` to initialize collection
+- [x] Update `depart_bullet_list()` to generate `list(text("..."), ...)` (no `#`)
+- [x] Update `visit_list_item()` to collect content
+- [x] Ensure list items use `text()` for content
+- [x] Test simple bullet lists
+- [x] Test nested bullet lists
+- [x] Update test fixtures
 
 **Estimated effort**: 4 hours
 
 ### 7.3 Enumerated List Conversion
 
-- [ ] Update `visit_enumerated_list()` to initialize collection
-- [ ] Update `depart_enumerated_list()` to generate `enum(text("..."), ...)` (no `#`)
-- [ ] Handle enumeration parameters if needed
-- [ ] Ensure list items use `text()` for content
-- [ ] Test simple enum lists
-- [ ] Test nested enum lists
-- [ ] Update test fixtures
+- [x] Update `visit_enumerated_list()` to initialize collection
+- [x] Update `depart_enumerated_list()` to generate `enum(text("..."), ...)` (no `#`)
+- [x] Handle enumeration parameters if needed
+- [x] Ensure list items use `text()` for content
+- [x] Test simple enum lists
+- [x] Test nested enum lists
+- [x] Update test fixtures
 
 **Estimated effort**: 4 hours
 
 ### 7.4 Mixed & Complex Lists
 
-- [ ] Test bullet list with nested enum list
-- [ ] Test enum list with nested bullet list
-- [ ] Test 3-level nesting
-- [ ] Test list items with complex content (paragraphs, code)
-- [ ] Update comprehensive test fixtures
+- [x] Test bullet list with nested enum list
+- [x] Test enum list with nested bullet list
+- [x] Test 3-level nesting
+- [x] Test list items with complex content (paragraphs, code)
+- [x] Update comprehensive test fixtures
 
 **Estimated effort**: 3 hours
 
@@ -260,13 +258,13 @@ Definition lists use `terms()` and `terms.item()` functions.
 
 ### 8.1 Definition List Conversion
 
-- [ ] Update `visit_definition_list()` to collect term-definition pairs
-- [ ] Generate `terms(terms.item(text("term"), text("def")), ...)` (no `#`)
-- [ ] Ensure terms and definitions use `text()`
-- [ ] Handle complex definition content (emphasis, strong)
-- [ ] Test simple definition lists
-- [ ] Test nested content in definitions
-- [ ] Update test fixtures
+- [x] Update `visit_definition_list()` to collect term-definition pairs
+- [x] Generate `terms(terms.item(text("term"), text("def")), ...)` (no `#`)
+- [x] Ensure terms and definitions use `text()`
+- [x] Handle complex definition content (emphasis, strong)
+- [x] Test simple definition lists
+- [x] Test nested content in definitions
+- [x] Update test fixtures
 
 **Estimated effort**: 4 hours
 
@@ -278,14 +276,14 @@ Toctree uses `{...}` scope block for `set` rule isolation.
 
 ### 9.1 Toctree Scope Block
 
-- [ ] Update `visit_toctree()` to generate `{\n` (no `#[`)
-- [ ] Update to generate `set heading(offset: 1)\n` (no `#`)
-- [ ] Update to generate `include("...")\n` (no `#`)
-- [ ] Update `depart_toctree()` to generate `}\n` (no `]`)
-- [ ] Test scope isolation (offset doesn't leak)
-- [ ] Test multiple includes
-- [ ] Test relative path calculation
-- [ ] Update test fixtures
+- [x] Update `visit_toctree()` to generate `{\n` (no `#[`)
+- [x] Update to generate `set heading(offset: 1)\n` (no `#`)
+- [x] Update to generate `include("...")\n` (no `#`)
+- [x] Update `depart_toctree()` to generate `}\n` (no `]`)
+- [x] Test scope isolation (offset doesn't leak)
+- [x] Test multiple includes
+- [x] Test relative path calculation
+- [x] Update test fixtures
 
 **Estimated effort**: 3 hours
 
@@ -297,56 +295,56 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 
 ### 10.1 Subscript/Superscript
 
-- [ ] Update `visit_subscript()` to generate `sub(` (no `#`)
-- [ ] Update `visit_superscript()` to generate `super(` (no `#`)
-- [ ] Ensure content uses `text()` function
-- [ ] Update test fixtures
+- [x] Update `visit_subscript()` to generate `sub(` (no `#`)
+- [x] Update `visit_superscript()` to generate `super(` (no `#`)
+- [x] Ensure content uses `text()` function
+- [x] Update test fixtures
 
 **Estimated effort**: 1 hour
 
 ### 10.2 Block Quote
 
-- [ ] Update `visit_block_quote()` to generate `quote(` (no `#`)
-- [ ] Update `depart_block_quote()` to generate `)`
-- [ ] Test quote with complex content
-- [ ] Update test fixtures
+- [x] Update `visit_block_quote()` to generate `quote(` (no `#`)
+- [x] Update `depart_block_quote()` to generate `)`
+- [x] Test quote with complex content
+- [x] Update test fixtures
 
 **Estimated effort**: 1 hour
 
 ### 10.3 Images & Figures
 
-- [ ] Update `visit_image()` to generate `image(...)` (no `#`)
-- [ ] Update `visit_figure()` to generate `figure(...)` (no `#`)
-- [ ] Test image paths and captions
-- [ ] Update test fixtures
+- [x] Update `visit_image()` to generate `image(...)` (no `#`)
+- [x] Update `visit_figure()` to generate `figure(...)` (no `#`)
+- [x] Test image paths and captions
+- [x] Update test fixtures
 
 **Estimated effort**: 2 hours
 
 ### 10.4 Tables
 
-- [ ] Update `visit_table()` to generate `table(...)` (no `#`)
-- [ ] Ensure table content uses proper formatting
-- [ ] Test complex tables
-- [ ] Update test fixtures
+- [x] Update `visit_table()` to generate `table(...)` (no `#`)
+- [x] Ensure table content uses proper formatting
+- [x] Test complex tables
+- [x] Update test fixtures
 
 **Estimated effort**: 2 hours
 
 ### 10.5 Links
 
-- [ ] Update `visit_reference()` to generate `link(...)` (no `#`)
-- [ ] Ensure link text uses `text()` function
-- [ ] Test internal and external links
-- [ ] Update test fixtures
+- [x] Update `visit_reference()` to generate `link(...)` (no `#`)
+- [x] Ensure link text uses `text()` function
+- [x] Test internal and external links
+- [x] Update test fixtures
 
 **Estimated effort**: 1 hour
 
 ### 10.6 Admonitions
 
-- [ ] Update all admonition visitors to remove `#` prefix
-- [ ] `info()`, `warning()`, `tip()`, `note()`, etc.
-- [ ] Ensure admonition content uses proper formatting
-- [ ] Test all admonition types
-- [ ] Update test fixtures
+- [x] Update all admonition visitors to remove `#` prefix
+- [x] `info()`, `warning()`, `tip()`, `note()`, etc.
+- [x] Ensure admonition content uses proper formatting
+- [x] Test all admonition types
+- [x] Update test fixtures
 
 **Estimated effort**: 2 hours
 
