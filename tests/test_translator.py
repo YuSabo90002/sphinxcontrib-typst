@@ -2514,3 +2514,241 @@ def test_table_normal_cells_without_spanning(simple_document, mock_builder):
     # Should have simple bracket cells
     assert "[Cell 1]" in output
     assert "[Cell 2]" in output
+
+
+# API description nodes tests (Issue #55)
+
+
+def test_index_node_is_skipped(simple_document, mock_builder):
+    """Test that index nodes are skipped in output."""
+    from sphinx import addnodes
+
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create an index node
+    index = addnodes.index(entries=[("single", "example", "example-id", "", None)])
+
+    # Index should raise SkipNode
+    with pytest.raises(nodes.SkipNode):
+        translator.visit_index(index)
+
+    # Output should be empty (index is skipped)
+    output = translator.astext()
+    assert output == ""
+
+
+def test_desc_signature_rendering(simple_document, mock_builder):
+    """Test that desc_signature nodes are rendered in bold."""
+    from sphinx import addnodes
+
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a desc node with signature
+    desc = addnodes.desc()
+    sig = addnodes.desc_signature()
+    sig += nodes.Text("TypstBuilder(app, env)")
+    desc += sig
+
+    desc.walkabout(translator)
+    output = translator.astext()
+
+    assert "#strong[TypstBuilder(app, env)]" in output
+
+
+def test_desc_with_annotation_and_name(simple_document, mock_builder):
+    """Test desc_signature with annotation (class keyword) and name."""
+    from sphinx import addnodes
+
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create: class TypstBuilder
+    desc = addnodes.desc()
+    sig = addnodes.desc_signature()
+
+    annotation = addnodes.desc_annotation()
+    annotation += nodes.Text("class")
+    sig += annotation
+
+    name = addnodes.desc_name()
+    name += nodes.Text("TypstBuilder")
+    sig += name
+
+    desc += sig
+
+    desc.walkabout(translator)
+    output = translator.astext()
+
+    assert "#strong[class TypstBuilder]" in output
+
+
+def test_desc_parameterlist(simple_document, mock_builder):
+    """Test desc_parameterlist with multiple parameters."""
+    from sphinx import addnodes
+
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create: function(arg1, arg2, arg3)
+    desc = addnodes.desc()
+    sig = addnodes.desc_signature()
+
+    name = addnodes.desc_name()
+    name += nodes.Text("function")
+    sig += name
+
+    paramlist = addnodes.desc_parameterlist()
+    param1 = addnodes.desc_parameter()
+    param1 += nodes.Text("arg1")
+    paramlist += param1
+
+    param2 = addnodes.desc_parameter()
+    param2 += nodes.Text("arg2")
+    paramlist += param2
+
+    param3 = addnodes.desc_parameter()
+    param3 += nodes.Text("arg3")
+    paramlist += param3
+
+    sig += paramlist
+    desc += sig
+
+    desc.walkabout(translator)
+    output = translator.astext()
+
+    assert "#strong[function(arg1, arg2, arg3)]" in output
+
+
+def test_field_list_rendering(simple_document, mock_builder):
+    """Test field_list rendering with field names and bodies."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create: Parameters: description text
+    field_list = nodes.field_list()
+    field = nodes.field()
+
+    field_name = nodes.field_name()
+    field_name += nodes.Text("Parameters")
+    field += field_name
+
+    field_body = nodes.field_body()
+    para = nodes.paragraph()
+    para += nodes.Text("description text")
+    field_body += para
+    field += field_body
+
+    field_list += field
+
+    field_list.walkabout(translator)
+    output = translator.astext()
+
+    assert "*Parameters:*" in output
+    assert "description text" in output
+
+
+def test_rubric_rendering(simple_document, mock_builder):
+    """Test rubric nodes are rendered as strong text."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    rubric = nodes.rubric()
+    rubric += nodes.Text("Methods")
+
+    rubric.walkabout(translator)
+    output = translator.astext()
+
+    assert "#strong[Methods]" in output
+
+
+def test_title_reference_rendering(simple_document, mock_builder):
+    """Test title_reference nodes are rendered in emphasis."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    title_ref = nodes.title_reference()
+    title_ref += nodes.Text("Example Title")
+
+    title_ref.walkabout(translator)
+    output = translator.astext()
+
+    assert "#emph[Example Title]" in output
+
+
+def test_full_api_description_structure(simple_document, mock_builder):
+    """Test complete API description with signature, content, and field list."""
+    from sphinx import addnodes
+
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create: class TypstBuilder(app, env)
+    #         Description text.
+    #         Parameters: ...
+    desc = addnodes.desc()
+
+    # Signature
+    sig = addnodes.desc_signature()
+    annotation = addnodes.desc_annotation()
+    annotation += nodes.Text("class")
+    sig += annotation
+
+    name = addnodes.desc_name()
+    name += nodes.Text("TypstBuilder")
+    sig += name
+
+    paramlist = addnodes.desc_parameterlist()
+    param1 = addnodes.desc_parameter()
+    param1 += nodes.Text("app")
+    paramlist += param1
+
+    param2 = addnodes.desc_parameter()
+    param2 += nodes.Text("env")
+    paramlist += param2
+
+    sig += paramlist
+    desc += sig
+
+    # Content
+    content = addnodes.desc_content()
+    para = nodes.paragraph()
+    para += nodes.Text("Builder class for Typst output.")
+    content += para
+
+    # Field list
+    field_list = nodes.field_list()
+    field = nodes.field()
+
+    field_name = nodes.field_name()
+    field_name += nodes.Text("Parameters")
+    field += field_name
+
+    field_body = nodes.field_body()
+    param_para = nodes.paragraph()
+    param_para += nodes.Text("app - Sphinx application")
+    field_body += param_para
+    field += field_body
+
+    field_list += field
+    content += field_list
+
+    desc += content
+
+    desc.walkabout(translator)
+    output = translator.astext()
+
+    # Check all parts are present
+    assert "#strong[class TypstBuilder(app, env)]" in output
+    assert "Builder class for Typst output." in output
+    assert "*Parameters:*" in output
+    assert "app - Sphinx application" in output
