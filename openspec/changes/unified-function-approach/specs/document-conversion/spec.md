@@ -329,9 +329,9 @@ THEN the structure MUST be:
 
 ### Requirement: テキストノードの `text()` 関数化
 
-テキストノードは `text("...")` 関数で包まれなければならない (MUST)。`[...]` マークアップモードを使用してはならない (MUST NOT)。テキスト内の改行はエスケープシーケンス `\n` を使用しなければならない (MUST)。引用符はエスケープシーケンス `\"` を使用しなければならない (MUST)。
+テキストノードは `text("...")` 関数で包まれなければならない (MUST)。`[...]` マークアップモードを使用してはならない (MUST NOT)。文字列内では標準的なエスケープシーケンスを使用しなければならない (MUST): `\\` (backslash), `\"` (quote), `\n` (newline), `\r` (carriage return), `\t` (tab), `\u{...}` (Unicode)。
 
-**Rationale**: `text()` function uses string mode, eliminating the need to escape special characters (`#`, `*`, `_`, `$`, `[`, `]`). However, newlines must use `\n` escape sequence and quotes must use `\"`. Markup mode `[...]` requires escaping and can cause syntax errors.
+**Rationale**: `text()` function uses string mode, eliminating the need to escape special characters (`#`, `*`, `_`, `$`, `[`, `]`). However, standard string escape sequences must be used for backslash, quotes, newlines, tabs, etc. Markup mode `[...]` requires escaping and can cause syntax errors.
 
 #### Scenario: 通常のテキストノードの変換
 
@@ -388,6 +388,25 @@ WHEN the translator processes the text node
 THEN the output MUST be `text("He said \"Hello\"")`
 AND quotes MUST be escaped as `\"`
 AND NOT unescaped quotes (would break string syntax)
+```
+
+#### Scenario: バックスラッシュを含むテキスト
+
+```gherkin
+GIVEN a Text node with content "Path: C:\Users\name"
+WHEN the translator processes the text node
+THEN the output MUST be `text("Path: C:\\Users\\name")`
+AND backslashes MUST be escaped as `\\`
+AND backslash escaping MUST be done first (before other escaping)
+```
+
+#### Scenario: タブを含むテキスト
+
+```gherkin
+GIVEN a Text node with content "Column1\tColumn2"
+WHEN the translator processes the text node
+THEN the output MUST be `text("Column1\tColumn2")`
+AND tabs MUST use escape sequence `\t`
 ```
 
 ---
@@ -591,10 +610,13 @@ Wrap ALL text in `text()` function to avoid escaping issues:
 # visit_Text()
 def visit_Text(self, node):
     text_content = node.astext()
-    # Escape quotes and newlines in string
-    escaped = text_content.replace('\\', '\\\\')  # Backslash first
-    escaped = escaped.replace('"', '\\"')          # Then quotes
-    escaped = escaped.replace('\n', '\\n')         # Then newlines
+    # Standard string escaping (order matters!)
+    escaped = text_content.replace('\\', '\\\\')  # 1. Backslash first
+    escaped = escaped.replace('"', '\\"')          # 2. Quotes
+    escaped = escaped.replace('\n', '\\n')         # 3. Newlines
+    escaped = escaped.replace('\r', '\\r')         # 4. Carriage returns
+    escaped = escaped.replace('\t', '\\t')         # 5. Tabs
+    # Unicode escapes typically not needed (UTF-8 source)
     self.add_text(f'text("{escaped}")')
 ```
 
@@ -603,10 +625,15 @@ def visit_Text(self, node):
 - `[...]` uses markup mode → requires escaping special characters
 - Example: `text("$100 #1")` works, `[$100 #1]` breaks
 
-**Escape sequences required**:
-- Newlines: `\n` (literal newline would break string syntax)
-- Quotes: `\"` (unescaped quotes would close string early)
-- Backslashes: `\\` (escape backslashes first to avoid double-escaping)
+**Standard string escape sequences** (as per Typst specification):
+- `\\` for backslash (MUST escape first to avoid double-escaping)
+- `\"` for quote (unescaped quotes would close string early)
+- `\n` for newline (literal newline would break string syntax)
+- `\r` for carriage return
+- `\t` for tab
+- `\u{...}` for Unicode escape sequence (e.g., `\u{1f600}` for 😀)
+
+**Note**: Unicode escapes typically not needed since source files are UTF-8.
 
 **For concatenation** (within a paragraph):
 ```python
