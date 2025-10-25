@@ -720,6 +720,35 @@ class TypstTranslator(SphinxTranslator):
         self.table_cells = []  # Store cells for table generation
         self.table_colcount = 0  # Track number of columns
 
+    def _format_table_cell(self, cell: dict, indent: str = "  ") -> str:
+        """
+        Format a table cell with optional colspan/rowspan.
+
+        Args:
+            cell: Cell dictionary with 'content', 'colspan', 'rowspan'
+            indent: Indentation string
+
+        Returns:
+            Formatted Typst cell string
+        """
+        content = cell["content"]
+        colspan = cell.get("colspan", 1)
+        rowspan = cell.get("rowspan", 1)
+
+        # Normal cell (no spanning)
+        if colspan == 1 and rowspan == 1:
+            return f"{indent}[{content}],\n"
+
+        # Cell with spanning - use table.cell()
+        params = []
+        if colspan > 1:
+            params.append(f"colspan: {colspan}")
+        if rowspan > 1:
+            params.append(f"rowspan: {rowspan}")
+
+        params_str = ", ".join(params)
+        return f"{indent}table.cell({params_str})[{content}],\n"
+
     def depart_table(self, node: nodes.table) -> None:
         """
         Depart a table node.
@@ -742,12 +771,12 @@ class TypstTranslator(SphinxTranslator):
             if header_cells:
                 self.body.append("  table.header(\n")
                 for cell in header_cells:
-                    self.body.append(f"    [{cell['content']}],\n")
+                    self.body.append(self._format_table_cell(cell, indent="    "))
                 self.body.append("  ),\n")
 
             # Add body cells
             for cell in body_cells:
-                self.body.append(f"  [{cell['content']}],\n")
+                self.body.append(self._format_table_cell(cell, indent="  "))
 
             self.body.append(")\n\n")
 
@@ -860,6 +889,12 @@ class TypstTranslator(SphinxTranslator):
         # Start collecting cell content
         self.table_cell_content = []
 
+        # Read cell spanning attributes
+        # morecols: number of additional columns (0 = normal cell)
+        # morerows: number of additional rows (0 = normal cell)
+        self.current_morecols = node.get("morecols", 0)
+        self.current_morerows = node.get("morerows", 0)
+
     def depart_entry(self, node: nodes.entry) -> None:
         """
         Depart an entry (table cell) node.
@@ -877,8 +912,20 @@ class TypstTranslator(SphinxTranslator):
             # If no content was captured, try to get text from the node
             cell_text = node.astext().strip()
 
-        # Store cell with header/body distinction
-        self.table_cells.append({"content": cell_text, "is_header": self.in_thead})
+        # Calculate colspan and rowspan from morecols/morerows
+        # morecols=1 means 2 columns total (1 + 1 additional)
+        colspan = self.current_morecols + 1
+        rowspan = self.current_morerows + 1
+
+        # Store cell with header/body distinction and spanning info
+        self.table_cells.append(
+            {
+                "content": cell_text,
+                "is_header": self.in_thead,
+                "colspan": colspan,
+                "rowspan": rowspan,
+            }
+        )
         self.table_cell_content = []
 
     def visit_block_quote(self, node: nodes.block_quote) -> None:
