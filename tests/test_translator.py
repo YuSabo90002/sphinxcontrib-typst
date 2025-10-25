@@ -2272,3 +2272,245 @@ def test_in_thead_state_management(simple_document, mock_builder):
     # Depart thead
     translator.depart_thead(thead)
     assert translator.in_thead is False
+
+
+# --- Issue #39: Cell Spanning Support ---
+
+
+def test_table_cell_colspan(simple_document, mock_builder):
+    """Test that cells with morecols generate colspan in Typst."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a table with colspan
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=3)
+
+    colspec1 = nodes.colspec(colwidth=1)
+    colspec2 = nodes.colspec(colwidth=1)
+    colspec3 = nodes.colspec(colwidth=1)
+    tgroup += colspec1
+    tgroup += colspec2
+    tgroup += colspec3
+
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+
+    # Cell spanning 2 columns (morecols=1)
+    entry1 = nodes.entry(morecols=1)
+    entry1 += nodes.paragraph(text="Spans 2 cols")
+    row1 += entry1
+
+    # Normal cell
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="Col 3")
+    row1 += entry2
+
+    tbody += row1
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should have table.cell(colspan: 2)
+    assert "table.cell(colspan: 2)" in output
+    assert "Spans 2 cols" in output
+    assert "Col 3" in output
+
+
+def test_table_cell_rowspan(simple_document, mock_builder):
+    """Test that cells with morerows generate rowspan in Typst."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a table with rowspan
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+
+    colspec1 = nodes.colspec(colwidth=1)
+    colspec2 = nodes.colspec(colwidth=1)
+    tgroup += colspec1
+    tgroup += colspec2
+
+    tbody = nodes.tbody()
+
+    # Row 1
+    row1 = nodes.row()
+    # Cell spanning 2 rows (morerows=1)
+    entry1 = nodes.entry(morerows=1)
+    entry1 += nodes.paragraph(text="Spans 2 rows")
+    row1 += entry1
+
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="Row 1 Col 2")
+    row1 += entry2
+    tbody += row1
+
+    # Row 2
+    row2 = nodes.row()
+    entry3 = nodes.entry()
+    entry3 += nodes.paragraph(text="Row 2 Col 2")
+    row2 += entry3
+    tbody += row2
+
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should have table.cell(rowspan: 2)
+    assert "table.cell(rowspan: 2)" in output
+    assert "Spans 2 rows" in output
+
+
+def test_table_cell_colspan_and_rowspan(simple_document, mock_builder):
+    """Test that cells with both morecols and morerows generate both colspan and rowspan."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a table with both colspan and rowspan
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=3)
+
+    colspec1 = nodes.colspec(colwidth=1)
+    colspec2 = nodes.colspec(colwidth=1)
+    colspec3 = nodes.colspec(colwidth=1)
+    tgroup += colspec1
+    tgroup += colspec2
+    tgroup += colspec3
+
+    tbody = nodes.tbody()
+
+    # Row 1
+    row1 = nodes.row()
+    # Cell spanning 2 cols and 2 rows (morecols=1, morerows=1)
+    entry1 = nodes.entry(morecols=1, morerows=1)
+    entry1 += nodes.paragraph(text="Spans 2x2")
+    row1 += entry1
+
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="R1 C3")
+    row1 += entry2
+    tbody += row1
+
+    # Row 2
+    row2 = nodes.row()
+    entry3 = nodes.entry()
+    entry3 += nodes.paragraph(text="R2 C3")
+    row2 += entry3
+    tbody += row2
+
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should have table.cell(colspan: 2, rowspan: 2)
+    assert "table.cell(colspan: 2, rowspan: 2)" in output
+    assert "Spans 2x2" in output
+
+
+def test_table_header_cell_with_colspan(simple_document, mock_builder):
+    """Test that header cells with colspan work correctly."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a table with header colspan
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=3)
+
+    colspec1 = nodes.colspec(colwidth=1)
+    colspec2 = nodes.colspec(colwidth=1)
+    colspec3 = nodes.colspec(colwidth=1)
+    tgroup += colspec1
+    tgroup += colspec2
+    tgroup += colspec3
+
+    # Header with spanning cell
+    thead = nodes.thead()
+    row1 = nodes.row()
+    # Header spanning 2 columns
+    entry1 = nodes.entry(morecols=1)
+    entry1 += nodes.paragraph(text="Header 1-2")
+    row1 += entry1
+
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="Header 3")
+    row1 += entry2
+    thead += row1
+    tgroup += thead
+
+    # Body
+    tbody = nodes.tbody()
+    row2 = nodes.row()
+    entry3 = nodes.entry()
+    entry3 += nodes.paragraph(text="Cell 1")
+    row2 += entry3
+
+    entry4 = nodes.entry()
+    entry4 += nodes.paragraph(text="Cell 2")
+    row2 += entry4
+
+    entry5 = nodes.entry()
+    entry5 += nodes.paragraph(text="Cell 3")
+    row2 += entry5
+    tbody += row2
+    tgroup += tbody
+
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should have table.header() with colspan cell
+    assert "table.header(" in output
+    assert "table.cell(colspan: 2)" in output
+    assert "Header 1-2" in output
+    assert "Header 3" in output
+
+
+def test_table_normal_cells_without_spanning(simple_document, mock_builder):
+    """Test that normal cells (without spanning) still work correctly."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a simple table without any spanning
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+
+    colspec1 = nodes.colspec(colwidth=1)
+    colspec2 = nodes.colspec(colwidth=1)
+    tgroup += colspec1
+    tgroup += colspec2
+
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+
+    entry1 = nodes.entry()
+    entry1 += nodes.paragraph(text="Cell 1")
+    row1 += entry1
+
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="Cell 2")
+    row1 += entry2
+
+    tbody += row1
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should NOT have table.cell() for normal cells
+    assert "table.cell" not in output
+    # Should have simple bracket cells
+    assert "[Cell 1]" in output
+    assert "[Cell 2]" in output
