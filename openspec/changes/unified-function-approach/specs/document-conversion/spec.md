@@ -490,9 +490,11 @@ AND sugar syntax MUST be kept as-is (works in code mode)
 
 ### Requirement: Toctree の `include()` とスコープ管理
 
-Toctreeで生成される `include()` 呼び出しは**ネストされた content block (`#[...]`)** 内に配置しなければならない (MUST)。`set` と `include()` には `#` プレフィックスが必要である (MUST)。
+Toctreeで生成される `include()` 呼び出しは**ネストされた scope block (`{...}`)** 内に配置しなければならない (MUST)。`set` と `include()` には `#` プレフィックスを使用してはならない (MUST NOT)。
 
-**Rationale**: Content blocks create isolated scopes for `set` rules. Without a nested content block, `set heading(offset: 1)` would affect ALL subsequent headings in the document, not just the included files. The `#` prefix is required when using `set` and `include()` inside content blocks (`#[...]`). This differs from code blocks (`#{...}`) where `#` prefix is not needed.
+**Rationale**: Scope blocks (`{...}`) create isolated scopes for `set` rules while maintaining code mode. Without a scope block, `set heading(offset: 1)` would affect ALL subsequent headings in the document, not just the included files. Inside code blocks (`#{...}`), nested scope blocks use the same code mode syntax (no `#` prefix needed). This maintains consistency with the unified code mode approach.
+
+**Reference**: Typst documentation states "When nested inside of a block, [a set rule] is only in effect until the end of that block."
 
 #### Scenario: Toctreeの単純な変換
 
@@ -500,13 +502,13 @@ Toctreeで生成される `include()` 呼び出しは**ネストされた conten
 GIVEN a Sphinx toctree with 2 entries
 WHEN the translator processes the toctree node inside document-level code mode
 THEN the output MUST be:
-  #[
-    #set heading(offset: 1)
-    #include("doc1.typ")
-    #include("doc2.typ")
-  ]
-AND MUST wrap in nested content block #[...] for scope isolation
-AND MUST use #include() and #set (# prefix required in content blocks)
+  {
+    set heading(offset: 1)
+    include("doc1.typ")
+    include("doc2.typ")
+  }
+AND MUST wrap in nested scope block {...} for scope isolation
+AND MUST NOT use # prefix (we're in code mode)
 ```
 
 #### Scenario: Toctreeの相対パス計算
@@ -514,9 +516,9 @@ AND MUST use #include() and #set (# prefix required in content blocks)
 ```gherkin
 GIVEN a toctree in "guides/index.typ" including "../api/reference.typ"
 WHEN the translator computes the relative include path
-THEN the output MUST be `#include("../api/reference.typ")`
+THEN the output MUST be `include("../api/reference.typ")`
 AND path MUST be relative to the current document
-AND # prefix MUST be present (inside content block)
+AND NO # prefix (we're in code mode)
 ```
 
 #### Scenario: Toctreeのスコープ分離
@@ -527,13 +529,15 @@ WHEN the translator generates the complete document
 THEN the output structure MUST be:
   #{
     heading(level: 1, text("Before"))  // offset NOT applied
-    #[
-      #set heading(offset: 1)
-      #include("doc1.typ")  // offset applied to included headings
-    ]
+    {
+      set heading(offset: 1)
+      include("doc1.typ")  // offset applied to included headings
+      include("doc2.typ")
+    }
     heading(level: 1, text("After"))  // offset NOT applied
   }
-AND set rule MUST NOT leak outside the content block
+AND set rule MUST NOT leak outside the scope block
+AND ALL code uses bare function names (no # prefix)
 ```
 
 ---
@@ -902,7 +906,7 @@ def visit_literal(self, node):
 
 ### Toctree with `include()` Function
 
-Remove nested code mode block and `#` prefixes from toctree:
+Use nested scope block `{...}` for toctree with code mode syntax:
 
 ```python
 # Current (nested content block with # prefixes)
@@ -920,36 +924,40 @@ def visit_toctree(self, node):
     self.add_text("]\n\n")
     raise nodes.SkipNode
 
-# Target (KEEP nested content block for scope isolation)
+# Target (use {...} scope block, remove # prefixes)
 def visit_toctree(self, node):
     entries = node.get("entries", [])
 
-    # KEEP nested #[...] content block for scope isolation
-    # #[...] creates isolated scope for set rules
-    self.add_text("#[\n")
-    self.add_text("  #set heading(offset: 1)\n")  # KEEP # prefix
+    # Use {...} scope block for set rule isolation
+    # Maintains code mode (no # prefix needed)
+    self.add_text("{\n")
+    self.add_text("  set heading(offset: 1)\n")  # NO # prefix
 
     for _title, docname in entries:
         relative_path = self._compute_relative_include_path(docname, current_docname)
-        self.add_text(f'  #include("{relative_path}.typ")\n')  # KEEP # prefix
+        self.add_text(f'  include("{relative_path}.typ")\n')  # NO # prefix
 
-    self.add_text("]\n\n")
+    self.add_text("}\n\n")
     raise nodes.SkipNode
 ```
 
-**Key points**:
-- **KEEP nested `#[...]` content block** for scope isolation
-- **KEEP `#` prefix** on `set` and `include()` (required in content blocks)
-- Content block prevents `set` rules from leaking to rest of document
-- Without content block, ALL subsequent headings would be affected by offset
+**Key changes**:
+- **Change from `#[...]` to `{...}`** (scope block, not content block)
+- **Remove `#` prefix** from `set` and `include()` (we're in code mode)
+- Scope block still provides isolation for `set` rules
+- Consistent with unified code mode approach
 
-**Why keep nested content block?**
-- Creates isolated scope for `set heading(offset: 1)`
-- Prevents offset from affecting headings after toctree
-- `#[...]` = content block (different from `#{...}` code block)
-- Inside content blocks, `#` prefix is required for statements
+**Why use `{...}` scope block?**
+- Creates isolated scope for `set heading(offset: 1)` (same as `#[...]`)
+- Maintains code mode syntax (no `#` prefix needed)
+- Consistent with rest of document (all in code mode)
+- Typst doc: "When nested inside of a block, [set rule] is only in effect until the end of that block"
 
-**No changes needed** - current implementation is already correct!
+**Advantages over `#[...]` content block**:
+- No mode switching (stays in code mode)
+- No `#` prefix needed (consistent syntax)
+- Same scoping behavior for `set` rules
+- Simpler and more uniform
 
 ### Definition Lists with `terms.item()` Function
 
