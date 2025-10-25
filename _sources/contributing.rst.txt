@@ -105,6 +105,34 @@ Run all quality checks:
    uv run mypy typsphinx/
    uv run pytest --cov
 
+Using Tox
+~~~~~~~~~
+
+We use tox for running tests across multiple Python versions and environments.
+Tox provides the same commands used in CI, making it easy to reproduce issues locally:
+
+.. code-block:: bash
+
+   # Run all tox environments (tests, lint, type check, docs)
+   uv run tox
+
+   # Run specific environments
+   uv run tox -e lint          # Black + Ruff
+   uv run tox -e type          # Mypy type checking
+   uv run tox -e py311         # Tests on Python 3.11
+   uv run tox -e docs-html     # Build HTML documentation
+   uv run tox -e docs-pdf      # Build PDF documentation
+   uv run tox -e docs          # Build both HTML and PDF
+
+   # Run tests on specific Python versions
+   uv run tox -e py39,py310,py311,py312
+
+The tox configuration is defined in ``tox.ini`` and provides:
+
+- Consistent test execution across local and CI environments
+- Isolated virtual environments for each test run
+- Same commands work locally and in GitHub Actions
+
 Development Workflow
 --------------------
 

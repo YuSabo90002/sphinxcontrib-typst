@@ -359,6 +359,32 @@ uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </sp
 </pre></div>
 </div>
 </section>
+<section id="using-tox">
+<h3>Using Tox<a class="headerlink" href="#using-tox" title="Link to this heading">¶</a></h3>
+<p>We use tox for running tests across multiple Python versions and environments.
+Tox provides the same commands used in CI, making it easy to reproduce issues locally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tox environments (tests, lint, type check, docs)</span>
+uv<span class="w"> </span>run<span class="w"> </span>tox
+
+<span class="c1"># Run specific environments</span>
+uv<span class="w"> </span>run<span class="w"> </span>tox<span class="w"> </span>-e<span class="w"> </span>lint<span class="w">          </span><span class="c1"># Black + Ruff</span>
+uv<span class="w"> </span>run<span class="w"> </span>tox<span class="w"> </span>-e<span class="w"> </span><span class="nb">type</span><span class="w">          </span><span class="c1"># Mypy type checking</span>
+uv<span class="w"> </span>run<span class="w"> </span>tox<span class="w"> </span>-e<span class="w"> </span>py311<span class="w">         </span><span class="c1"># Tests on Python 3.11</span>
+uv<span class="w"> </span>run<span class="w"> </span>tox<span class="w"> </span>-e<span class="w"> </span>docs-html<span class="w">     </span><span class="c1"># Build HTML documentation</span>
+uv<span class="w"> </span>run<span class="w"> </span>tox<span class="w"> </span>-e<span class="w"> </span>docs-pdf<span class="w">      </span><span class="c1"># Build PDF documentation</span>
+uv<span class="w"> </span>run<span class="w"> </span>tox<span class="w"> </span>-e<span class="w"> </span>docs<span class="w">          </span><span class="c1"># Build both HTML and PDF</span>
+
+<span class="c1"># Run tests on specific Python versions</span>
+uv<span class="w"> </span>run<span class="w"> </span>tox<span class="w"> </span>-e<span class="w"> </span>py39,py310,py311,py312
+</pre></div>
+</div>
+<p>The tox configuration is defined in <code class="docutils literal notranslate"><span class="pre">tox.ini</span></code> and provides:</p>
+<ul class="simple">
+<li><p>Consistent test execution across local and CI environments</p></li>
+<li><p>Isolated virtual environments for each test run</p></li>
+<li><p>Same commands work locally and in GitHub Actions</p></li>
+</ul>
+</section>
 </section>
 <section id="development-workflow">
 <h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading">¶</a></h2>
@@ -608,6 +634,7 @@ under the MIT License.</p>
 <li><a class="reference internal" href="#ruff-linting">Ruff (Linting)</a></li>
 <li><a class="reference internal" href="#mypy-type-checking">Mypy (Type Checking)</a></li>
 <li><a class="reference internal" href="#all-checks">All Checks</a></li>
+<li><a class="reference internal" href="#using-tox">Using Tox</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#development-workflow">Development Workflow</a><ul>
