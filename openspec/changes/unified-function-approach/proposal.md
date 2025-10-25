@@ -8,9 +8,29 @@
 
 ## Summary
 
-This proposal establishes a **unified function-based architecture** for all Typst element generation in sphinx-typst. Instead of mixing sugar syntax (`=`, `*`, `_`, `-`, `+`) with function calls, we will convert **all elements that currently use sugar syntax** to their canonical function call forms.
+This proposal establishes a **unified code mode architecture** for all Typst element generation in sphinx-typst. We will wrap the entire document in a single code mode block (`#[...]`) and use function calls without `#` prefixes inside, eliminating all sugar syntax (`=`, `*`, `_`, `-`, `+`).
 
-This is an **architectural principle**, not just a set of individual conversions. The goal is to achieve **complete consistency** across the entire translator implementation.
+This is an **architectural principle**, not just a set of individual conversions. The goal is to achieve **maximum rigor and complete consistency** across the entire translator implementation.
+
+### Key Design Decision: Document-Level Code Mode
+
+**Entire document wrapped in `#[...]`** with function calls inside (no `#` prefix needed).
+
+**Example Output**:
+```typst
+#[
+heading(level: 1)[Introduction]
+
+[This is ]emph[emphasized][ and ]strong[strong][ text.]
+
+list(
+  [First item],
+  [Second item],
+)
+]
+```
+
+This approach matches the existing toctree implementation pattern at [translator.py:1230](https://github.com/YuSabo90002/typsphinx/blob/main/typsphinx/translator.py#L1230).
 
 ## Problem Statement
 
@@ -66,60 +86,91 @@ The current implementation mixes three different approaches:
 
 ### Architectural Principle
 
-**ALL elements that have function equivalents MUST use function syntax.**
+**Entire document MUST be wrapped in a single code mode block (`#[...]`) with NO `#` prefixes inside.**
 
-Sugar syntax is ONLY acceptable when:
-1. It is Typst standard syntax (code blocks, inline code, math delimiters)
-2. No function equivalent exists
-3. The sugar syntax is explicitly required by Typst
+Inside the code mode block:
+1. ALL function calls use bare function names (e.g., `heading()`, `emph[]`, `strong[]`)
+2. Text nodes MUST be wrapped in `[...]` content blocks
+3. Sugar syntax is NOT used (no `=`, `_`, `*`, `-`, `+`)
+
+### Document Structure
+
+```typst
+#[
+  // All content here uses function calls without # prefix
+  heading(level: 1)[Title]
+  [Text content]
+  emph[emphasized]
+]
+```
 
 ### Elements to Convert
 
-#### 1. Headings (6 levels)
+#### 1. Document Wrapper (NEW)
+**Current**: No wrapper, direct output to file
+**Target**: `#[` at document start, `]` at document end
+**Location**: `translator.py:81-99` (`visit_document`, `depart_document`)
+**Critical**: This enables all other conversions
+
+#### 2. Headings (6 levels)
 **Current**: `= Heading`, `== Heading`, `=== Heading`, etc.
-**Target**: `#heading(level: 1)[Heading]`, `#heading(level: 2)[Heading]`, etc.
+**Target**: `heading(level: 1)[Heading]`, `heading(level: 2)[Heading]`, etc. (NO `#` prefix)
 **Location**: `translator.py:132` (`visit_title`)
 
-#### 2. Emphasis
+#### 3. Emphasis
 **Current**: `_text_`
-**Target**: `#emph[text]`
+**Target**: `emph[text]` (NO `#` prefix)
 **Location**: `translator.py:336` (`visit_emphasis`)
 
-#### 3. Strong
+#### 4. Strong
 **Current**: `*text*`
-**Target**: `#strong[text]`
+**Target**: `strong[text]` (NO `#` prefix)
 **Location**: `translator.py:355` (`visit_strong`)
 
-#### 4. Subtitle
+#### 5. Subtitle
 **Current**: `_subtitle_`
-**Target**: `#emph[subtitle]`
+**Target**: `emph[subtitle]` (NO `#` prefix)
 **Location**: `translator.py:152` (`visit_subtitle`)
 
-#### 5. Bullet Lists
+#### 6. Bullet Lists
 **Current**: `- item`
-**Target**: `#list([item])`
+**Target**: `list([item])` (NO `#` prefix)
 **Location**: `translator.py:473` (`visit_list_item`)
-**Note**: Requires redesign to collect all items before generating `#list()`
+**Note**: Requires redesign to collect all items before generating `list()`
 
-#### 6. Enumerated Lists
+#### 7. Enumerated Lists
 **Current**: `+ item`
-**Target**: `#enum([item])`
+**Target**: `enum([item])` (NO `#` prefix)
 **Location**: `translator.py:475` (`visit_list_item`)
-**Note**: Requires redesign to collect all items before generating `#enum()`
+**Note**: Requires redesign to collect all items before generating `enum()`
 
-#### 7. Field Names (API Documentation)
+#### 8. Field Names (API Documentation)
 **Current**: `*Parameters:*`
-**Target**: `#strong[Parameters:]`
+**Target**: `strong[Parameters:]` (NO `#` prefix)
 **Location**: `translator.py:1790` (`visit_field_name`)
 
-### Elements to Keep (Typst Standard)
+#### 9. Text Nodes (NEW)
+**Current**: Direct text output
+**Target**: `[text content]` (wrapped in content blocks)
+**Location**: `translator.py:308` (`visit_Text`)
+**Note**: Need intelligent wrapping to avoid `[[...]]` double-wrapping
 
-1. **Inline Code**: `` `code` `` (line 374)
-2. **Code Blocks**: ` ```lang ... ``` ` (line 536)
-3. **Definition Lists**: `/ term: definition` (line 616)
-4. **Math Delimiters**: `$ ... $` (line 1461, Typst native mode)
+#### 10. Existing Function Calls (MODIFIED)
+**Current**: `#sub[text]`, `#super[text]`, `#quote[...]`, `#image()`, etc.
+**Target**: Remove `#` prefix → `sub[text]`, `super[text]`, `quote[...]`, `image()`, etc.
+**Location**: Multiple locations (subscript:393, superscript:412, block_quote:944, image:997, etc.)
+**Note**: Update ALL existing function calls to remove `#` prefix
 
-These are **Typst standard syntax**, not sugar syntax for function calls.
+### Elements to Keep or Convert to Functions
+
+**Question**: Should these be converted to `raw()` functions or kept as-is?
+
+1. **Inline Code**: `` `code` `` → Keep as-is OR convert to `raw("code")`?
+2. **Code Blocks**: ` ```lang ... ``` ` → Keep as-is OR convert to `raw(block: true, lang: "...", ...)`?
+3. **Definition Lists**: `/ term: definition` → Keep as-is (Typst standard term list syntax)
+4. **Math Delimiters**: `$ ... $` → Keep as-is (Typst standard, works in code mode)
+
+**Recommendation**: Keep inline code, code blocks, definition lists, and math delimiters as-is. They work correctly inside `#[...]` code mode blocks and are Typst standard syntax.
 
 ## Impact Analysis
 
@@ -143,22 +194,29 @@ These are **Typst standard syntax**, not sugar syntax for function calls.
 
 ### Benefits
 
-1. **Complete Consistency**
-   - Single clear principle: use functions everywhere
+1. **Maximum Rigor and Consistency**
+   - Entire document in unified code mode structure
+   - Single clear principle: wrap in `#[...]`, use functions without `#`
+   - Matches existing toctree implementation pattern
    - Easy to understand and maintain
-   - Clear guidelines for contributors
 
 2. **Eliminated Syntax Errors**
    - No more `*_text_*` unclosed delimiter errors
    - Function syntax is robust to nesting
    - Predictable behavior
+   - No `#` prefix ambiguity
 
 3. **Clear 1:1 Mapping**
-   - `visit_emphasis` → `#emph[]` (clear relationship)
-   - `visit_strong` → `#strong[]` (clear relationship)
+   - `visit_emphasis` → `emph[]` (clear relationship, no `#` needed)
+   - `visit_strong` → `strong[]` (clear relationship, no `#` needed)
    - Visitor pattern becomes self-documenting
 
-4. **Future-Proof Architecture**
+4. **Simpler Implementation**
+   - No `#` prefix management in visit methods
+   - Text wrapping logic isolated to `visit_Text`
+   - Document-level wrapper is simple: `#[` start, `]` end
+
+5. **Future-Proof Architecture**
    - Easy to add new elements following the same pattern
    - Consistent approach scales to new Typst features
    - Maintainable for long-term evolution
@@ -171,31 +229,52 @@ These are **Typst standard syntax**, not sugar syntax for function calls.
 ### Alternative 2: Partial Conversion (Original Issue #4 Scope)
 **Rejected**: Still leaves inconsistency, doesn't solve architectural issues
 
-### Alternative 3: Make Sugar Syntax Configurable
+### Alternative 3: Function Calls with `#` Prefixes
+**Rejected**: Requires `#` prefix management in every visit method, more complex
+
+### Alternative 4: Make Sugar Syntax Configurable
 **Rejected**: Adds complexity, still requires maintaining two code paths
 
-### Alternative 4: Full Function Approach (This Proposal)
-**Selected**: Solves all issues, establishes clear architectural principle
+### Alternative 5: Code Mode Approach (This Proposal)
+**Selected**: Maximum rigor, simplest implementation, matches existing toctree pattern
 
 ## Implementation Strategy
 
-### Phase 1: Simple Elements (No State Changes)
-1. Emphasis: `_text_` → `#emph[text]`
-2. Strong: `*text*` → `#strong[text]`
-3. Subtitle: `_subtitle_` → `#emph[subtitle]`
-4. Field Names: `*name*` → `#strong[name]`
+### Phase 0: Document Wrapper (Foundation)
+- Update `visit_document()` to output `#[\n`
+- Update `depart_document()` to output `]\n`
+- This enables all other conversions
 
-### Phase 2: Headings (Parameter Calculation)
-- Current: Uses `section_level` to generate `=` count
-- Target: `#heading(level: section_level)[...]`
-- Requires passing level as parameter
+### Phase 1: Remove `#` Prefixes from Existing Functions
+- Update all existing function calls to remove `#` prefix:
+  - `#sub[...]` → `sub[...]`
+  - `#super[...]` → `super[...]`
+  - `#quote[...]` → `quote[...]`
+  - `#image(...)` → `image(...)`
+  - `#figure(...)` → `figure(...)`
+  - `#table(...)` → `table(...)`
+  - `#link(...)` → `link(...)`
+  - Admonitions: `#info[...]`, `#warning[...]`, `#tip[...]` → `info[...]`, `warning[...]`, `tip[...]`
+  - Math: `#mi(...)`, `#mitex(...)` → `mi(...)`, `mitex(...)`
 
-### Phase 3: Lists (State Redesign)
+### Phase 2: Text Node Wrapping
+- Update `visit_Text()` to wrap text in `[...]` content blocks
+- Implement intelligent wrapping to avoid `[[...]]` double-wrapping
+- Handle edge cases: empty text, whitespace-only text
+
+### Phase 3: Convert Sugar Syntax Elements
+1. Emphasis: `_text_` → `emph[text]` (NO `#`)
+2. Strong: `*text*` → `strong[text]` (NO `#`)
+3. Subtitle: `_subtitle_` → `emph[subtitle]` (NO `#`)
+4. Field Names: `*name*` → `strong[name]` (NO `#`)
+5. Headings: `= Heading` → `heading(level: N)[Heading]` (NO `#`)
+
+### Phase 4: Lists (State Redesign)
 - Current: Incremental generation (`visit_list_item` adds `- ` per item)
-- Target: Collect all items, then generate `#list([item1], [item2])`
+- Target: Collect all items, then generate `list([item1], [item2])` (NO `#`)
 - Requires significant state management changes
 
-### Phase 4: Integration & Testing
+### Phase 5: Integration & Testing
 - Update all test fixtures
 - Comprehensive integration tests
 - PDF output verification (should be identical)
@@ -241,11 +320,18 @@ make typst
 
 ## Open Questions
 
-None - this proposal is comprehensive and ready for review.
+1. Should inline code `` `...` `` and code blocks ` ```...``` ` be converted to `raw()` functions?
+   - **Recommendation**: Keep as-is (they work in code mode and are Typst standard)
+
+2. Should definition lists (`/ term: def`) be kept as-is?
+   - **Recommendation**: Keep as-is (Typst standard term list syntax)
+
+3. How should text node wrapping handle edge cases (empty text, whitespace)?
+   - **Needs Investigation**: Test behavior in Phase 2 implementation
 
 ## Timeline
 
 1. **Proposal Review**: 2025-10-25 - 2025-10-27
-2. **Implementation**: 2025-10-28 - 2025-11-05 (4 phases)
-3. **Testing & Validation**: 2025-11-06 - 2025-11-08
-4. **Release**: v0.3.0 or v1.0.0 by 2025-11-10
+2. **Implementation**: 2025-10-28 - 2025-11-08 (5 phases, updated)
+3. **Testing & Validation**: 2025-11-09 - 2025-11-11
+4. **Release**: v0.3.0 or v1.0.0 by 2025-11-15
