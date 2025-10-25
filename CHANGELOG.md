@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Documentation Site with GitHub Pages** ([#36](https://github.com/YuSabo90002/typsphinx/issues/36))
+  - Comprehensive documentation site hosted on GitHub Pages at https://yusabo90002.github.io/typsphinx/
+  - Complete user guide covering installation, quickstart, configuration, builders, and templates
+  - Extensive examples section with basic and advanced use cases
+  - API reference with autodoc integration
+  - Contributing guide with development workflow
+  - Automated documentation deployment via GitHub Actions
+  - HTML documentation built with Sphinx and Furo theme
+  - PDF documentation generated using typsphinx itself (dogfooding)
+  - PDF artifacts uploaded to GitHub Releases for tagged versions
+  - Documentation badge added to README
+  - 13 comprehensive documentation pages created
+
 - **Typst Universe Template Support** ([#13](https://github.com/YuSabo90002/typsphinx/issues/13))
   - Full support for Typst Universe templates (charged-ieee, modern-cv, etc.)
   - `typst_template_function` now accepts dictionary format: `{"name": "ieee", "params": {...}}`
