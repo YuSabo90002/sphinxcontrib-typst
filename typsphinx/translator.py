@@ -56,6 +56,8 @@ class TypstTranslator(SphinxTranslator):
         # Unified code mode state
         self.in_paragraph = False
         self.paragraph_has_content = False  # Track if paragraph has any content nodes
+        self.in_list_item = False  # Track if currently in a list item
+        self.in_literal_block = False  # Track if currently in a code block
 
         # List collection state
         self.list_items_stack = []  # Stack of lists, each containing collected items
@@ -255,9 +257,17 @@ class TypstTranslator(SphinxTranslator):
         Wraps paragraph content in par() function for unified code mode.
         Code mode doesn't auto-recognize paragraph breaks from blank lines.
 
+        Exception: Inside list items, paragraphs are not wrapped in par()
+        to avoid syntax like "- par(text(...))" which is invalid.
+
         Args:
             node: The paragraph node
         """
+        # Skip par() wrapping inside list items
+        if self.in_list_item:
+            self.in_paragraph = False
+            return
+
         # Start par() function (no # prefix in code mode)
         self.in_paragraph = True
         self.paragraph_has_content = False
@@ -272,6 +282,10 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The paragraph node
         """
+        # Skip closing if inside list items
+        if self.in_list_item:
+            return
+
         # Close par() function and add spacing
         self.in_paragraph = False
         self.paragraph_has_content = False
@@ -349,10 +363,18 @@ class TypstTranslator(SphinxTranslator):
         Wraps text in text() function for unified code mode.
         Uses string escaping (not markup escaping).
 
+        Exception: Inside literal blocks, text is output directly
+        without text() wrapping to preserve code content.
+
         Args:
             node: The text node
         """
         text_content = node.astext()
+
+        # Inside literal blocks, output text directly (no wrapping)
+        if self.in_literal_block:
+            self.add_text(text_content)
+            return
 
         # Escape string content (order matters: backslash first)
         text_content = text_content.replace("\\", "\\\\")  # Backslash
@@ -473,22 +495,13 @@ class TypstTranslator(SphinxTranslator):
         # Get code content directly
         code_content = node.astext()
 
-        # Count max consecutive backticks in content
-        max_backticks = 0
-        current_backticks = 0
-        for char in code_content:
-            if char == "`":
-                current_backticks += 1
-                max_backticks = max(max_backticks, current_backticks)
-            else:
-                current_backticks = 0
+        # Escape code content for string parameter
+        escaped_code = code_content.replace("\\", "\\\\")  # Backslash
+        escaped_code = escaped_code.replace('"', '\\"')    # Quote
 
-        # Use at least 3 backticks, or more if content has backticks
-        delimiter_count = max(3, max_backticks + 1)
-        delimiter = "`" * delimiter_count
-
-        # Generate raw() function with backtick raw string (no # prefix in code mode)
-        self.add_text(f"raw({delimiter}{code_content}{delimiter})")
+        # Generate raw() function with string parameter (no # prefix in code mode)
+        # Using string instead of backtick raw literal for compatibility with + operator
+        self.add_text(f'raw("{escaped_code}")')
 
         # Skip processing child text nodes (we already got the content)
         raise nodes.SkipNode
@@ -629,6 +642,9 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The list item node
         """
+        # Mark that we're in a list item (disable par() wrapping)
+        self.in_list_item = True
+
         # Calculate indentation based on nesting level
         indent = "  " * (len(self.list_stack) - 1)
 
@@ -645,6 +661,7 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The list item node
         """
+        self.in_list_item = False
         self.add_text("\n")
 
     def visit_literal_block(self, node: nodes.literal_block) -> None:
@@ -660,6 +677,9 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The literal block node
         """
+        # Mark that we're in a literal block (disable text() wrapping)
+        self.in_literal_block = True
+
         # Issue #20: Handle captioned code blocks
         # If we're in a captioned code block (literal-block-wrapper container),
         # wrap the code block in figure() (no # prefix in code mode)
@@ -714,6 +734,9 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The literal block node
         """
+        # Clear literal block flag
+        self.in_literal_block = False
+
         # Close code block
         self.add_text("\n```\n")
 
