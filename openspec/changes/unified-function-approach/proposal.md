@@ -168,7 +168,20 @@ Inside the code mode block:
 **Rationale**: `text()` uses string mode → no escaping needed for `#`, `*`, `_`, `$`, `[`, `]`
 **Note**: For adjacent text + formatting, use `+` operator: `text("This is ") + emph(text("emphasized"))`
 
-#### 10. Existing Function Calls (MODIFIED)
+#### 10. Inline Code (NEW)
+**Current**: `` `code` ``
+**Target**: `raw("code")` (NO `#` prefix)
+**Location**: `translator.py:374` (`visit_literal`)
+**Rationale**: Codly compatible, consistent with function approach
+
+#### 11. Code Blocks (NEW)
+**Current**: ` ```lang ... ``` ` with `#codly()`, `#codly-range()` calls
+**Target**: `raw(block: true, lang: "...", "code")` with `codly()`, `codly-range()` calls (NO `#` prefix)
+**Location**: `translator.py:536` (`visit_literal_block`)
+**Rationale**: Codly uses `show raw.where(block: true)` and `raw.line` internally
+**Note**: Preserve existing codly features (line numbers, highlighting, captions)
+
+#### 12. Existing Function Calls (MODIFIED)
 **Current**: `#sub[text]`, `#super[text]`, `#quote[...]`, `#image()`, etc.
 **Target**: Remove `#` prefix + use `text()` → `sub(text("text"))`, `super(text("text"))`, `quote(...)`, `image()`, etc.
 **Location**: Multiple locations (subscript:393, superscript:412, block_quote:944, image:997, etc.)
@@ -176,16 +189,29 @@ Inside the code mode block:
 1. Remove `#` prefix
 2. Use `text()` for text content (where applicable)
 
-### Elements to Keep or Convert to Functions
+### Elements to Convert to Functions or Keep
 
-**Question**: Should these be converted to `raw()` functions or kept as-is?
-
-1. **Inline Code**: `` `code` `` → Keep as-is OR convert to `raw("code")`?
-2. **Code Blocks**: ` ```lang ... ``` ` → Keep as-is OR convert to `raw(block: true, lang: "...", ...)`?
+1. **Inline Code**: `` `code` `` → Convert to `raw("code")` (codly compatible)
+2. **Code Blocks**: ` ```lang ... ``` ` → Convert to `raw(block: true, lang: "...", ...)` (codly uses `raw.line`)
 3. **Definition Lists**: `/ term: definition` → Keep as-is (Typst standard term list syntax)
 4. **Math Delimiters**: `$ ... $` → Keep as-is (Typst standard, works in code mode)
 
-**Recommendation**: Keep inline code, code blocks, definition lists, and math delimiters as-is. They work correctly inside `#[...]` code mode blocks and are Typst standard syntax.
+**Rationale for `raw()` conversion**:
+- **Codly compatibility**: codly uses `show raw.where(block: true)` and `raw.line` internally
+- **Consistency**: All elements use function syntax inside code mode
+- **Feature preservation**: codly's line numbers, highlighting with `#codly()`, `#codly-range()` still work
+- **Explicit control**: Can pass parameters like `lang`, `block`, `align`, etc.
+
+**Example**:
+```typst
+#[
+  // Instead of ```python
+  raw(block: true, lang: "python", "def hello():\n    print('world')")
+
+  // Instead of `code`
+  raw("code")
+]
+```
 
 ## Impact Analysis
 
@@ -272,17 +298,20 @@ Inside the code mode block:
   - Admonitions: `#info[...]`, `#warning[...]`, `#tip[...]` → `info[...]`, `warning[...]`, `tip[...]`
   - Math: `#mi(...)`, `#mitex(...)` → `mi(...)`, `mitex(...)`
 
-### Phase 2: Text Node Wrapping
-- Update `visit_Text()` to wrap text in `[...]` content blocks
-- Implement intelligent wrapping to avoid `[[...]]` double-wrapping
+### Phase 2: Text Node Wrapping with `text()` Function
+- Update `visit_Text()` to wrap text in `text("...")` function
+- Handle string escaping (quotes, backslashes)
+- Implement concatenation with `+` operator for adjacent nodes
 - Handle edge cases: empty text, whitespace-only text
 
 ### Phase 3: Convert Sugar Syntax Elements
-1. Emphasis: `_text_` → `emph[text]` (NO `#`)
-2. Strong: `*text*` → `strong[text]` (NO `#`)
-3. Subtitle: `_subtitle_` → `emph[subtitle]` (NO `#`)
-4. Field Names: `*name*` → `strong[name]` (NO `#`)
-5. Headings: `= Heading` → `heading(level: N)[Heading]` (NO `#`)
+1. Emphasis: `_text_` → `emph(text("text"))` (NO `#`)
+2. Strong: `*text*` → `strong(text("text"))` (NO `#`)
+3. Subtitle: `_subtitle_` → `emph(text("subtitle"))` (NO `#`)
+4. Field Names: `*name*` → `strong(text("name"))` (NO `#`)
+5. Headings: `= Heading` → `heading(level: N, text("Heading"))` (NO `#`)
+6. Inline Code: `` `code` `` → `raw("code")` (NO `#`)
+7. Code Blocks: ` ```lang ` → `raw(block: true, lang: "...", "code")` (NO `#`, preserve codly integration)
 
 ### Phase 4: Lists (State Redesign)
 - Current: Incremental generation (`visit_list_item` adds `- ` per item)

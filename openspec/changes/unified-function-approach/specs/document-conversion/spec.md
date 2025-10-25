@@ -359,37 +359,46 @@ AND NOT `#info[...]`, `#warning[...]`, `#tip[...]`
 
 ---
 
-### Requirement: Typst標準構文の維持
+### Requirement: コードの `raw()` 関数化
 
-コードブロック、インラインコード、数式デリミタは Typst の標準構文を維持しなければならない (MUST)。これらは sugar syntax ではなく、Typst の公式な表記法である。
+インラインコードとコードブロックは `raw()` 関数として出力されなければならない (MUST)。Sugar syntax (`` ` ``, ` ``` `) による出力は使用してはならない (MUST NOT)。
 
-**Rationale**: These syntaxes are Typst standard forms with no function equivalents. They are not "sugar syntax" but the canonical Typst way to express these elements.
+**Rationale**: Codly uses `show raw.where(block: true)` and `raw.line` internally, making `raw()` function the proper way to integrate with codly. This ensures all codly features (line numbers, highlighting, annotations) work correctly while maintaining consistency with the unified code mode approach.
 
-#### Scenario: インラインコードの維持
+#### Scenario: インラインコードの変換
 
 ```gherkin
 GIVEN a Sphinx document with inline code "print(x)"
-WHEN the translator processes a literal node
-THEN the output MUST be `print(x)`
-AND MUST NOT be converted to any function form
+WHEN the translator processes a literal node inside code mode
+THEN the output MUST be `raw("print(x)")`
+AND NOT `` `print(x)` `` (sugar syntax)
 ```
 
-#### Scenario: コードブロックの維持
+#### Scenario: コードブロックの変換
 
 ```gherkin
-GIVEN a Sphinx document with a code block in Python
-WHEN the translator processes a literal_block node
-THEN the output MUST be ```python\ncode\n```
-AND MUST NOT be converted to any function form
+GIVEN a Sphinx document with a Python code block
+WHEN the translator processes a literal_block node inside code mode
+THEN the output MUST be `raw(block: true, lang: "python", "code content")`
+AND NOT ` ```python\ncode\n``` ` (sugar syntax)
 ```
 
-#### Scenario: 数式デリミタの維持
+#### Scenario: Codly統合の維持
 
 ```gherkin
-GIVEN math content in Typst native mode
-WHEN the translator processes inline or block math
-THEN the output MUST use `$...$` delimiters
-AND MUST NOT be changed (this is Typst standard)
+GIVEN a code block with line numbers and highlighting enabled
+WHEN codly() and codly-range() are called before raw()
+THEN codly features (line numbers, highlighting) MUST work correctly
+AND raw() function MUST integrate with codly's show rules
+```
+
+#### Scenario: キャプション付きコードブロック
+
+```gherkin
+GIVEN a code block with :caption: option
+WHEN the translator generates output inside code mode
+THEN the output MUST be `figure(caption: text("..."), raw(block: true, lang: "...", "code"))`
+AND codly features MUST still work
 ```
 
 ---
@@ -406,15 +415,19 @@ AND MUST NOT be changed (this is Typst standard)
    - MUST generate `heading(...)`, `emph[...]`, `strong[...]` (bare names)
    - Applies to ALL function calls inside code mode
 
-3. **No Sugar Syntax in Output** (except Typst standard)
+3. **No Sugar Syntax in Output**
    - MUST NOT generate `=`, `_`, `*` for headings, emphasis, strong
    - MUST NOT generate `-`, `+` for lists
-   - MAY generate `` ` ``, ` ``` `, `/ `, `$` (Typst standard)
+   - MUST NOT generate `` ` ``, ` ``` ` for code (use `raw()` function)
+   - MAY generate `/ ` for definition lists (Typst standard term list syntax)
+   - MAY generate `$` for math (Typst standard math delimiters)
 
 4. **All Function Calls Well-Formed**
    - MUST generate `heading(level: N, text("..."))` (no `#`, use `text()`)
    - MUST generate `emph(text("..."))`, `strong(text("..."))` (no `#`, use `text()`)
    - MUST generate `list(text("..."), text("..."))`, `enum(text("..."), text("..."))` (no `#`, use `text()`)
+   - MUST generate `raw("code")` for inline code (no `#`)
+   - MUST generate `raw(block: true, lang: "...", "code")` for code blocks (no `#`)
 
 5. **Text Nodes Use `text()` Function**
    - Text content MUST be wrapped in `text("...")` function
@@ -530,6 +543,63 @@ self.add_text(f"heading(level: {self.section_level}, ")
 ```
 
 Note: NO `#` prefix, heading content uses `text()`
+
+### Code Block with `raw()` Function and Codly Integration
+
+Convert code blocks to `raw()` function while preserving codly features:
+
+```python
+# Current (sugar syntax with codly)
+def visit_literal_block(self, node):
+    if not linenos:
+        self.add_text("#codly(number-format: none)\n")
+    if hl_lines:
+        self.add_text(f"#codly-range(highlight: ({highlight_str}))\n")
+    self.add_text(f"```{language}\n")
+
+# Target (raw() function with codly)
+def visit_literal_block(self, node):
+    if not linenos:
+        self.add_text("codly(number-format: none)\n")  # NO #
+    if hl_lines:
+        self.add_text(f"codly-range(highlight: ({highlight_str}))\n")  # NO #
+
+    # Get code content
+    code_content = node.astext()
+    escaped = code_content.replace('"', '\\"')
+
+    # Generate raw() function
+    lang = node.get("language", "")
+    if lang:
+        self.add_text(f'raw(block: true, lang: "{lang}", "{escaped}")\n')
+    else:
+        self.add_text(f'raw(block: true, "{escaped}")\n')
+```
+
+**Codly compatibility**:
+- Codly uses `show raw.where(block: true)` show rules
+- `raw()` function integrates with codly's `raw.line` processing
+- All features preserved: line numbers, highlighting, zebra striping, annotations
+
+### Inline Code with `raw()` Function
+
+Convert inline code to `raw()` function:
+
+```python
+# Current
+def visit_literal(self, node):
+    self.add_text("`")
+
+def depart_literal(self, node):
+    self.add_text("`")
+
+# Target
+def visit_literal(self, node):
+    code_content = node.astext()
+    escaped = code_content.replace('"', '\\"')
+    self.add_text(f'raw("{escaped}")')
+    raise nodes.SkipNode  # Don't process children
+```
 
 ---
 
