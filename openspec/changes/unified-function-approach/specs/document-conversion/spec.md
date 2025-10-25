@@ -10,9 +10,9 @@ This specification defines the requirements for establishing a unified code mode
 
 ### Requirement: ドキュメント全体のコードモード化
 
-ドキュメント全体は単一のコードモードブロック `#[...]` で包まれなければならない (MUST)。コードモードブロック内のすべての関数呼び出しは `#` プレフィックスを使用してはならない (MUST NOT)。
+ドキュメント全体は単一のコードモードブロック `#[...]` で包まれなければならない (MUST)。コードモードブロック内のすべての関数呼び出しは `#` プレフィックスを使用してはならない (MUST NOT)。すべてのテキストコンテンツは `text()` 関数で包まれなければならない (MUST)。
 
-**Rationale**: Document-level code mode provides maximum rigor and consistency, eliminates `#` prefix management complexity, and matches the existing toctree implementation pattern.
+**Rationale**: Document-level code mode provides maximum rigor and consistency. `text()` function uses string mode (not markup mode), eliminating the need to escape special characters like `#`, `*`, `_`, `$`, `[`, `]`.
 
 #### Scenario: ドキュメントの開始
 
@@ -39,10 +39,11 @@ GIVEN a Sphinx document with heading and text
 WHEN the document is fully translated
 THEN the output structure MUST be:
   #[
-    heading(level: 1)[Title]
-    [Text content]
+    heading(level: 1, text("Title"))
+    text("Text content")
   ]
 AND the entire content MUST be wrapped in the code mode block
+AND all text MUST use text() function
 ```
 
 ---
@@ -60,8 +61,8 @@ AND the entire content MUST be wrapped in the code mode block
 ```gherkin
 GIVEN a Sphinx document with a level 1 heading "Introduction"
 WHEN the translator processes the title node at section_level=1
-THEN the output MUST be `heading(level: 1)[Introduction]`
-AND NOT `#heading(level: 1)[Introduction]` (no # prefix)
+THEN the output MUST be `heading(level: 1, text("Introduction"))`
+AND NOT `#heading(level: 1, text("Introduction"))` (no # prefix)
 AND NOT `= Introduction` (no sugar syntax)
 ```
 
@@ -70,8 +71,8 @@ AND NOT `= Introduction` (no sugar syntax)
 ```gherkin
 GIVEN a Sphinx document with a level 2 heading "Background"
 WHEN the translator processes the title node at section_level=2
-THEN the output MUST be `heading(level: 2)[Background]`
-AND NOT `#heading(level: 2)[Background]` (no # prefix)
+THEN the output MUST be `heading(level: 2, text("Background"))`
+AND NOT `#heading(level: 2, text("Background"))` (no # prefix)
 AND NOT `== Background` (no sugar syntax)
 ```
 
@@ -80,7 +81,7 @@ AND NOT `== Background` (no sugar syntax)
 ```gherkin
 GIVEN a Sphinx document with a level 6 heading "Details"
 WHEN the translator processes the title node at section_level=6
-THEN the output MUST be `heading(level: 6)[Details]`
+THEN the output MUST be `heading(level: 6, text("Details"))`
 AND NOT `====== Details` (no sugar syntax)
 ```
 
@@ -88,17 +89,17 @@ AND NOT `====== Details` (no sugar syntax)
 
 ### Requirement: 強調と太字の変換
 
-強調ノードは `emph[]` として、太字ノードは `strong[]` として出力されなければならない (MUST)。`#` プレフィックスを使用してはならない (MUST NOT)。Sugar syntax (`_text_`, `*text*`) による出力は使用してはならない (MUST NOT)。
+強調ノードは `emph(text(...))` として、太字ノードは `strong(text(...))` として出力されなければならない (MUST)。テキストコンテンツは `text()` 関数で包まれなければならない (MUST)。`#` プレフィックスを使用してはならない (MUST NOT)。Sugar syntax (`_text_`, `*text*`) による出力は使用してはならない (MUST NOT)。
 
-**Rationale**: Inside code mode block, function calls use bare names. Function syntax eliminates syntax errors from nested combinations like `*_text_*` (Issue #55).
+**Rationale**: Inside code mode block, function calls use bare names. `text()` function eliminates escaping issues. Function syntax eliminates syntax errors from nested combinations like `*_text_*` (Issue #55).
 
 #### Scenario: 強調テキストの変換
 
 ```gherkin
 GIVEN a Sphinx document with emphasis text "important"
 WHEN the translator processes an emphasis node inside code mode
-THEN the output MUST be `emph[important]`
-AND NOT `emph[important]` (no # prefix)
+THEN the output MUST be `emph(text("important"))`
+AND NOT `emph(text("important"))` (no # prefix)
 AND NOT `_important_` (no sugar syntax)
 ```
 
@@ -107,8 +108,8 @@ AND NOT `_important_` (no sugar syntax)
 ```gherkin
 GIVEN a Sphinx document with strong text "critical"
 WHEN the translator processes a strong node inside code mode
-THEN the output MUST be `strong[critical]`
-AND NOT `strong[critical]` (no # prefix)
+THEN the output MUST be `strong(text("critical"))`
+AND NOT `strong(text("critical"))` (no # prefix)
 AND NOT `*critical*` (no sugar syntax)
 ```
 
@@ -117,7 +118,7 @@ AND NOT `*critical*` (no sugar syntax)
 ```gherkin
 GIVEN a Sphinx document with nested strong and emphasis nodes
 WHEN the translator processes strong node containing emphasis node "nested"
-THEN the output MUST be `strong[emph[nested]]`
+THEN the output MUST be `strong(emph(text("nested")))`
 AND NOT `strong[#emph[nested]]` (no # prefix)
 AND NOT `*_nested_*` (which causes unclosed delimiter errors)
 ```
@@ -127,7 +128,7 @@ AND NOT `*_nested_*` (which causes unclosed delimiter errors)
 ```gherkin
 GIVEN a Sphinx document with strong text "file_name.txt"
 WHEN the translator processes a strong node
-THEN the output MUST be `strong[file_name.txt]`
+THEN the output MUST be `strong(text("file_name.txt"))`
 AND NOT `*file_name.txt*` (which causes unclosed delimiter errors due to `_`)
 ```
 
@@ -269,30 +270,38 @@ AND NOT `*Returns:*` (no sugar syntax)
 
 ---
 
-### Requirement: テキストノードのコンテンツブロック化
+### Requirement: テキストノードの `text()` 関数化
 
-テキストノードは `[...]` コンテンツブロックで包まれなければならない (MUST)。ただし、既にコンテンツブロック内にある場合は二重にラップしてはならない (MUST NOT)。
+テキストノードは `text("...")` 関数で包まれなければならない (MUST)。`[...]` マークアップモードを使用してはならない (MUST NOT)。
 
-**Rationale**: Inside code mode block, text content must be wrapped in content blocks to distinguish it from code. Intelligent wrapping prevents `[[...]]` double-wrapping.
+**Rationale**: `text()` function uses string mode, eliminating the need to escape special characters (`#`, `*`, `_`, `$`, `[`, `]`). Markup mode `[...]` requires escaping and can cause syntax errors.
 
 #### Scenario: 通常のテキストノードの変換
 
 ```gherkin
 GIVEN a Text node with content "Hello world"
 WHEN the translator processes the text node inside code mode
-AND the text is NOT already inside a content block
-THEN the output MUST be `[Hello world]`
-AND NOT plain text `Hello world`
+THEN the output MUST be `text("Hello world")`
+AND NOT `[Hello world]` (markup mode)
 ```
 
-#### Scenario: 既にコンテンツブロック内のテキスト
+#### Scenario: 特殊文字を含むテキスト
 
 ```gherkin
-GIVEN a Text node inside an emphasis element
-WHEN the emphasis element already provides `emph[...]` content block
-THEN the text MUST NOT be double-wrapped
-AND the output MUST be `emph[text]`
-AND NOT `emph[[text]]` (double wrapping)
+GIVEN a Text node with content "Price: $100 #1"
+WHEN the translator processes the text node
+THEN the output MUST be `text("Price: $100 #1")`
+AND all characters MUST be literal (no escaping needed)
+AND NOT `[Price: $100 #1]` (would require escaping in markup mode)
+```
+
+#### Scenario: 隣接するテキストとフォーマットの組み合わせ
+
+```gherkin
+GIVEN text "This is " followed by emphasis "important" followed by text " text"
+WHEN the translator processes these nodes
+THEN the output MUST be `text("This is ") + emph(text("important")) + text(" text")`
+AND use `+` operator to concatenate
 ```
 
 #### Scenario: 空のテキストノード
@@ -300,7 +309,7 @@ AND NOT `emph[[text]]` (double wrapping)
 ```gherkin
 GIVEN a Text node with empty content
 WHEN the translator processes the text node
-THEN the output MAY be empty or `[]`
+THEN the output MAY be `text("")` or omitted
 AND MUST NOT cause syntax errors
 ```
 
@@ -403,17 +412,18 @@ AND MUST NOT be changed (this is Typst standard)
    - MAY generate `` ` ``, ` ``` `, `/ `, `$` (Typst standard)
 
 4. **All Function Calls Well-Formed**
-   - MUST generate `heading(level: N)[...]` (no `#`)
-   - MUST generate `emph[...]`, `strong[...]` (no `#`)
-   - MUST generate `list([...], [...])`, `enum([...], [...])` (no `#`)
+   - MUST generate `heading(level: N, text("..."))` (no `#`, use `text()`)
+   - MUST generate `emph(text("..."))`, `strong(text("..."))` (no `#`, use `text()`)
+   - MUST generate `list(text("..."), text("..."))`, `enum(text("..."), text("..."))` (no `#`, use `text()`)
 
-5. **Text Nodes Wrapped**
-   - Text content MUST be wrapped in `[...]` content blocks
-   - MUST NOT double-wrap (avoid `[[...]]`)
+5. **Text Nodes Use `text()` Function**
+   - Text content MUST be wrapped in `text("...")` function
+   - MUST NOT use `[...]` markup mode (requires escaping)
+   - Use `+` operator to concatenate adjacent text and formatting
 
 6. **Nested Elements Properly Handled**
-   - MUST support `strong[emph[nested]]`
-   - MUST support `list([emph[item]], [strong[item]])`
+   - MUST support `strong(emph(text("nested")))`
+   - MUST support `list(emph(text("item")), strong(text("item")))`
    - MUST NOT generate malformed syntax combinations
 
 7. **PDF Output Unchanged**
@@ -450,18 +460,31 @@ self.add_text("#emph[")
 self.add_text("emph[")
 ```
 
-### Text Node Wrapping
+### Text Node Wrapping with `text()` Function
 
-Wrap text in content blocks with intelligent double-wrap prevention:
+Wrap ALL text in `text()` function to avoid escaping issues:
 
 ```python
 # visit_Text()
 def visit_Text(self, node):
-    text = node.astext()
-    if self._needs_content_block():
-        self.add_text(f"[{text}]")
-    else:
-        self.add_text(text)
+    text_content = node.astext()
+    # Escape quotes in string
+    escaped = text_content.replace('"', '\\"')
+    self.add_text(f'text("{escaped}")')
+```
+
+**Why `text()` not `[...]`?**
+- `text("...")` uses string mode → no need to escape `#`, `*`, `_`, `$`, `[`, `]`
+- `[...]` uses markup mode → requires escaping special characters
+- Example: `text("$100 #1")` works, `[$100 #1]` breaks
+
+**For concatenation**:
+```python
+# Multiple text + formatting nodes
+# Output: text("This is ") + emph(text("important")) + text(" text")
+self.add_text('text("This is ") + ')
+self.add_text('emph(text("important")) + ')
+self.add_text('text(" text")')
 ```
 
 ### List State Redesign
@@ -480,24 +503,33 @@ New implementation must collect items first:
 # Target (collection-based)
 def visit_bullet_list(self, node):
     items = self._collect_list_items(node)
-    self.add_text(f"list({', '.join(f'[{item}]' for item in items)})")
+    # Each item is already wrapped in text() during collection
+    self.add_text(f"list({', '.join(items)})")
 ```
 
-Note: NO `#` prefix
+**Item collection example**:
+```python
+# Each list item content → text("item content")
+# Result: list(text("First"), text("Second"), text("Third"))
+```
+
+Note: NO `#` prefix, all text uses `text()`
 
 ### Heading Level Parameter
 
-Heading level must be passed as parameter:
+Heading level must be passed as parameter, heading text wrapped in `text()`:
 
 ```python
 # Current
 heading_prefix = "=" * self.section_level
 
 # Target
-self.add_text(f"heading(level: {self.section_level})[")
+self.add_text(f"heading(level: {self.section_level}, ")
+# Heading text content processed by visit_Text → text("...")
+# Final: heading(level: 1, text("Title"))
 ```
 
-Note: NO `#` prefix
+Note: NO `#` prefix, heading content uses `text()`
 
 ---
 

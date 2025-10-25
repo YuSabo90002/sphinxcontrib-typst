@@ -16,19 +16,26 @@ This is an **architectural principle**, not just a set of individual conversions
 
 **Entire document wrapped in `#[...]`** with function calls inside (no `#` prefix needed).
 
+**Critical: All plain text MUST use `text()` function** to avoid markup mode escaping issues.
+
 **Example Output**:
 ```typst
 #[
-heading(level: 1)[Introduction]
+heading(level: 1, text("Introduction"))
 
-[This is ]emph[emphasized][ and ]strong[strong][ text.]
+text("This is ") + emph(text("emphasized")) + text(" and ") + strong(text("strong")) + text(" text.")
 
 list(
-  [First item],
-  [Second item],
+  text("First item"),
+  text("Second item"),
 )
 ]
 ```
+
+**Why `text()` function?**
+- `[...]` uses markup mode → special characters (`#`, `*`, `_`, `$`, `[`, `]`) need escaping
+- `text("...")` uses string mode → no escaping needed, all characters literal
+- Example: `text("Price: $100 #1")` works correctly, `[Price: $100 #1]` breaks
 
 This approach matches the existing toctree implementation pattern at [translator.py:1230](https://github.com/YuSabo90002/typsphinx/blob/main/typsphinx/translator.py#L1230).
 
@@ -89,18 +96,23 @@ The current implementation mixes three different approaches:
 **Entire document MUST be wrapped in a single code mode block (`#[...]`) with NO `#` prefixes inside.**
 
 Inside the code mode block:
-1. ALL function calls use bare function names (e.g., `heading()`, `emph[]`, `strong[]`)
-2. Text nodes MUST be wrapped in `[...]` content blocks
+1. ALL function calls use bare function names (e.g., `heading()`, `emph()`, `strong()`)
+2. **Text nodes MUST use `text()` function** (NOT `[...]` markup mode)
 3. Sugar syntax is NOT used (no `=`, `_`, `*`, `-`, `+`)
+
+**Why `text()` instead of `[...]`?**
+- `[...]` = markup mode → requires escaping `#`, `*`, `_`, `$`, `[`, `]`
+- `text("...")` = string mode → no escaping, all characters literal
 
 ### Document Structure
 
 ```typst
 #[
   // All content here uses function calls without # prefix
-  heading(level: 1)[Title]
-  [Text content]
-  emph[emphasized]
+  // All text uses text() function to avoid markup escaping
+  heading(level: 1, text("Title"))
+  text("Plain text content")
+  emph(text("emphasized"))
 ]
 ```
 
@@ -114,52 +126,55 @@ Inside the code mode block:
 
 #### 2. Headings (6 levels)
 **Current**: `= Heading`, `== Heading`, `=== Heading`, etc.
-**Target**: `heading(level: 1)[Heading]`, `heading(level: 2)[Heading]`, etc. (NO `#` prefix)
+**Target**: `heading(level: 1, text("Heading"))` (NO `#` prefix, use `text()`)
 **Location**: `translator.py:132` (`visit_title`)
 
 #### 3. Emphasis
 **Current**: `_text_`
-**Target**: `emph[text]` (NO `#` prefix)
+**Target**: `emph(text("text"))` (NO `#` prefix, use `text()`)
 **Location**: `translator.py:336` (`visit_emphasis`)
 
 #### 4. Strong
 **Current**: `*text*`
-**Target**: `strong[text]` (NO `#` prefix)
+**Target**: `strong(text("text"))` (NO `#` prefix, use `text()`)
 **Location**: `translator.py:355` (`visit_strong`)
 
 #### 5. Subtitle
 **Current**: `_subtitle_`
-**Target**: `emph[subtitle]` (NO `#` prefix)
+**Target**: `emph(text("subtitle"))` (NO `#` prefix, use `text()`)
 **Location**: `translator.py:152` (`visit_subtitle`)
 
 #### 6. Bullet Lists
 **Current**: `- item`
-**Target**: `list([item])` (NO `#` prefix)
+**Target**: `list(text("item1"), text("item2"), ...)` (NO `#` prefix, use `text()`)
 **Location**: `translator.py:473` (`visit_list_item`)
 **Note**: Requires redesign to collect all items before generating `list()`
 
 #### 7. Enumerated Lists
 **Current**: `+ item`
-**Target**: `enum([item])` (NO `#` prefix)
+**Target**: `enum(text("item1"), text("item2"), ...)` (NO `#` prefix, use `text()`)
 **Location**: `translator.py:475` (`visit_list_item`)
 **Note**: Requires redesign to collect all items before generating `enum()`
 
 #### 8. Field Names (API Documentation)
 **Current**: `*Parameters:*`
-**Target**: `strong[Parameters:]` (NO `#` prefix)
+**Target**: `strong(text("Parameters:"))` (NO `#` prefix, use `text()`)
 **Location**: `translator.py:1790` (`visit_field_name`)
 
-#### 9. Text Nodes (NEW)
+#### 9. Text Nodes (NEW - CRITICAL)
 **Current**: Direct text output
-**Target**: `[text content]` (wrapped in content blocks)
+**Target**: `text("content")` (wrapped in `text()` function)
 **Location**: `translator.py:308` (`visit_Text`)
-**Note**: Need intelligent wrapping to avoid `[[...]]` double-wrapping
+**Rationale**: `text()` uses string mode → no escaping needed for `#`, `*`, `_`, `$`, `[`, `]`
+**Note**: For adjacent text + formatting, use `+` operator: `text("This is ") + emph(text("emphasized"))`
 
 #### 10. Existing Function Calls (MODIFIED)
 **Current**: `#sub[text]`, `#super[text]`, `#quote[...]`, `#image()`, etc.
-**Target**: Remove `#` prefix → `sub[text]`, `super[text]`, `quote[...]`, `image()`, etc.
+**Target**: Remove `#` prefix + use `text()` → `sub(text("text"))`, `super(text("text"))`, `quote(...)`, `image()`, etc.
 **Location**: Multiple locations (subscript:393, superscript:412, block_quote:944, image:997, etc.)
-**Note**: Update ALL existing function calls to remove `#` prefix
+**Note**: Update ALL existing function calls to:
+1. Remove `#` prefix
+2. Use `text()` for text content (where applicable)
 
 ### Elements to Keep or Convert to Functions
 
