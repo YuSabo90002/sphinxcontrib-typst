@@ -6,7 +6,7 @@ nodes to Typst markup.
 """
 
 import re
-from typing import Any, Optional
+from typing import Any, List, Optional, Union
 
 from docutils import nodes
 from sphinx import addnodes
@@ -61,13 +61,17 @@ class TypstTranslator(SphinxTranslator):
 
         # List collection state for unified code mode
         self.list_items_stack = []  # Stack of lists: [(type, [items]), ...]
-        self.current_list_item_buffer = None  # Buffer for current list item content
-        self.saved_body = None  # Saved body when buffering list items
+        self.current_list_item_buffer: Optional[List[str]] = (
+            None  # Buffer for current list item content
+        )
+        self.saved_body: Optional[List[str]] = (
+            None  # Saved body when buffering list items
+        )
 
         # Definition list state
         self.in_definition_list = False
-        self.current_term_buffer = None
-        self.current_definition_buffer = None
+        self.current_term_buffer: Union[str, List[str], None] = None
+        self.current_definition_buffer: Optional[List[str]] = None
         self.definition_list_items = []  # List of (term, definition) tuples
 
     def astext(self) -> str:
@@ -403,10 +407,10 @@ class TypstTranslator(SphinxTranslator):
 
         # Escape string content (order matters: backslash first)
         text_content = text_content.replace("\\", "\\\\")  # Backslash
-        text_content = text_content.replace('"', '\\"')    # Quote
-        text_content = text_content.replace("\n", "\\n")   # Newline
-        text_content = text_content.replace("\r", "\\r")   # Carriage return
-        text_content = text_content.replace("\t", "\\t")   # Tab
+        text_content = text_content.replace('"', '\\"')  # Quote
+        text_content = text_content.replace("\n", "\\n")  # Newline
+        text_content = text_content.replace("\r", "\\r")  # Carriage return
+        text_content = text_content.replace("\t", "\\t")  # Tab
 
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
@@ -522,7 +526,7 @@ class TypstTranslator(SphinxTranslator):
 
         # Escape code content for string parameter
         escaped_code = code_content.replace("\\", "\\\\")  # Backslash
-        escaped_code = escaped_code.replace('"', '\\"')    # Quote
+        escaped_code = escaped_code.replace('"', '\\"')  # Quote
 
         # Generate raw() function with string parameter (no # prefix in code mode)
         # Using string instead of backtick raw literal for compatibility with + operator
@@ -721,10 +725,11 @@ class TypstTranslator(SphinxTranslator):
         self.in_list_item = False
 
         # Get buffered content
-        item_content = "".join(self.current_list_item_buffer).strip()
+        item_content = "".join(self.current_list_item_buffer or []).strip()
 
         # Restore original body
-        self.body = self.saved_body
+        if self.saved_body is not None:
+            self.body = self.saved_body
         self.saved_body = None
         self.current_list_item_buffer = None
 
@@ -908,10 +913,14 @@ class TypstTranslator(SphinxTranslator):
             node: The term node
         """
         # Get buffered term content
-        term_content = "".join(self.current_term_buffer).strip()
+        if isinstance(self.current_term_buffer, list):
+            term_content = "".join(self.current_term_buffer).strip()
+        else:
+            term_content = ""
 
         # Restore original body
-        self.body = self.saved_body
+        if self.saved_body is not None:
+            self.body = self.saved_body
         self.saved_body = None
 
         # Store term for later (will be paired with definition)
@@ -941,15 +950,18 @@ class TypstTranslator(SphinxTranslator):
             node: The definition node
         """
         # Get buffered definition content
-        definition_content = "".join(self.current_definition_buffer).strip()
+        definition_content = "".join(self.current_definition_buffer or []).strip()
 
         # Restore original body
-        self.body = self.saved_body
+        if self.saved_body is not None:
+            self.body = self.saved_body
         self.saved_body = None
 
         # Pair term and definition
         if isinstance(self.current_term_buffer, str):
-            self.definition_list_items.append((self.current_term_buffer, definition_content))
+            self.definition_list_items.append(
+                (self.current_term_buffer, definition_content)
+            )
             self.current_term_buffer = None
 
         self.current_definition_buffer = None
