@@ -1,8 +1,6 @@
 # Configuration file for charged-ieee example (Approach 1)
 # Approach 1: Use typst_template_function dict format and typst_authors (Recommended)
 
-import os
-import sys
 
 # -- Project information -----------------------------------------------------
 project = "Machine Learning Applications in Computer Vision"
@@ -28,7 +26,12 @@ ieee_abstract = """This paper presents novel approaches to machine learning
 applications in computer vision. We demonstrate state-of-the-art results on
 benchmark datasets and provide comprehensive analysis of our methodology."""
 
-ieee_keywords = ["Machine Learning", "Computer Vision", "Deep Learning", "Neural Networks"]
+ieee_keywords = [
+    "Machine Learning",
+    "Computer Vision",
+    "Deep Learning",
+    "Neural Networks",
+]
 
 # 著者の詳細情報（辞書形式）
 typst_authors = {
@@ -36,7 +39,7 @@ typst_authors = {
         "department": "Computer Science",
         "organization": "Massachusetts Institute of Technology",
         "location": "Cambridge, MA",
-        "email": "john.doe@mit.edu"
+        "email": "john.doe@mit.edu",
     }
 }
 
@@ -49,5 +52,5 @@ typst_template_function = {
         "index-terms": ieee_keywords,
         "bibliography": "refs.bib",
         "paper-size": "a4",
-    }
+    },
 }

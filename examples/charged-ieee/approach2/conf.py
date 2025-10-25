@@ -1,8 +1,6 @@
 # Configuration file for charged-ieee example (Approach 2)
 # Approach 2: Use custom template with Typst code for transformation (Flexible)
 
-import os
-import sys
 
 # -- Project information -----------------------------------------------------
 project = "Machine Learning Applications in Computer Vision"
