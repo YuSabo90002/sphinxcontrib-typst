@@ -10,23 +10,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.0] - 2025-10-23
 
 ### Changed (Breaking)
-- **パッケージ名変更**: `sphinxcontrib-typst` → `typsphinx`
-  - よりシンプルでユニークな名前に変更
-  - Builderとしての性質を反映
-  - PyPIパッケージ名: `typsphinx`
+- **Package Rename**: `sphinxcontrib-typst` → `typsphinx`
+  - Changed to a simpler and more unique name
+  - Reflects the nature of this package as a builder
+  - PyPI package name: `typsphinx`
   - Python import: `import typsphinx`
-  - Sphinx拡張名: `extensions = ['typsphinx']`
-  - パッケージ構造: `sphinxcontrib/typst/` → `typsphinx/`
-  - **移行方法**:
+  - Sphinx extension name: `extensions = ['typsphinx']`
+  - Package structure: `sphinxcontrib/typst/` → `typsphinx/`
+  - **Migration steps**:
     1. `pip uninstall sphinxcontrib-typst`
     2. `pip install typsphinx`
-    3. `conf.py`で`extensions = ['sphinxcontrib.typst']` → `extensions = ['typsphinx']`
+    3. Update `conf.py`: `extensions = ['sphinxcontrib.typst']` → `extensions = ['typsphinx']`
 
 ### Rationale
-- `sphinxcontrib-*`は伝統的にディレクティブやロールを追加する拡張機能向けの名前空間
-- このパッケージは主にビルダー（Sphinx→Typst変換）であり、より適切な名前が必要
-- ユーザー数が少ない現段階での変更が最適なタイミング
-- TypstとSphinxの統合を示すユニークで覚えやすい名前
+- `sphinxcontrib-*` namespace is traditionally for extensions that add directives or roles
+- This package is primarily a builder (Sphinx→Typst conversion) and needs a more appropriate name
+- Current low user base makes this the optimal timing for the change
+- Unique and memorable name that represents the integration of Typst and Sphinx
 
 ## [0.2.2] - 2025-10-23
 
