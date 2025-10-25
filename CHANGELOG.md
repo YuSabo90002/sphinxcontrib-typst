@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Typst Universe Template Support** ([#13](https://github.com/YuSabo90002/typsphinx/issues/13))
+  - Full support for Typst Universe templates (charged-ieee, modern-cv, etc.)
+  - `typst_template_function` now accepts dictionary format: `{"name": "ieee", "params": {...}}`
+  - New `typst_authors` configuration for detailed author information (department, organization, email)
+  - Template-specific parameters can be configured directly in `conf.py`
+  - Python variable references work naturally in configuration (no special syntax needed)
+  - Backward compatibility maintained for all existing configurations
+  - Added comprehensive charged-ieee examples demonstrating two approaches:
+    - Approach 1: Configuration-based (recommended, simple)
+    - Approach 2: Custom template with Typst code (flexible)
+  - Added 8 new test cases (4 for dict format, 4 for author details)
+  - All 365 tests passing with full backward compatibility
+
 - **Image File Copying Support** ([#38](https://github.com/YuSabo90002/typsphinx/issues/38))
   - Image files referenced in documents are now automatically copied to the output directory
   - Preserves directory structure when copying images

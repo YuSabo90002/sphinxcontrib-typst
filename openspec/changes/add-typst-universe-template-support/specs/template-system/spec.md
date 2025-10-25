@@ -2,127 +2,115 @@
 
 ## ADDED Requirements
 
-### Requirement: テンプレート設定名の明確化
+### Requirement: テンプレート関数とパラメータの統合設定
 
-テンプレート専用の設定は、その用途が明確にわかる名称を使用しなければならない（MUST）。
+`typst_template_function`を拡張し、関数名とテンプレート固有パラメータを一体的に設定できなければならない（MUST）。
 
-#### Scenario: typst_template_package 設定の使用
-
-- **GIVEN** ユーザーが charged-ieee などの外部テンプレートを使用したい
-- **WHEN** `conf.py` でテンプレート設定を行う
-- **THEN** `typst_template_package` 設定を使用する
-- **AND** 設定名から「テンプレート用」であることが明確にわかる
-
-#### Scenario: 旧設定名 typst_package の非サポート
-
-- **GIVEN** `conf.py` に `typst_package` 設定が存在する
-- **WHEN** Sphinx ビルドを実行する
-- **THEN** エラーメッセージが表示される
-- **AND** エラーメッセージに「`typst_package` は `typst_template_package` に名称変更されました」と記載される
-- **AND** 移行方法が明示される
-
-#### Scenario: typst_package_imports は変更なし
-
-- **GIVEN** `conf.py` に `typst_package_imports` 設定が存在する
-- **WHEN** Sphinx ビルドを実行する
-- **THEN** `typst_package_imports` は引き続き正常に動作する
-- **AND** 複数の汎用パッケージが正しくインポートされる
-
-### Requirement: 外部パッケージ使用時のテンプレートファイルインポートスキップ
-
-外部 Typst パッケージ（`typst_template_package` 設定）を使用する場合、ローカルテンプレートファイル（`_template.typ`）からのインポートをスキップしなければならない（MUST）。
-
-#### Scenario: 外部パッケージのみを使用する場合
+#### Scenario: 文字列形式（後方互換性・シンプル）
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  typst_template_package = "@preview/charged-ieee:0.1.4"
-  typst_template_function = "ieee"
+  typst_template_function = "project"
   ```
-- **AND** ローカルテンプレートファイル `_template.typ` が存在しない
 - **WHEN** Typst ビルドを実行する
-- **THEN** 生成される `.typ` ファイルは `#import "@preview/charged-ieee:0.1.4": ieee` を含む
-- **AND** `#import "_template.typ": ieee` は含まれない
-- **AND** ビルドエラーが発生しない
+- **THEN** 生成される `.typ` ファイルは `#show: project.with(...)` を含む
+- **AND** 既存の動作と完全に互換性がある
 
-#### Scenario: ローカルテンプレートのみを使用する場合
-
-- **GIVEN** `conf.py` に `typst_template_package` 設定が存在しない
-- **AND** `typst_template_function = "project"` が設定されている
-- **AND** ローカルテンプレートファイル `_template.typ` が存在する
-- **WHEN** Typst ビルドを実行する
-- **THEN** 生成される `.typ` ファイルは `#import "_template.typ": project` を含む
-- **AND** 外部パッケージのインポートは含まれない
-
-#### Scenario: 外部パッケージとローカルテンプレートの併用
+#### Scenario: 辞書形式でテンプレート固有パラメータを設定
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  typst_template_package = "@preview/gentle-clues:1.0.0"
+  typst_template_function = {
+      "name": "ieee",
+      "params": {
+          "abstract": "This paper presents novel approaches.",
+          "index-terms": ["AI", "Machine Learning"],
+          "paper-size": "a4"
+      }
+  }
   ```
-- **AND** ローカルテンプレートファイル `_template.typ` が存在する
-- **AND** `typst_template_function` が設定されていない
 - **WHEN** Typst ビルドを実行する
-- **THEN** 生成される `.typ` ファイルは外部パッケージのインポートのみを含む
-- **AND** `_template.typ` からのインポートは含まれない
+- **THEN** 生成される `.typ` ファイルの `#show: ieee.with()` に以下が含まれる
+  ```typst
+  abstract: [This paper presents novel approaches.],
+  index-terms: ("AI", "Machine Learning"),
+  paper-size: "a4",
+  ```
 
-### Requirement: 著者情報の辞書形式フォーマット
+#### Scenario: 辞書形式でパラメータなし
 
-charged-ieee などのテンプレートが要求する辞書配列形式で著者情報をフォーマットできなければならない（MUST）。
+- **GIVEN** `conf.py` に以下の設定が存在する
+  ```python
+  typst_template_function = {
+      "name": "project"
+  }
+  ```
+- **WHEN** Typst ビルドを実行する
+- **THEN** 生成される `.typ` ファイルは `#show: project.with(...)` を含む
+- **AND** テンプレート固有パラメータは追加されない
 
-#### Scenario: 文字列形式の著者情報（デフォルト）
+#### Scenario: パラメータのみ辞書に含める
+
+- **GIVEN** `conf.py` に以下の設定が存在する
+  ```python
+  typst_template_function = {
+      "name": "ieee",
+      "params": {"abstract": "..."}
+  }
+  ```
+- **WHEN** Typst ビルドを実行する
+- **THEN** `abstract` パラメータのみが追加される
+- **AND** 基本パラメータ（title, authors等）は通常通り生成される
+
+#### Scenario: 他の設定値を参照（Python変数参照）
+
+- **GIVEN** `conf.py` に以下の設定が存在する
+  ```python
+  project = "My Project"
+  copyright = "2025, Author"
+
+  # IEEE専用の設定
+  ieee_abstract = "This paper presents novel approaches."
+  ieee_keywords = ["AI", "Machine Learning"]
+
+  # 通常のPython変数参照を使用
+  typst_template_function = {
+      "name": "ieee",
+      "params": {
+          "abstract": ieee_abstract,
+          "index-terms": ieee_keywords,
+          "copyright": copyright,  # 標準設定を再利用
+      }
+  }
+  ```
+- **WHEN** Typst ビルドを実行する
+- **THEN** 各パラメータに参照先の値が正しく展開される
+- **AND** `conf.py`はPythonコードなので、特別な参照構文は不要
+
+### Requirement: 著者の詳細情報設定
+
+charged-ieeeなどのテンプレートが要求する著者の詳細情報（department, organization, emailなど）を`conf.py`から設定できなければならない（MUST）。
+
+#### Scenario: 基本的な著者情報（デフォルト動作・後方互換性）
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
   author = "John Doe, Jane Smith"
   ```
-- **AND** `typst_authors_format` が設定されていない（デフォルト: "string"）
+- **AND** `typst_author_params` が設定されていない
 - **WHEN** Typst ビルドを実行する
 - **THEN** 生成される `.typ` ファイルの `authors` パラメータは `("John Doe", "Jane Smith")` となる
+- **AND** 既存の動作と完全に互換性がある
 
-#### Scenario: 辞書形式の著者情報
-
-- **GIVEN** `conf.py` に以下の設定が存在する
-  ```python
-  author = "John Doe"
-  typst_authors_format = "dictionary"
-  typst_author_fields = ["name", "department", "organization", "email"]
-  ```
-- **WHEN** Typst ビルドを実行する
-- **THEN** 生成される `.typ` ファイルの `authors` パラメータは以下の形式となる
-  ```typst
-  authors: (
-    (name: "John Doe"),
-  )
-  ```
-
-#### Scenario: 辞書形式の複数著者情報
+#### Scenario: typst_authors による著者詳細情報設定（推奨）
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  author = "John Doe, Jane Smith"
-  typst_authors_format = "dictionary"
-  ```
-- **WHEN** Typst ビルドを実行する
-- **THEN** 生成される `.typ` ファイルの `authors` パラメータは以下の形式となる
-  ```typst
-  authors: (
-    (name: "John Doe"),
-    (name: "Jane Smith"),
-  )
-  ```
-
-#### Scenario: charged-ieee 向けの完全な著者情報
-
-- **GIVEN** `conf.py` に以下の設定が存在する
-  ```python
-  author = "John Doe"
-  typst_authors_format = "dictionary"
-  typst_author_params = {
+  typst_authors = {
       "John Doe": {
           "department": "Computer Science",
-          "organization": "University of Example",
-          "email": "john@example.com"
+          "organization": "MIT",
+          "email": "john@mit.edu"
       }
   }
   ```
@@ -133,108 +121,158 @@ charged-ieee などのテンプレートが要求する辞書配列形式で著�
     (
       name: "John Doe",
       department: "Computer Science",
-      organization: "University of Example",
-      email: "john@example.com"
+      organization: "MIT",
+      email: "john@mit.edu"
     ),
   )
   ```
+- **AND** `author`設定が不要（`typst_authors`のキーから自動生成）
 
-### Requirement: テンプレート固有パラメータの設定
-
-charged-ieee などのテンプレートが要求する固有のパラメータ（abstract, index-terms, paper-size など）を設定できなければならない（MUST）。
-
-#### Scenario: charged-ieee の abstract パラメータ
+#### Scenario: typst_author_params による著者詳細情報設定（後方互換性）
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  typst_template_package = "@preview/charged-ieee:0.1.4"
-  typst_template_function = "ieee"
-  typst_template_params = {
-      "abstract": "This paper presents novel approaches to neural network architectures."
+  author = "John Doe"
+  typst_author_params = {
+      "John Doe": {
+          "department": "Computer Science",
+          "organization": "MIT",
+          "email": "john@mit.edu"
+      }
   }
   ```
 - **WHEN** Typst ビルドを実行する
-- **THEN** 生成される `.typ` ファイルの `#show: ieee.with()` 呼び出しに `abstract: [This paper presents...]` が含まれる
+- **THEN** 生成される `.typ` ファイルの `authors` パラメータは `typst_authors` と同じ形式となる
+- **AND** `author` 設定との組み合わせで動作する
 
-#### Scenario: charged-ieee の index-terms パラメータ
+#### Scenario: typst_authors で複数著者の詳細情報
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  typst_template_params = {
-      "index-terms": ["Machine Learning", "Neural Networks", "Deep Learning"]
+  typst_authors = {
+      "John Doe": {
+          "department": "Computer Science",
+          "organization": "MIT",
+          "email": "john@mit.edu"
+      },
+      "Jane Smith": {
+          "department": "Electrical Engineering",
+          "organization": "Stanford",
+          "email": "jane@stanford.edu"
+      }
   }
   ```
 - **WHEN** Typst ビルドを実行する
-- **THEN** 生成される `.typ` ファイルの `#show: ieee.with()` 呼び出しに以下が含まれる
+- **THEN** 生成される `.typ` ファイルの `authors` パラメータは以下の形式となる
   ```typst
-  index-terms: ("Machine Learning", "Neural Networks", "Deep Learning")
+  authors: (
+    (
+      name: "John Doe",
+      department: "Computer Science",
+      organization: "MIT",
+      email: "john@mit.edu"
+    ),
+    (
+      name: "Jane Smith",
+      department: "Electrical Engineering",
+      organization: "Stanford",
+      email: "jane@stanford.edu"
+    ),
+  )
   ```
+- **AND** 著者の順序は`typst_authors`辞書のキー順序に従う
 
-#### Scenario: 複数のテンプレート固有パラメータ
+#### Scenario: 一部の著者のみ詳細情報を設定
 
 - **GIVEN** `conf.py` に以下の設定が存在する
   ```python
-  typst_template_params = {
-      "abstract": "Research on AI systems.",
-      "index-terms": ["AI", "Machine Learning"],
-      "paper-size": "a4"
+  author = "John Doe, Jane Smith, Bob Wilson"
+  typst_author_params = {
+      "John Doe": {
+          "department": "CS",
+          "email": "john@mit.edu"
+      }
   }
   ```
 - **WHEN** Typst ビルドを実行する
-- **THEN** 生成される `.typ` ファイルの `#show: ieee.with()` 呼び出しにすべてのパラメータが含まれる
-
-#### Scenario: テンプレート固有パラメータが未設定の場合
-
-- **GIVEN** `conf.py` に `typst_template_params` が設定されていない
-- **WHEN** Typst ビルドを実行する
-- **THEN** テンプレート固有パラメータは生成されない
-- **AND** 基本パラメータ（title, authors など）のみが生成される
+- **THEN** 生成される `.typ` ファイルの `authors` パラメータは以下の形式となる
+  ```typst
+  authors: (
+    (name: "John Doe", department: "CS", email: "john@mit.edu"),
+    (name: "Jane Smith"),
+    (name: "Bob Wilson"),
+  )
+  ```
+- **AND** 詳細情報がない著者は名前のみの辞書となる
 
 ### Requirement: charged-ieee テンプレートの動作例
 
-charged-ieee テンプレートを使用した完全な動作例を提供しなければならない（MUST）。
+charged-ieeeテンプレートを使用した完全な動作例を2つのアプローチで提供しなければならない（MUST）。
 
-#### Scenario: charged-ieee の基本設定
+#### Scenario: アプローチ1 - conf.pyでの統合設定（推奨）
 
-- **GIVEN** `examples/charged-ieee/` ディレクトリが存在する
-- **AND** `examples/charged-ieee/conf.py` に charged-ieee の完全な設定が含まれる
-- **AND** `examples/charged-ieee/source/index.rst` にサンプルドキュメントが存在する
-- **WHEN** `examples/charged-ieee/` で Typst ビルドを実行する
-- **THEN** PDF が正常に生成される
-- **AND** IEEE フォーマットが適用されている
+- **GIVEN** `examples/charged-ieee/approach1/` ディレクトリが存在する
+- **AND** `conf.py` に以下の設定が含まれる
+  ```python
+  typst_authors = {
+      "John Doe": {"department": "CS", "organization": "MIT", "email": "john@mit.edu"}
+  }
+  typst_template_function = {
+      "name": "ieee",
+      "params": {
+          "abstract": "...",
+          "index-terms": ["AI", "ML"]
+      }
+  }
+  ```
+- **WHEN** `examples/charged-ieee/approach1/` で Typst ビルドを実行する
+- **THEN** charged-ieee形式のPDFが正常に生成される
+- **AND** 著者の詳細情報が正しく表示される
+- **AND** abstract, index-termsが正しく表示される
 
-#### Scenario: charged-ieee の example がドキュメント化されている
+#### Scenario: アプローチ2 - カスタムテンプレートでの変換
 
-- **GIVEN** charged-ieee example が存在する
-- **WHEN** プロジェクトドキュメントを確認する
-- **THEN** Typst Universe テンプレートの使用方法が説明されている
-- **AND** charged-ieee の設定例が記載されている
-- **AND** 必要な設定オプションが明記されている
+- **GIVEN** `examples/charged-ieee/approach2/` ディレクトリが存在する
+- **AND** `_template.typ` 内でTypstコードによる著者情報変換関数が実装されている
+- **WHEN** `examples/charged-ieee/approach2/` で Typst ビルドを実行する
+- **THEN** charged-ieee形式のPDFが正常に生成される
+- **AND** アプローチ1と同じ出力が得られる
+- **AND** より柔軟なカスタマイズが可能であることが示される
+
+#### Scenario: 2つのアプローチの比較ドキュメント
+
+- **GIVEN** charged-ieee exampleが存在する
+- **WHEN** `examples/charged-ieee/README.md` を確認する
+- **THEN** 2つのアプローチの違いが説明されている
+- **AND** それぞれの利点・欠点が記載されている
+- **AND** ユーザーがどちらを選ぶべきかのガイドラインが示されている
 
 ### Requirement: Typst Universe テンプレート使用ガイド
 
-Typst Universe テンプレートの使用方法をドキュメントに記載しなければならない（MUST）。
+Typst Universeテンプレートの使用方法と、`typst_package`/`typst_template`の使い分けをドキュメントに記載しなければならない（MUST）。
 
-#### Scenario: 外部テンプレートの基本的な使用方法
+#### Scenario: 外部パッケージテンプレートの基本的な使用方法
 
 - **GIVEN** プロジェクトドキュメントが存在する
-- **WHEN** Typst Universe テンプレートのセクションを確認する
-- **THEN** 基本的な設定手順が説明されている
-  - `typst_template_package` の指定方法
-  - `typst_template_function` の指定方法
-  - パッケージバージョンの指定方法
+- **WHEN** Typst Universeテンプレートのセクションを確認する
+- **THEN** `typst_package`と`typst_template`の違いが説明されている
+- **AND** charged-ieeeを使う場合の設定例が記載されている
+- **AND** `typst_authors`の使用方法が説明されている
+- **AND** `typst_template_function`の辞書形式の使用方法が説明されている
+- **AND** 後方互換性のための`typst_author_params`についても言及されている
 
-#### Scenario: charged-ieee テンプレートの使用ガイド
+#### Scenario: テンプレート内変換アプローチの説明
 
-- **GIVEN** Typst Universe テンプレートのドキュメントが存在する
-- **WHEN** charged-ieee の使用例を確認する
-- **THEN** 完全な `conf.py` 設定例が記載されている
-- **AND** 著者情報の辞書形式フォーマット設定が説明されている
-- **AND** テンプレート固有パラメータの設定方法が説明されている
+- **GIVEN** Typst Universeテンプレートのドキュメントが存在する
+- **WHEN** カスタムテンプレートによる変換方法のセクションを確認する
+- **THEN** `_template.typ`内でTypstコードを書く方法が説明されている
+- **AND** 著者情報変換関数の実装例が記載されている
+- **AND** いつこのアプローチを使うべきかが説明されている
 
-#### Scenario: modern-cv テンプレートの言及
+#### Scenario: サポートされているテンプレートのリスト
 
-- **GIVEN** Typst Universe テンプレートのドキュメントが存在する
+- **GIVEN** Typst Universeテンプレートのドキュメントが存在する
 - **WHEN** サポートされているテンプレートのリストを確認する
-- **THEN** charged-ieee, modern-cv などの主要テンプレートが言及されている
-- **AND** 各テンプレートの Typst Universe ページへのリンクが記載されている
+- **THEN** charged-ieee, modern-cvなどの主要テンプレートが言及されている
+- **AND** 各テンプレートのTypst UniverseページへのリンクがE載されている
+- **AND** 各テンプレートで必要な設定の概要が説明されている

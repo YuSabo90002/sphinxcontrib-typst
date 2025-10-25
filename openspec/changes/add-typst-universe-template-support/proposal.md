@@ -2,47 +2,45 @@
 
 ## Why
 
-現在、基本的なテンプレート機能（`typst_package`, `typst_template_function` 設定オプション）は実装されているが、以下の問題がある：
+現在、Typst Universe テンプレート（charged-ieee, modern-cv など）を使用する際、以下の2つの重要な機能が不足している：
 
-1. **設定名の混乱**: `typst_package` は名称上「任意のパッケージ」だが、実際はテンプレート専用。`typst_package_imports` が複数パッケージのインポート機能を担っているため、意図が不明瞭。
-2. **機能不足**: Typst Universe テンプレート（charged-ieee, modern-cv など）を正しく動作させるための重要な機能が不足している。
+1. **著者の詳細情報を渡せない**
+   - charged-ieeeは著者情報を辞書形式で要求: `authors: ((name: "John", department: "CS", email: "..."),)`
+   - 現状はSphinxの`author`設定から文字列配列のみ生成: `authors: ("John Doe",)`
+   - ユーザーがテンプレート内でTypstコードを書いて変換する必要がある
 
-Issue #13 で報告された3つの技術的問題により、外部パッケージテンプレートが使用できない状態：
-1. 存在しない `_template.typ` ファイルからのインポートエラー
-2. charged-ieee が期待する辞書配列形式に対応していない著者情報フォーマット
-3. テンプレート固有パラメータ（abstract, index-terms など）の設定不可
+2. **テンプレート固有パラメータを設定できない**
+   - charged-ieeeの`abstract`, `index-terms`, `paper-size`などのパラメータ
+   - 現状はテンプレートファイル内でハードコーディングするしかない
+   - `conf.py`から動的に設定したい
 
-これらを解決し、設定名を明確化することで、Typst Universe の豊富なテンプレートエコシステムとの統合が可能になる。
+これらの機能を追加することで、Typst Universeテンプレートを設定ファイル（`conf.py`）だけで使用可能にする。
 
 ## What Changes
 
-- **設定名の変更（Breaking Change）**
-  - `typst_package` → `typst_template_package` に名称変更
-  - 意図を明確化: テンプレート専用の設定であることを名称で示す
-  - `typst_package_imports` は変更なし（汎用パッケージインポート用として継続）
+- **テンプレート関数設定の拡張**
+  - `typst_template_function`を文字列または辞書として設定可能に
+  - 文字列: 従来通り関数名のみ指定（後方互換性維持）
+  - 辞書: `{"name": "関数名", "params": {パラメータ辞書}}`形式で関数とパラメータを一体的に設定
+  - charged-ieeeの`abstract`, `index-terms`などを統合的に管理
 
-- **外部パッケージ使用時の不要なテンプレートファイルインポートを削除**
-  - `typst_template_package` 設定時は `_template.typ` からのインポートをスキップ
-  - `template_engine.py:render()` メソッドを修正
-
-- **著者情報の辞書形式フォーマットをサポート**
-  - 新設定オプション `typst_authors_format`: `"string"` (デフォルト) | `"dictionary"`
-  - 新設定オプション `typst_author_fields`: 辞書に含めるフィールドリスト
-  - 新設定オプション `typst_author_params`: 著者ごとの詳細情報（department, organization, email など）
-  - charged-ieee など、辞書配列形式を要求するテンプレートに対応
-
-- **テンプレート固有パラメータの設定機能を追加**
-  - 新設定オプション `typst_template_params`: テンプレート固有のパラメータ辞書
-  - abstract, index-terms, paper-size など任意のパラメータをサポート
+- **著者情報設定の拡張**
+  - 新設定オプション `typst_authors`: 著者名をキーとした詳細情報の辞書
+  - charged-ieeeなどの辞書形式要求テンプレートに対応
+  - 従来の`author`設定も引き続きサポート（後方互換性維持）
+  - `typst_author_params`も後方互換性のために維持
 
 - **charged-ieee テンプレートの動作例を追加**
   - `examples/charged-ieee/` ディレクトリを作成
-  - 完全な設定ファイルとサンプルドキュメントを含む
+  - 2つのアプローチを示す:
+    - **アプローチ1**: `typst_template_function`辞書形式と`typst_authors`を使用（推奨・最もシンプル）
+    - **アプローチ2**: カスタムテンプレート内でTypstコードで変換（柔軟性が必要な場合）
 
 - **Typst Universe テンプレート使用ガイドをドキュメントに追加**
-  - 外部テンプレートの設定方法
+  - 外部テンプレートの設定方法（`typst_package`, `typst_template`の使い分け）
   - charged-ieee, modern-cv などの具体例
-  - Breaking change の移行ガイド
+  - `typst_template_function`の文字列形式と辞書形式の使い分け
+  - テンプレート内変換とconf.py設定の比較
 
 ## Impact
 
@@ -50,17 +48,14 @@ Issue #13 で報告された3つの技術的問題により、外部パッケー
   - 新規作成: `template-system`（テンプレートシステム全体の仕様）
 
 - **Affected code**:
-  - `typsphinx/template_engine.py`: テンプレートレンダリングロジック、設定名変更対応
-  - `typsphinx/builder.py`: 設定オプションの追加・変更
-  - `examples/charged-ieee/`: 新規追加
-  - `docs/configuration.rst`: 設定オプションのドキュメント更新
+  - `typsphinx/template_engine.py`: 著者パラメータマージ、テンプレートパラメータ追加
+  - `typsphinx/builder.py`: 新設定オプションの登録
+  - `examples/charged-ieee/`: 新規追加（2つのアプローチを含む）
+  - `docs/configuration.rst`: 新設定オプションのドキュメント
   - `docs/`: Typst Universe テンプレート使用ガイド追加
 
 - **Breaking changes**:
-  - **BREAKING**: `typst_package` → `typst_template_package` に名称変更
-  - 影響: `typst_package` を使用している既存ユーザー（ユーザー数は最小限）
-  - 移行方法: `conf.py` で `typst_package` を `typst_template_package` に置換
-  - バージョン: v0.4.0 でリリース予定
+  - なし（既存の設定・動作はすべて維持）
 
 ## Related
 
