@@ -18,6 +18,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added 9 comprehensive test cases covering various scenarios
   - No configuration required - images are copied automatically
 
+- **Table Header Wrapping Support** ([#40](https://github.com/YuSabo90002/typsphinx/issues/40))
+  - Table headers now wrapped in `table.header()` for proper Typst rendering
+  - Enables automatic header repetition on multi-page tables
+  - Provides accessibility metadata for screen readers and assistive technologies
+  - Supports multi-row headers (`:header-rows: N` with N > 1)
+  - Maintains backward compatibility for tables without headers
+  - Added `in_thead` state flag to track header section in translator
+  - Modified cell storage to include `is_header` flag
+  - Updated `depart_table()` to generate `table.header()` wrapper for header cells
+  - Complies with Typst documentation recommendations for table accessibility
+  - Added 4 comprehensive test cases covering various header scenarios
+
+- **Table Cell Spanning Support** ([#39](https://github.com/YuSabo90002/typsphinx/issues/39))
+  - Added support for horizontal cell spanning (colspan) via `morecols` attribute
+  - Added support for vertical cell spanning (rowspan) via `morerows` attribute
+  - Cells with spanning now generate `table.cell(colspan: N, rowspan: M)` syntax
+  - Supports combined horizontal and vertical spanning in same cell
+  - Works correctly with header cells inside `table.header()`
+  - Maintains backward compatibility for tables without cell spanning
+  - Created `_format_table_cell()` helper method for consistent cell formatting
+  - Reads `morecols`/`morerows` attributes in `visit_entry()`
+  - Extended cell storage to include `colspan` and `rowspan` fields
+  - Added 5 comprehensive test cases covering various spanning scenarios
+
 ## [0.3.0] - 2025-10-23
 
 ### Changed (Breaking)
