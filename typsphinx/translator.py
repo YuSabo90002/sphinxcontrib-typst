@@ -40,6 +40,7 @@ class TypstTranslator(SphinxTranslator):
         self.section_level = 0
         self.in_figure = False
         self.in_table = False
+        self.in_thead = False  # Track if currently in table header
         self.in_caption = False
         self.list_stack = []  # Track list nesting: 'bullet' or 'enumerated'
 
@@ -731,9 +732,22 @@ class TypstTranslator(SphinxTranslator):
             # Use self.body.append directly to avoid routing to table_cell_content
             self.body.append(f"#table(\n  columns: {self.table_colcount},\n")
 
-            # Add all cells
-            for cell in self.table_cells:
-                self.body.append(f"  [{cell}],\n")
+            # Separate header cells from body cells
+            header_cells = [cell for cell in self.table_cells if cell.get("is_header")]
+            body_cells = [
+                cell for cell in self.table_cells if not cell.get("is_header")
+            ]
+
+            # Add header cells with table.header() wrapper
+            if header_cells:
+                self.body.append("  table.header(\n")
+                for cell in header_cells:
+                    self.body.append(f"    [{cell['content']}],\n")
+                self.body.append("  ),\n")
+
+            # Add body cells
+            for cell in body_cells:
+                self.body.append(f"  [{cell['content']}],\n")
 
             self.body.append(")\n\n")
 
@@ -786,8 +800,8 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The thead node
         """
-        # Header rows are handled the same as body rows in Typst
-        pass
+        # Mark that we're in the header section
+        self.in_thead = True
 
     def depart_thead(self, node: nodes.thead) -> None:
         """
@@ -796,7 +810,8 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The thead node
         """
-        pass
+        # Mark that we're no longer in the header section
+        self.in_thead = False
 
     def visit_tbody(self, node: nodes.tbody) -> None:
         """
@@ -862,7 +877,8 @@ class TypstTranslator(SphinxTranslator):
             # If no content was captured, try to get text from the node
             cell_text = node.astext().strip()
 
-        self.table_cells.append(cell_text)
+        # Store cell with header/body distinction
+        self.table_cells.append({"content": cell_text, "is_header": self.in_thead})
         self.table_cell_content = []
 
     def visit_block_quote(self, node: nodes.block_quote) -> None:
