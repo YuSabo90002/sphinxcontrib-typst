@@ -59,9 +59,16 @@ class TypstTranslator(SphinxTranslator):
         self.in_list_item = False  # Track if currently in a list item
         self.in_literal_block = False  # Track if currently in a code block
 
-        # List collection state
-        self.list_items_stack = []  # Stack of lists, each containing collected items
-        self.current_list_item_content = []  # Current list item content buffer
+        # List collection state for unified code mode
+        self.list_items_stack = []  # Stack of lists: [(type, [items]), ...]
+        self.current_list_item_buffer = None  # Buffer for current list item content
+        self.saved_body = None  # Saved body when buffering list items
+
+        # Definition list state
+        self.in_definition_list = False
+        self.current_term_buffer = None
+        self.current_definition_buffer = None
+        self.definition_list_items = []  # List of (term, definition) tuples
 
     def astext(self) -> str:
         """
@@ -601,43 +608,77 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a bullet list node.
 
+        Collects all list items and generates list() function call
+        in unified code mode.
+
         Args:
             node: The bullet list node
         """
         self.list_stack.append("bullet")
+        # Start collecting items for this list
+        self.list_items_stack.append(("bullet", []))
 
     def depart_bullet_list(self, node: nodes.bullet_list) -> None:
         """
         Depart a bullet list node.
 
+        Generates list() function with all collected items.
+
         Args:
             node: The bullet list node
         """
         self.list_stack.pop()
-        self.add_text("\n")
+
+        # Get collected items for this list
+        list_type, items = self.list_items_stack.pop()
+
+        # Generate list() function with all items (no # prefix in code mode)
+        if items:
+            items_str = ", ".join(items)
+            self.add_text(f"list({items_str})\n\n")
+        else:
+            self.add_text("list()\n\n")
 
     def visit_enumerated_list(self, node: nodes.enumerated_list) -> None:
         """
         Visit an enumerated (numbered) list node.
 
+        Collects all list items and generates enum() function call
+        in unified code mode.
+
         Args:
             node: The enumerated list node
         """
         self.list_stack.append("enumerated")
+        # Start collecting items for this list
+        self.list_items_stack.append(("enumerated", []))
 
     def depart_enumerated_list(self, node: nodes.enumerated_list) -> None:
         """
         Depart an enumerated (numbered) list node.
 
+        Generates enum() function with all collected items.
+
         Args:
             node: The enumerated list node
         """
         self.list_stack.pop()
-        self.add_text("\n")
+
+        # Get collected items for this list
+        list_type, items = self.list_items_stack.pop()
+
+        # Generate enum() function with all items (no # prefix in code mode)
+        if items:
+            items_str = ", ".join(items)
+            self.add_text(f"enum({items_str})\n\n")
+        else:
+            self.add_text("enum()\n\n")
 
     def visit_list_item(self, node: nodes.list_item) -> None:
         """
         Visit a list item node.
+
+        Starts buffering item content for later collection.
 
         Args:
             node: The list item node
@@ -645,24 +686,36 @@ class TypstTranslator(SphinxTranslator):
         # Mark that we're in a list item (disable par() wrapping)
         self.in_list_item = True
 
-        # Calculate indentation based on nesting level
-        indent = "  " * (len(self.list_stack) - 1)
-
-        # Determine list marker based on list type
-        if self.list_stack and self.list_stack[-1] == "bullet":
-            self.add_text(f"{indent}- ")
-        elif self.list_stack and self.list_stack[-1] == "enumerated":
-            self.add_text(f"{indent}+ ")
+        # Start buffering this item's content
+        self.saved_body = self.body
+        self.current_list_item_buffer = []
+        self.body = self.current_list_item_buffer
 
     def depart_list_item(self, node: nodes.list_item) -> None:
         """
         Depart a list item node.
 
+        Saves buffered content to the current list's items.
+
         Args:
             node: The list item node
         """
         self.in_list_item = False
-        self.add_text("\n")
+
+        # Get buffered content
+        item_content = "".join(self.current_list_item_buffer).strip()
+
+        # Restore original body
+        self.body = self.saved_body
+        self.saved_body = None
+        self.current_list_item_buffer = None
+
+        # Add item to current list
+        if self.list_items_stack:
+            list_type, items = self.list_items_stack[-1]
+            items.append(item_content)
+            # Update the stack with the new items list
+            self.list_items_stack[-1] = (list_type, items)
 
     def visit_literal_block(self, node: nodes.literal_block) -> None:
         """
@@ -760,21 +813,38 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a definition list node.
 
+        Collects all term-definition pairs and generates terms() function
+        in unified code mode.
+
         Args:
             node: The definition list node
         """
-        # Definition lists don't need special opening markup in Typst
-        pass
+        self.in_definition_list = True
+        self.definition_list_items = []
 
     def depart_definition_list(self, node: nodes.definition_list) -> None:
         """
         Depart a definition list node.
 
+        Generates terms() function with all collected term-definition pairs.
+
         Args:
             node: The definition list node
         """
-        # Add newline after definition list
-        self.add_text("\n")
+        self.in_definition_list = False
+
+        # Generate terms() function with all items (no # prefix in code mode)
+        if self.definition_list_items:
+            items_str = ", ".join(
+                f"terms.item({term}, {definition})"
+                for term, definition in self.definition_list_items
+            )
+            self.add_text(f"terms({items_str})\n\n")
+        else:
+            self.add_text("terms()\n\n")
+
+        # Clear collected items
+        self.definition_list_items = []
 
     def visit_definition_list_item(self, node: nodes.definition_list_item) -> None:
         """
@@ -800,41 +870,71 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a term (definition list term) node.
 
+        Starts buffering term content.
+
         Args:
             node: The term node
         """
-        # Typst definition list syntax: / term: definition
-        self.add_text("/ ")
+        # Start buffering term content
+        self.saved_body = self.body
+        self.current_term_buffer = []
+        self.body = self.current_term_buffer
 
     def depart_term(self, node: nodes.term) -> None:
         """
         Depart a term (definition list term) node.
 
+        Saves buffered term content.
+
         Args:
             node: The term node
         """
-        # Add colon after term
-        self.add_text(": ")
+        # Get buffered term content
+        term_content = "".join(self.current_term_buffer).strip()
+
+        # Restore original body
+        self.body = self.saved_body
+        self.saved_body = None
+
+        # Store term for later (will be paired with definition)
+        self.current_term_buffer = term_content
 
     def visit_definition(self, node: nodes.definition) -> None:
         """
         Visit a definition (definition list definition) node.
 
+        Starts buffering definition content.
+
         Args:
             node: The definition node
         """
-        # Definitions don't need special opening markup
-        pass
+        # Start buffering definition content
+        self.saved_body = self.body
+        self.current_definition_buffer = []
+        self.body = self.current_definition_buffer
 
     def depart_definition(self, node: nodes.definition) -> None:
         """
         Depart a definition (definition list definition) node.
 
+        Saves buffered definition content and pairs it with the term.
+
         Args:
             node: The definition node
         """
-        # Add newline after definition
-        self.add_text("\n")
+        # Get buffered definition content
+        definition_content = "".join(self.current_definition_buffer).strip()
+
+        # Restore original body
+        self.body = self.saved_body
+        self.saved_body = None
+
+        # Pair term and definition
+        if isinstance(self.current_term_buffer, str):
+            self.definition_list_items.append((self.current_term_buffer, definition_content))
+            self.current_term_buffer = None
+
+        self.current_definition_buffer = None
 
     def visit_figure(self, node: nodes.figure) -> None:
         """
