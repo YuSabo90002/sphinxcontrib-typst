@@ -57,6 +57,10 @@ class TypstTranslator(SphinxTranslator):
         self.in_paragraph = False
         self.paragraph_has_content = False  # Track if paragraph has any content nodes
 
+        # List collection state
+        self.list_items_stack = []  # Stack of lists, each containing collected items
+        self.current_list_item_content = []  # Current list item content buffer
+
     def astext(self) -> str:
         """
         Return the translated text as a string.
@@ -504,39 +508,81 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a subscript node.
 
+        Generates sub() function call. Child text nodes will be
+        wrapped in text() automatically.
+
         Args:
             node: The subscript node
         """
-        # Typst subscript syntax: #sub[text]
-        self.add_text("#sub[")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use sub() function (no # prefix in code mode)
+        self.add_text("sub(")
+
+        # Store state to restore in depart
+        self._subscript_was_in_paragraph = was_in_paragraph
 
     def depart_subscript(self, node: nodes.subscript) -> None:
         """
         Depart a subscript node.
 
+        Closes sub() function call.
+
         Args:
             node: The subscript node
         """
-        self.add_text("]")
+        # Close sub() function
+        self.add_text(")")
+
+        # Restore paragraph state
+        if hasattr(self, "_subscript_was_in_paragraph"):
+            self.in_paragraph = self._subscript_was_in_paragraph
+            delattr(self, "_subscript_was_in_paragraph")
 
     def visit_superscript(self, node: nodes.superscript) -> None:
         """
         Visit a superscript node.
 
+        Generates super() function call. Child text nodes will be
+        wrapped in text() automatically.
+
         Args:
             node: The superscript node
         """
-        # Typst superscript syntax: #super[text]
-        self.add_text("#super[")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use super() function (no # prefix in code mode)
+        self.add_text("super(")
+
+        # Store state to restore in depart
+        self._superscript_was_in_paragraph = was_in_paragraph
 
     def depart_superscript(self, node: nodes.superscript) -> None:
         """
         Depart a superscript node.
 
+        Closes super() function call.
+
         Args:
             node: The superscript node
         """
-        self.add_text("]")
+        # Close super() function
+        self.add_text(")")
+
+        # Restore paragraph state
+        if hasattr(self, "_superscript_was_in_paragraph"):
+            self.in_paragraph = self._superscript_was_in_paragraph
+            delattr(self, "_superscript_was_in_paragraph")
 
     def visit_bullet_list(self, node: nodes.bullet_list) -> None:
         """
@@ -616,18 +662,20 @@ class TypstTranslator(SphinxTranslator):
         """
         # Issue #20: Handle captioned code blocks
         # If we're in a captioned code block (literal-block-wrapper container),
-        # wrap the code block in a #figure()
+        # wrap the code block in figure() (no # prefix in code mode)
         if self.in_captioned_code_block and self.code_block_caption:
             # Escape special characters in caption
             escaped_caption = self.code_block_caption
             # Start figure with caption (will add closing bracket in depart)
-            self.add_text(f"#figure(caption: [{escaped_caption}])[\n")
+            # No # prefix in code mode
+            self.add_text(f"figure(caption: [{escaped_caption}])[\n")
 
         # Check for :linenos: option (Issue #20)
         # If linenos is not set or False, disable line numbers in codly
         linenos = node.get("linenos", False)
         if not linenos:
-            self.add_text("#codly(number-format: none)\n")
+            # No # prefix in code mode
+            self.add_text("codly(number-format: none)\n")
 
         # Extract highlight_args if present (Task 4.2.2)
         highlight_args = node.get("highlight_args", {})
@@ -637,15 +685,17 @@ class TypstTranslator(SphinxTranslator):
         # Sphinx stores lineno-start in highlight_args['linenostart']
         lineno_start = highlight_args.get("linenostart")
         if linenos and lineno_start is not None:
-            self.add_text(f"#codly(start: {lineno_start})\n")
+            # No # prefix in code mode
+            self.add_text(f"codly(start: {lineno_start})\n")
 
-        # Generate #codly-range() if highlight lines are specified
+        # Generate codly-range() if highlight lines are specified
         if hl_lines:
             # Convert list of line numbers to Typst array format
-            # Example: [2, 3] -> #codly-range(highlight: (2, 3))
-            # Example: [2, 4, 5, 6] -> #codly-range(highlight: (2, 4, 5, 6))
+            # Example: [2, 3] -> codly-range(highlight: (2, 3))
+            # Example: [2, 4, 5, 6] -> codly-range(highlight: (2, 4, 5, 6))
             highlight_str = ", ".join(str(line) for line in hl_lines)
-            self.add_text(f"#codly-range(highlight: ({highlight_str}))\n")
+            # No # prefix in code mode
+            self.add_text(f"codly-range(highlight: ({highlight_str}))\n")
 
         # Typst code block syntax: ```language\ncode\n```
         # Extract language if specified
@@ -767,6 +817,8 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a figure node.
 
+        Generates figure() function call (no # prefix in code mode).
+
         Args:
             node: The figure node
         """
@@ -774,8 +826,8 @@ class TypstTranslator(SphinxTranslator):
         self.figure_content = []  # Store figure content (image)
         self.figure_caption = ""  # Store caption text
 
-        # Start figure with potential label
-        self.add_text("#figure(\n")
+        # Start figure with potential label (no # prefix in code mode)
+        self.add_text("figure(\n")
 
     def depart_figure(self, node: nodes.figure) -> None:
         """
@@ -1050,18 +1102,19 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a block quote node.
 
+        Generates quote() function call (no # prefix in code mode).
+
         Args:
             node: The block quote node
         """
-        # Typst block quote syntax: #quote[...]
         # Check if there's an attribution child node
         has_attribution = any(isinstance(child, nodes.attribution) for child in node)
 
         if has_attribution:
             # Will add attribution parameter when we encounter the attribution node
-            self.add_text("#quote(")
+            self.add_text("quote(")
         else:
-            self.add_text("#quote[")
+            self.add_text("quote[")
 
     def depart_block_quote(self, node: nodes.block_quote) -> None:
         """
@@ -1102,17 +1155,19 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit an image node.
 
+        Generates image() function call (no # prefix in code mode).
+
         Args:
             node: The image node
         """
-        # Typst image syntax: #image("path", width: value)
         uri = node.get("uri", "")
 
-        # If inside a figure, don't add # prefix (figure will handle it)
+        # Add proper indentation if inside a figure
         if self.in_figure:
             self.add_text(f'  image("{uri}"')
         else:
-            self.add_text(f'#image("{uri}"')
+            # No # prefix in code mode
+            self.add_text(f'image("{uri}"')
 
         # Add optional attributes
         if "width" in node:
@@ -1343,28 +1398,29 @@ class TypstTranslator(SphinxTranslator):
             f"entries: {[docname for _, docname in entries]}"
         )
 
-        # Issue #7: Generate single content block for all includes
-        # Start single content block
-        self.add_text("#[\n")
-        self.add_text("  #set heading(offset: 1)\n")
+        # Generate scope block for all includes (unified code mode)
+        # Use {...} scope block to isolate set rules while maintaining code mode
+        # Start scope block (no # prefix in code mode)
+        self.add_text("{\n")
+        self.add_text("  set heading(offset: 1)\n")
 
-        # Generate #include() for each entry within the single block
+        # Generate include() for each entry within the scope block
         # Each included file has its own imports, so block scope is safe
         for _title, docname in entries:
-            # Compute relative path for #include() (Issue #5 fix)
+            # Compute relative path for include() (Issue #5 fix)
             relative_path = self._compute_relative_include_path(
                 docname, current_docname
             )
 
             logger.debug(
-                f"Generated #include() for toctree: {docname} -> {relative_path}.typ"
+                f"Generated include() for toctree: {docname} -> {relative_path}.typ"
             )
 
-            # Issue #7: Generate only #include() within the block
-            self.add_text(f'  #include("{relative_path}.typ")\n')
+            # Generate include() within the block (no # prefix in code mode)
+            self.add_text(f'  include("{relative_path}.typ")\n')
 
-        # End single content block
-        self.add_text("]\n\n")
+        # End scope block
+        self.add_text("}\n\n")
 
         # Skip processing children as we've handled the toctree entries
         raise nodes.SkipNode
@@ -1383,6 +1439,8 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a reference node (link).
 
+        Generates link() function call (no # prefix in code mode).
+
         Args:
             node: The reference node
         """
@@ -1393,10 +1451,12 @@ class TypstTranslator(SphinxTranslator):
         if refuri.startswith("#"):
             # Internal reference to a label
             label = refuri[1:]  # Remove the #
-            self.add_text(f"#link(<{label}>)[")
+            # No # prefix in code mode
+            self.add_text(f"link(<{label}>)[")
         else:
             # External reference (HTTP/HTTPS URL or relative path)
-            self.add_text(f'#link("{refuri}")[')
+            # No # prefix in code mode
+            self.add_text(f'link("{refuri}")[')
 
     def depart_reference(self, node: nodes.reference) -> None:
         """
@@ -1941,9 +2001,9 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a title_reference node (reference to a title).
 
-        Title references are rendered in emphasis.
+        Title references are rendered in emphasis (no # prefix in code mode).
         """
-        self.body.append("#emph[")
+        self.body.append("emph[")
 
     def depart_title_reference(self, node: nodes.title_reference) -> None:
         """Depart a title_reference node."""
@@ -1994,16 +2054,16 @@ class TypstTranslator(SphinxTranslator):
     # Literal nodes for API documentation
 
     def visit_literal_strong(self, node: nodes.inline) -> None:
-        """Visit a literal_strong node (bold literal text in field lists)."""
-        self.body.append("#strong[")
+        """Visit a literal_strong node (bold literal text in field lists - no # prefix in code mode)."""
+        self.body.append("strong[")
 
     def depart_literal_strong(self, node: nodes.inline) -> None:
         """Depart a literal_strong node."""
         self.body.append("]")
 
     def visit_literal_emphasis(self, node: nodes.inline) -> None:
-        """Visit a literal_emphasis node (emphasized literal text in field lists)."""
-        self.body.append("#emph[")
+        """Visit a literal_emphasis node (emphasized literal text in field lists - no # prefix in code mode)."""
+        self.body.append("emph[")
 
     def depart_literal_emphasis(self, node: nodes.inline) -> None:
         """Depart a literal_emphasis node."""
