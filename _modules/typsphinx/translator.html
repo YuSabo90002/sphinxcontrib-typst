@@ -2205,6 +2205,384 @@
 <span class="sd">        Depart an inline node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
+
+
+    <span class="c1"># API description nodes (Issue #55)</span>
+    <span class="c1"># Requirement: API説明ノードの処理</span>
+
+<div class="viewcode-block" id="TypstTranslator.visit_index">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_index">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit an index node.</span>
+
+<span class="sd">        Index entries are skipped in Typst/PDF output as we don&#39;t generate indices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="n">nodes</span><span class="o">.</span><span class="n">SkipNode</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_index">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_index">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart an index node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a desc node (API description container).</span>
+
+<span class="sd">        Desc nodes contain API descriptions (classes, functions, methods, etc.).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Depart a desc node.</span>
+
+<span class="sd">        Add spacing after API description blocks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_signature">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_signature">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_signature</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a desc_signature node (API element signature).</span>
+
+<span class="sd">        Signatures are rendered in bold.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#strong[&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_signature">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_signature">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_signature</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_signature node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;]</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_content">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_content">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_content</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a desc_content node (API description content).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_content">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_content">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_content</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_content node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_annotation">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_annotation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_annotation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a desc_annotation node (type annotations like &#39;class&#39;, &#39;async&#39;, etc.).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_annotation">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_annotation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_annotation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Depart a desc_annotation node.</span>
+
+<span class="sd">        Add space after annotation keywords.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_addname">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_addname">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_addname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_addname</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a desc_addname node (module name prefix).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_addname">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_addname">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_addname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_addname</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_addname node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_name">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a desc_name node (function/class name).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_name">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_name node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_parameterlist">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_parameterlist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_parameterlist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_parameterlist</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a desc_parameterlist node (parameter list container).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_parameterlist">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_parameterlist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_parameterlist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_parameterlist</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_parameterlist node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_parameter">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_parameter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_parameter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a desc_parameter node (individual parameter).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_parameter">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_parameter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_parameter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Depart a desc_parameter node.</span>
+
+<span class="sd">        Add comma and space between parameters, except for the last one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">next_node</span><span class="p">(</span><span class="n">descend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">siblings</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_field_list">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_field_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_field_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">field_list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a field_list node (structured fields like Parameters, Returns).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_field_list">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_field_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_field_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">field_list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Depart a field_list node.</span>
+
+<span class="sd">        Add spacing after field lists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_field">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_field">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a field node (individual field in a field list).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_field">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_field">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a field node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_field_name">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_field_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a field_name node (field name like &#39;Parameters&#39;, &#39;Returns&#39;).</span>
+
+<span class="sd">        Field names are rendered in bold with a colon.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_field_name">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_field_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a field_name node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;:*</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_field_body">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_field_body">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_field_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">field_body</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a field_body node (field content).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_field_body">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_field_body">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_field_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">field_body</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Depart a field_body node.</span>
+
+<span class="sd">        Add newline after field body.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_rubric">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_rubric">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_rubric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">rubric</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a rubric node (section subheading).</span>
+
+<span class="sd">        Rubrics are rendered as subsection headings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">#strong[&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_rubric">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_rubric">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_rubric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">rubric</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a rubric node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;]</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_title_reference">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_title_reference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_title_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">title_reference</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visit a title_reference node (reference to a title).</span>
+
+<span class="sd">        Title references are rendered in emphasis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#emph[&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_title_reference">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_title_reference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_title_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">title_reference</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a title_reference node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">)</span></div>
+
+
+    <span class="c1"># Additional signature nodes (desc_sig_* family)</span>
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_sig_keyword">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_sig_keyword">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_sig_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_keyword</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visit a desc_sig_keyword node (keywords in signatures like &#39;class&#39;, &#39;def&#39;).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_sig_keyword">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_sig_keyword">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_sig_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_keyword</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_sig_keyword node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_sig_space">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_sig_space">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_sig_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_space</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visit a desc_sig_space node (whitespace in signatures).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_sig_space">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_sig_space">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_sig_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_space</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_sig_space node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_sig_name">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_sig_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_sig_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visit a desc_sig_name node (names in signatures).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_sig_name">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_sig_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_sig_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_sig_name node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_sig_punctuation">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_sig_punctuation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_sig_punctuation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_punctuation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visit a desc_sig_punctuation node (punctuation in signatures like &#39;:&#39;, &#39;=&#39;).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_sig_punctuation">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_sig_punctuation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_sig_punctuation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_punctuation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_sig_punctuation node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_desc_sig_operator">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_desc_sig_operator">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_desc_sig_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_operator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visit a desc_sig_operator node (operators in signatures).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_desc_sig_operator">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_desc_sig_operator">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_desc_sig_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">addnodes</span><span class="o">.</span><span class="n">desc_sig_operator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a desc_sig_operator node.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="c1"># Literal nodes for API documentation</span>
+
+<div class="viewcode-block" id="TypstTranslator.visit_literal_strong">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_literal_strong">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_literal_strong</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">inline</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visit a literal_strong node (bold literal text in field lists).&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#strong[&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_literal_strong">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_literal_strong">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_literal_strong</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">inline</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a literal_strong node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.visit_literal_emphasis">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.visit_literal_emphasis">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_literal_emphasis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">inline</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visit a literal_emphasis node (emphasized literal text in field lists).&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;#emph[&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypstTranslator.depart_literal_emphasis">
+<a class="viewcode-back" href="../../api/index.html#typsphinx.translator.TypstTranslator.depart_literal_emphasis">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">depart_literal_emphasis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">inline</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Depart a literal_emphasis node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

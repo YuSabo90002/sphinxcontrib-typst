@@ -2177,6 +2177,633 @@ Requirement 3.1: Cross-references and links</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_index">
+<span class="sig-name descname"><span class="pre">visit_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_index" title="Link to this definition">¶</a></dt>
+<dd><p>Visit an index node.</p>
+<p>Index entries are skipped in Typst/PDF output as we don’t generate indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.index" title="(in Sphinx v8.3.0)"><em>index</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_index">
+<span class="sig-name descname"><span class="pre">depart_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_index" title="Link to this definition">¶</a></dt>
+<dd><p>Depart an index node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.index" title="(in Sphinx v8.3.0)"><em>index</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc">
+<span class="sig-name descname"><span class="pre">visit_desc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc node (API description container).</p>
+<p>Desc nodes contain API descriptions (classes, functions, methods, etc.).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc" title="(in Sphinx v8.3.0)"><em>desc</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc">
+<span class="sig-name descname"><span class="pre">depart_desc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc node.</p>
+<p>Add spacing after API description blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc" title="(in Sphinx v8.3.0)"><em>desc</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_signature">
+<span class="sig-name descname"><span class="pre">visit_desc_signature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_signature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_signature" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_signature node (API element signature).</p>
+<p>Signatures are rendered in bold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_signature" title="(in Sphinx v8.3.0)"><em>desc_signature</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_signature">
+<span class="sig-name descname"><span class="pre">depart_desc_signature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_signature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_signature" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_signature node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_signature" title="(in Sphinx v8.3.0)"><em>desc_signature</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_content">
+<span class="sig-name descname"><span class="pre">visit_desc_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_content" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_content node (API description content).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_content" title="(in Sphinx v8.3.0)"><em>desc_content</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_content">
+<span class="sig-name descname"><span class="pre">depart_desc_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_content" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_content node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_content" title="(in Sphinx v8.3.0)"><em>desc_content</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_annotation">
+<span class="sig-name descname"><span class="pre">visit_desc_annotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_annotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_annotation" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_annotation node (type annotations like ‘class’, ‘async’, etc.).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_annotation" title="(in Sphinx v8.3.0)"><em>desc_annotation</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_annotation">
+<span class="sig-name descname"><span class="pre">depart_desc_annotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_annotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_annotation" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_annotation node.</p>
+<p>Add space after annotation keywords.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_annotation" title="(in Sphinx v8.3.0)"><em>desc_annotation</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_addname">
+<span class="sig-name descname"><span class="pre">visit_desc_addname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_addname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_addname" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_addname node (module name prefix).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_addname" title="(in Sphinx v8.3.0)"><em>desc_addname</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_addname">
+<span class="sig-name descname"><span class="pre">depart_desc_addname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_addname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_addname" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_addname node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_addname" title="(in Sphinx v8.3.0)"><em>desc_addname</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_name">
+<span class="sig-name descname"><span class="pre">visit_desc_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_name" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_name node (function/class name).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_name" title="(in Sphinx v8.3.0)"><em>desc_name</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_name">
+<span class="sig-name descname"><span class="pre">depart_desc_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_name" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_name node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_name" title="(in Sphinx v8.3.0)"><em>desc_name</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_parameterlist">
+<span class="sig-name descname"><span class="pre">visit_desc_parameterlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_parameterlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_parameterlist" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_parameterlist node (parameter list container).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_parameterlist" title="(in Sphinx v8.3.0)"><em>desc_parameterlist</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_parameterlist">
+<span class="sig-name descname"><span class="pre">depart_desc_parameterlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_parameterlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_parameterlist" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_parameterlist node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_parameterlist" title="(in Sphinx v8.3.0)"><em>desc_parameterlist</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_parameter">
+<span class="sig-name descname"><span class="pre">visit_desc_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_parameter" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_parameter node (individual parameter).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_parameter" title="(in Sphinx v8.3.0)"><em>desc_parameter</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_parameter">
+<span class="sig-name descname"><span class="pre">depart_desc_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_parameter" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_parameter node.</p>
+<p>Add comma and space between parameters, except for the last one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_parameter" title="(in Sphinx v8.3.0)"><em>desc_parameter</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_field_list">
+<span class="sig-name descname"><span class="pre">visit_field_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_field_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_field_list" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a field_list node (structured fields like Parameters, Returns).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>field_list</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_field_list">
+<span class="sig-name descname"><span class="pre">depart_field_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_field_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_field_list" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a field_list node.</p>
+<p>Add spacing after field lists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>field_list</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_field">
+<span class="sig-name descname"><span class="pre">visit_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_field" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a field node (individual field in a field list).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>field</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_field">
+<span class="sig-name descname"><span class="pre">depart_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_field" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a field node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>field</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_field_name">
+<span class="sig-name descname"><span class="pre">visit_field_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_field_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_field_name" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a field_name node (field name like ‘Parameters’, ‘Returns’).</p>
+<p>Field names are rendered in bold with a colon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>field_name</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_field_name">
+<span class="sig-name descname"><span class="pre">depart_field_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_field_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_field_name" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a field_name node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>field_name</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_field_body">
+<span class="sig-name descname"><span class="pre">visit_field_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_field_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_field_body" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a field_body node (field content).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>field_body</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_field_body">
+<span class="sig-name descname"><span class="pre">depart_field_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_field_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_field_body" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a field_body node.</p>
+<p>Add newline after field body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>field_body</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_rubric">
+<span class="sig-name descname"><span class="pre">visit_rubric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_rubric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_rubric" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a rubric node (section subheading).</p>
+<p>Rubrics are rendered as subsection headings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>rubric</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_rubric">
+<span class="sig-name descname"><span class="pre">depart_rubric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_rubric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_rubric" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a rubric node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>rubric</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_title_reference">
+<span class="sig-name descname"><span class="pre">visit_title_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_title_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_title_reference" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a title_reference node (reference to a title).</p>
+<p>Title references are rendered in emphasis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>title_reference</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_title_reference">
+<span class="sig-name descname"><span class="pre">depart_title_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_title_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_title_reference" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a title_reference node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>title_reference</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_sig_keyword">
+<span class="sig-name descname"><span class="pre">visit_desc_sig_keyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_sig_keyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_keyword" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_sig_keyword node (keywords in signatures like ‘class’, ‘def’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_keyword" title="(in Sphinx v8.3.0)"><em>desc_sig_keyword</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_sig_keyword">
+<span class="sig-name descname"><span class="pre">depart_desc_sig_keyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_sig_keyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_keyword" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_sig_keyword node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_keyword" title="(in Sphinx v8.3.0)"><em>desc_sig_keyword</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_sig_space">
+<span class="sig-name descname"><span class="pre">visit_desc_sig_space</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_sig_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_space" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_sig_space node (whitespace in signatures).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_space" title="(in Sphinx v8.3.0)"><em>desc_sig_space</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_sig_space">
+<span class="sig-name descname"><span class="pre">depart_desc_sig_space</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_sig_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_space" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_sig_space node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_space" title="(in Sphinx v8.3.0)"><em>desc_sig_space</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_sig_name">
+<span class="sig-name descname"><span class="pre">visit_desc_sig_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_sig_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_name" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_sig_name node (names in signatures).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_name" title="(in Sphinx v8.3.0)"><em>desc_sig_name</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_sig_name">
+<span class="sig-name descname"><span class="pre">depart_desc_sig_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_sig_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_name" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_sig_name node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_name" title="(in Sphinx v8.3.0)"><em>desc_sig_name</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_sig_punctuation">
+<span class="sig-name descname"><span class="pre">visit_desc_sig_punctuation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_sig_punctuation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_punctuation" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_sig_punctuation node (punctuation in signatures like ‘:’, ‘=’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_punctuation" title="(in Sphinx v8.3.0)"><em>desc_sig_punctuation</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_sig_punctuation">
+<span class="sig-name descname"><span class="pre">depart_desc_sig_punctuation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_sig_punctuation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_punctuation" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_sig_punctuation node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_punctuation" title="(in Sphinx v8.3.0)"><em>desc_sig_punctuation</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_desc_sig_operator">
+<span class="sig-name descname"><span class="pre">visit_desc_sig_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_desc_sig_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_operator" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a desc_sig_operator node (operators in signatures).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_operator" title="(in Sphinx v8.3.0)"><em>desc_sig_operator</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_desc_sig_operator">
+<span class="sig-name descname"><span class="pre">depart_desc_sig_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_desc_sig_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_operator" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a desc_sig_operator node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<a class="reference external" href="https://www.sphinx-doc.org/en/master/extdev/nodes.html#sphinx.addnodes.desc_sig_operator" title="(in Sphinx v8.3.0)"><em>desc_sig_operator</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_literal_strong">
+<span class="sig-name descname"><span class="pre">visit_literal_strong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_literal_strong"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_literal_strong" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a literal_strong node (bold literal text in field lists).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>inline</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_literal_strong">
+<span class="sig-name descname"><span class="pre">depart_literal_strong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_literal_strong"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_literal_strong" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a literal_strong node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>inline</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_literal_emphasis">
+<span class="sig-name descname"><span class="pre">visit_literal_emphasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_literal_emphasis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_literal_emphasis" title="Link to this definition">¶</a></dt>
+<dd><p>Visit a literal_emphasis node (emphasized literal text in field lists).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>inline</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_literal_emphasis">
+<span class="sig-name descname"><span class="pre">depart_literal_emphasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_literal_emphasis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_literal_emphasis" title="Link to this definition">¶</a></dt>
+<dd><p>Depart a literal_emphasis node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>node</strong> (<em>inline</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -2631,6 +3258,50 @@ Requirement 8.14: #outline() in template, not body</p>
 <li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_seealso"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_seealso()</span></code></a></li>
 <li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_inline"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_inline()</span></code></a></li>
 <li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_inline"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_inline()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_index"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_index()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_index"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_index()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_signature"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_signature()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_signature"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_signature()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_content"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_content()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_content"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_content()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_annotation"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_annotation()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_annotation"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_annotation()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_addname"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_addname()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_addname"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_addname()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_name"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_name()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_name"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_name()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_parameterlist"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_parameterlist()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_parameterlist"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_parameterlist()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_parameter"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_parameter()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_parameter"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_parameter()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_field_list"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_field_list()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_field_list"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_field_list()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_field"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_field()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_field"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_field()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_field_name"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_field_name()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_field_name"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_field_name()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_field_body"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_field_body()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_field_body"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_field_body()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_rubric"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_rubric()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_rubric"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_rubric()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_title_reference"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_title_reference()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_title_reference"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_title_reference()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_keyword"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_sig_keyword()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_keyword"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_sig_keyword()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_space"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_sig_space()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_space"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_sig_space()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_name"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_sig_name()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_name"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_sig_name()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_punctuation"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_sig_punctuation()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_punctuation"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_sig_punctuation()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_desc_sig_operator"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_desc_sig_operator()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_desc_sig_operator"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_desc_sig_operator()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_literal_strong"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_literal_strong()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_literal_strong"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_literal_strong()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.visit_literal_emphasis"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.visit_literal_emphasis()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.translator.TypstTranslator.depart_literal_emphasis"><code class="docutils literal notranslate"><span class="pre">TypstTranslator.depart_literal_emphasis()</span></code></a></li>
 </ul>
 </li>
 </ul>
