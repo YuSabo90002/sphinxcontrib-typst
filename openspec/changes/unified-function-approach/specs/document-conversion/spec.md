@@ -198,19 +198,37 @@ AND maintain proper nesting of all child elements
 
 ---
 
-### Requirement: 定義リストの維持
+### Requirement: 定義リストの `terms.item()` 関数化
 
-定義リストは Typst 標準の `/ term: definition` 構文を使用しなければならない (MUST)。これは sugar syntax ではなく、Typst の標準的な term list 構文である。
+定義リストは `terms.item()` 関数として出力されなければならない (MUST)。Sugar syntax (`/ term: definition`) による出力は使用してはならない (MUST NOT)。
 
-**Rationale**: Definition lists already use Typst's standard term list syntax, which is the canonical form with no function equivalent.
+**Rationale**: Typst has `terms.item(term, description)` function for programmatic term list creation. This ensures consistency with the unified function approach.
 
-#### Scenario: 単純な定義リストの維持
+#### Scenario: 単純な定義リストの変換
 
 ```gherkin
-GIVEN a Sphinx document with a definition list
-WHEN the translator processes term and definition nodes
-THEN the output MUST be `/ term: definition`
-AND MUST NOT be changed to any function syntax
+GIVEN a Sphinx document with a definition list (term "API", definition "Application Programming Interface")
+WHEN the translator processes the definition_list node inside code mode
+THEN the output MUST be `terms(terms.item(text("API"), text("Application Programming Interface")))`
+AND NOT `/ API: Application Programming Interface` (sugar syntax)
+```
+
+#### Scenario: 複数の定義項目
+
+```gherkin
+GIVEN a definition list with 3 term-definition pairs
+WHEN the translator processes the definition_list node
+THEN the output MUST be `terms(terms.item(text("term1"), text("def1")), terms.item(text("term2"), text("def2")), terms.item(text("term3"), text("def3")))`
+AND all items MUST use terms.item() function
+```
+
+#### Scenario: 定義内の複雑なコンテンツ
+
+```gherkin
+GIVEN a definition containing emphasis and strong elements
+WHEN the translator processes the definition content
+THEN the output MUST be `terms.item(text("term"), text("Definition with ") + emph(text("emphasis")) + text(" and ") + strong(text("strong")))`
+AND nested formatting MUST be preserved
 ```
 
 ---
@@ -419,8 +437,8 @@ AND codly features MUST still work
    - MUST NOT generate `=`, `_`, `*` for headings, emphasis, strong
    - MUST NOT generate `-`, `+` for lists
    - MUST NOT generate `` ` ``, ` ``` ` for code (use `raw()` function)
-   - MAY generate `/ ` for definition lists (Typst standard term list syntax)
-   - MAY generate `$` for math (Typst standard math delimiters)
+   - MUST NOT generate `/ ` for definition lists (use `terms.item()` function)
+   - MAY generate `$` for math (Typst standard math delimiters - only element without function alternative)
 
 4. **All Function Calls Well-Formed**
    - MUST generate `heading(level: N, text("..."))` (no `#`, use `text()`)
@@ -428,6 +446,7 @@ AND codly features MUST still work
    - MUST generate `list(text("..."), text("..."))`, `enum(text("..."), text("..."))` (no `#`, use `text()`)
    - MUST generate `raw("code")` for inline code (no `#`)
    - MUST generate `raw(block: true, lang: "...", "code")` for code blocks (no `#`)
+   - MUST generate `terms(terms.item(text("term"), text("def")), ...)` for definition lists (no `#`)
 
 5. **Text Nodes Use `text()` Function**
    - Text content MUST be wrapped in `text("...")` function
@@ -600,6 +619,50 @@ def visit_literal(self, node):
     self.add_text(f'raw("{escaped}")')
     raise nodes.SkipNode  # Don't process children
 ```
+
+### Definition Lists with `terms.item()` Function
+
+Convert definition lists to `terms()` with `terms.item()`:
+
+```python
+# Current (incremental)
+def visit_term(self, node):
+    self.add_text("/ ")
+
+def depart_term(self, node):
+    self.add_text(": ")
+
+def visit_definition(self, node):
+    pass
+
+def depart_definition(self, node):
+    self.add_text("\n")
+
+# Target (collection-based)
+def visit_definition_list(self, node):
+    # Collect all term-definition pairs
+    items = []
+    for item in node.children:
+        if isinstance(item, nodes.definition_list_item):
+            term = item.children[0].astext()  # term node
+            definition = item.children[1].astext()  # definition node
+            term_escaped = term.replace('"', '\\"')
+            def_escaped = definition.replace('"', '\\"')
+            items.append(f'terms.item(text("{term_escaped}"), text("{def_escaped}"))')
+
+    # Generate terms() with all items
+    self.add_text(f"terms({', '.join(items)})\n")
+    raise nodes.SkipNode
+
+# Note: Actual implementation needs to handle complex content in definitions
+# (emphasis, strong, etc.) using content collection, not just astext()
+```
+
+**Key points**:
+- `terms()` function wraps all `terms.item()` calls
+- Each term-definition pair becomes `terms.item(text("term"), text("def"))`
+- NO `#` prefix
+- Requires state redesign similar to lists
 
 ---
 

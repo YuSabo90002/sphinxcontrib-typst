@@ -181,7 +181,14 @@ Inside the code mode block:
 **Rationale**: Codly uses `show raw.where(block: true)` and `raw.line` internally
 **Note**: Preserve existing codly features (line numbers, highlighting, captions)
 
-#### 12. Existing Function Calls (MODIFIED)
+#### 12. Definition Lists (NEW)
+**Current**: `/ term: definition`
+**Target**: `terms.item(text("term"), text("definition"))` (NO `#` prefix)
+**Location**: `translator.py:616` (`visit_term`, `visit_definition`)
+**Rationale**: Typst has `terms.item()` function for programmatic term list creation
+**Note**: Requires collecting term-definition pairs before generating `terms()`
+
+#### 13. Existing Function Calls (MODIFIED)
 **Current**: `#sub[text]`, `#super[text]`, `#quote[...]`, `#image()`, etc.
 **Target**: Remove `#` prefix + use `text()` → `sub(text("text"))`, `super(text("text"))`, `quote(...)`, `image()`, etc.
 **Location**: Multiple locations (subscript:393, superscript:412, block_quote:944, image:997, etc.)
@@ -193,7 +200,7 @@ Inside the code mode block:
 
 1. **Inline Code**: `` `code` `` → Convert to `raw("code")` (codly compatible)
 2. **Code Blocks**: ` ```lang ... ``` ` → Convert to `raw(block: true, lang: "...", ...)` (codly uses `raw.line`)
-3. **Definition Lists**: `/ term: definition` → Keep as-is (Typst standard term list syntax)
+3. **Definition Lists**: `/ term: definition` → Convert to `terms.item(term, description)` (function syntax exists!)
 4. **Math Delimiters**: `$ ... $` → Keep as-is (Typst standard, works in code mode)
 
 **Rationale for `raw()` conversion**:
@@ -315,8 +322,9 @@ Inside the code mode block:
 
 ### Phase 4: Lists (State Redesign)
 - Current: Incremental generation (`visit_list_item` adds `- ` per item)
-- Target: Collect all items, then generate `list([item1], [item2])` (NO `#`)
+- Target: Collect all items, then generate `list(text("item1"), text("item2"))` (NO `#`)
 - Requires significant state management changes
+- Also applies to definition lists: `terms(terms.item(text("term"), text("def")), ...)` (NO `#`)
 
 ### Phase 5: Integration & Testing
 - Update all test fixtures
