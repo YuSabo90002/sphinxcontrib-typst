@@ -489,7 +489,7 @@ AND sugar syntax MUST be kept as-is (works in code mode)
 
 インラインコードとコードブロックは `raw()` 関数として出力されなければならない (MUST)。コンテンツはバッククオートによるraw string literalとして渡されなければならない (MUST)。エスケープシーケンスの処理は不要である (MUST NOT escape)。Sugar syntax (`` ` ``, ` ``` `) による出力は使用してはならない (MUST NOT)。
 
-**Rationale**: Typst's lexer processes backticks as raw string literals at lexer level, preserving content literally without escape processing. This eliminates the need to escape quotes, backslashes, and special characters. Codly uses `show raw.where(block: true)` and `raw.line` internally, making `raw()` function the proper way to integrate with codly. For code containing backticks, use multiple backticks as delimiters (`` `` or ``` ```).
+**Rationale**: Typst's lexer processes backticks as raw string literals at lexer level, preserving content literally without escape processing. This eliminates the need to escape quotes, backslashes, and special characters. Codly uses `show raw.where(block: true)` and `raw.line` internally, making `raw()` function the proper way to integrate with codly. For code containing backticks, use 3+ backticks as delimiters (minimum 3, not 2).
 
 #### Scenario: インラインコードの変換
 
@@ -539,8 +539,8 @@ AND NOT `raw(block: true, lang: "python", "def hello():\n    print(\"world\")")`
 ```gherkin
 GIVEN a Sphinx document with code containing a single backtick: `code`
 WHEN the translator processes the literal node inside code mode
-THEN the output MUST be `raw(\`\`code with \`backtick\` inside\`\`)`
-AND use double backticks as delimiters
+THEN the output MUST be `raw(\`\`\`code with \`backtick\` inside\`\`\`)`
+AND use 3 backticks as delimiters (minimum required)
 AND inner backticks MUST be preserved literally
 ```
 
@@ -779,9 +779,10 @@ def visit_literal_block(self, node):
     code_content = node.astext()
     lang = node.get("language", "")
 
-    # Detect if code contains backticks
+    # Detect if code contains backticks (minimum delimiter is 3)
     backtick_count = self._count_max_consecutive_backticks(code_content)
-    delimiter = "`" * (backtick_count + 1)  # Use one more backtick than max found
+    delimiter_count = max(3, backtick_count + 1)  # Minimum 3, or max+1 if code has backticks
+    delimiter = "`" * delimiter_count
 
     # Generate raw() function with backtick raw string (no escaping)
     if lang:
@@ -811,7 +812,7 @@ def _count_max_consecutive_backticks(self, text):
 - Typst's lexer processes backticks as raw string literals (no escape processing)
 - No escaping needed for `\"`, `\\`, `\n`, or any special characters
 - Content preserved literally (quotes, backslashes, newlines)
-- For code containing backticks, use multiple backticks as delimiters
+- For code containing backticks, use 3+ backticks as delimiters (minimum 3)
 
 ### Inline Code with `raw()` Function
 
@@ -829,9 +830,10 @@ def depart_literal(self, node):
 def visit_literal(self, node):
     code_content = node.astext()
 
-    # Detect if code contains backticks
+    # Detect if code contains backticks (minimum delimiter is 3)
     backtick_count = self._count_max_consecutive_backticks(code_content)
-    delimiter = "`" * (backtick_count + 1)  # Use one more backtick than max found
+    delimiter_count = max(3, backtick_count + 1)  # Minimum 3, or max+1 if code has backticks
+    delimiter = "`" * delimiter_count
 
     # Generate raw() with backtick raw string (no escaping)
     self.add_text(f'raw({delimiter}{code_content}{delimiter})')

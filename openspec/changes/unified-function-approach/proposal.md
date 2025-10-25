@@ -247,7 +247,7 @@ Inside the code mode block:
 - **All three use backticks**: No escaping needed for `\`, `"`, or other special characters
 - **Typst lexer**: Backticks are processed as raw string literals at lexer level
 - **No escape sequences**: Content between backticks is preserved literally
-- **For code with backticks**: Use multiple backticks as delimiters (`` `` or ``` ```)
+- **For code with backticks**: Use 3+ backticks as delimiters (minimum 3, not 2)
 
 **Example**:
 ```typst
@@ -259,8 +259,8 @@ Inside the code mode block:
   // Inline code (backtick raw string - no escaping)
   raw(`print("Hello")`)
 
-  // Code with backticks (use multiple backtick delimiters)
-  raw(``code with `backtick` inside``)
+  // Code with backticks (use 3+ backtick delimiters)
+  raw(```code with `backtick` inside```)
 
   // Inline math (mitex with LaTeX - backticks for raw string literal)
   mi(`\frac{a}{b}`)  // No escaping backslashes
