@@ -487,26 +487,40 @@ AND sugar syntax MUST be kept as-is (works in code mode)
 
 ### Requirement: コードの `raw()` 関数化
 
-インラインコードとコードブロックは `raw()` 関数として出力されなければならない (MUST)。Sugar syntax (`` ` ``, ` ``` `) による出力は使用してはならない (MUST NOT)。
+インラインコードとコードブロックは `raw()` 関数として出力されなければならない (MUST)。コンテンツはバッククォート生文字列で包まれなければならない (MUST)。Sugar syntax (`` ` ``, ` ``` `) による出力は使用してはならない (MUST NOT)。コード内にバッククォートが含まれる場合、トリプルバッククォート ` ``` ` を使用しなければならない (MUST)。
 
-**Rationale**: Codly uses `show raw.where(block: true)` and `raw.line` internally, making `raw()` function the proper way to integrate with codly. This ensures all codly features (line numbers, highlighting, annotations) work correctly while maintaining consistency with the unified code mode approach.
+**Rationale**: Codly uses `show raw.where(block: true)` and `raw.line` internally, making `raw()` function the proper way to integrate with codly. Backtick raw strings avoid escaping quotes, backslashes, and newlines. Triple backticks allow including backticks in code content (Typst standard). This ensures all codly features work correctly while maintaining consistency with math functions (`mi()`, `mitex()`).
 
 #### Scenario: インラインコードの変換
 
 ```gherkin
 GIVEN a Sphinx document with inline code "print(x)"
 WHEN the translator processes a literal node inside code mode
-THEN the output MUST be `raw("print(x)")`
+THEN the output MUST be `raw(\`print(x)\`)`
+AND use backtick raw string (no escaping needed)
 AND NOT `` `print(x)` `` (sugar syntax)
+AND NOT `raw("print(x)")` (string escaping requires quotes)
 ```
 
 #### Scenario: コードブロックの変換
 
 ```gherkin
-GIVEN a Sphinx document with a Python code block
+GIVEN a Sphinx document with a Python code block containing quotes
 WHEN the translator processes a literal_block node inside code mode
-THEN the output MUST be `raw(block: true, lang: "python", "code content")`
+THEN the output MUST be `raw(block: true, lang: "python", \`code content\`)`
+AND use backtick raw string (no escaping needed for quotes, newlines)
 AND NOT ` ```python\ncode\n``` ` (sugar syntax)
+AND NOT `raw(block: true, lang: "python", "code\\ncontent")` (string escaping)
+```
+
+#### Scenario: バッククォートを含むコード
+
+```gherkin
+GIVEN a Sphinx document with code containing backticks "use `backticks`"
+WHEN the translator processes the literal node
+THEN the output MUST be `raw(\`\`\`use \`backticks\`\`\`\`)`
+AND use triple backticks to escape single backticks
+AND backticks inside MUST be preserved correctly
 ```
 
 #### Scenario: Codly統合の維持
@@ -722,7 +736,7 @@ Note: NO `#` prefix, heading content uses `text()`
 
 ### Code Block with `raw()` Function and Codly Integration
 
-Convert code blocks to `raw()` function while preserving codly features:
+Convert code blocks to `raw()` function with backtick raw strings:
 
 ```python
 # Current (sugar syntax with codly)
@@ -733,7 +747,7 @@ def visit_literal_block(self, node):
         self.add_text(f"#codly-range(highlight: ({highlight_str}))\n")
     self.add_text(f"```{language}\n")
 
-# Target (raw() function with codly)
+# Target (raw() function with codly and backtick raw strings)
 def visit_literal_block(self, node):
     if not linenos:
         self.add_text("codly(number-format: none)\n")  # NO #
@@ -742,14 +756,21 @@ def visit_literal_block(self, node):
 
     # Get code content
     code_content = node.astext()
-    escaped = code_content.replace('"', '\\"')
-
-    # Generate raw() function
     lang = node.get("language", "")
-    if lang:
-        self.add_text(f'raw(block: true, lang: "{lang}", "{escaped}")\n')
+
+    # Check if code contains backticks
+    if '`' in code_content:
+        # Use triple backticks to escape single backticks
+        if lang:
+            self.add_text(f'raw(block: true, lang: "{lang}", ```{code_content}```)\n')
+        else:
+            self.add_text(f'raw(block: true, ```{code_content}```)\n')
     else:
-        self.add_text(f'raw(block: true, "{escaped}")\n')
+        # Use single backticks for raw string (no escaping needed)
+        if lang:
+            self.add_text(f'raw(block: true, lang: "{lang}", `{code_content}`)\n')
+        else:
+            self.add_text(f'raw(block: true, `{code_content}`)\n')
 ```
 
 **Codly compatibility**:
@@ -757,9 +778,15 @@ def visit_literal_block(self, node):
 - `raw()` function integrates with codly's `raw.line` processing
 - All features preserved: line numbers, highlighting, zebra striping, annotations
 
-### Inline Code with `raw()` Function
+**Backtick advantages for code blocks**:
+- No escaping for quotes: `` raw(`print("hello")`) ``
+- No escaping for newlines: `` raw(`line1\nline2`) ``
+- No escaping for backslashes: `` raw(`C:\path`) ``
+- Triple backticks for backtick content
 
-Convert inline code to `raw()` function:
+### Inline Code with `raw()` Function and Backtick Raw Strings
+
+Convert inline code to `raw()` function with backtick raw strings:
 
 ```python
 # Current
@@ -772,10 +799,23 @@ def depart_literal(self, node):
 # Target
 def visit_literal(self, node):
     code_content = node.astext()
-    escaped = code_content.replace('"', '\\"')
-    self.add_text(f'raw("{escaped}")')
+
+    # Check if code contains backticks
+    if '`' in code_content:
+        # Use triple backticks to escape single backticks
+        self.add_text(f'raw(```{code_content}```)')
+    else:
+        # Use single backticks for raw string (no escaping needed)
+        self.add_text(f'raw(`{code_content}`)')
+
     raise nodes.SkipNode  # Don't process children
 ```
+
+**Why backticks for `raw()`?**
+- No escaping needed for quotes: `raw(\`print("hello")\`)` vs `raw("print(\"hello\")")`
+- No escaping needed for backslashes: `raw(\`C:\\path\`)` vs `raw("C:\\\\path")`
+- No escaping needed for newlines: `raw(\`line1\nline2\`)` vs `raw("line1\\nline2")`
+- Triple backticks for backtick content: `raw(\`\`\`use \`backticks\`\`\`\`)`
 
 ### Definition Lists with `terms.item()` Function
 

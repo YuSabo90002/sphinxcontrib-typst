@@ -228,33 +228,43 @@ Inside the code mode block:
 
 ### Elements to Convert to Functions or Keep
 
-1. **Inline Code**: `` `code` `` → Convert to `raw("code")` (codly compatible)
-2. **Code Blocks**: ` ```lang ... ``` ` → Convert to `raw(block: true, lang: "...", ...)` (codly uses `raw.line`)
+1. **Inline Code**: `` `code` `` → Convert to `` raw(`code`) `` (backtick raw string, codly compatible)
+2. **Code Blocks**: ` ```lang ... ``` ` → Convert to `` raw(block: true, lang: "...", `code`) `` (backtick raw string, codly uses `raw.line`)
 3. **Definition Lists**: `/ term: definition` → Convert to `terms.item(term, description)` (function syntax exists!)
 4. **Inline Math (mitex)**: `` #mi(`LaTeX`) `` → Convert to `` mi(`LaTeX`) `` (remove `#` prefix, keep backticks for raw string)
 5. **Block Math (mitex)**: `` #mitex(`LaTeX`) `` → Convert to `` mitex(`LaTeX`) `` (remove `#` prefix, keep backticks for raw string)
 6. **Math (Typst native)**: `$ typst $` → Keep as-is (Typst standard, works in code mode)
 
-**Rationale for `raw()` conversion**:
+**Rationale for `raw()` with backtick raw strings**:
 - **Codly compatibility**: codly uses `show raw.where(block: true)` and `raw.line` internally
 - **Consistency**: All elements use function syntax inside code mode
-- **Feature preservation**: codly's line numbers, highlighting with `#codly()`, `#codly-range()` still work
+- **Feature preservation**: codly's line numbers, highlighting with `codly()`, `codly-range()` still work
 - **Explicit control**: Can pass parameters like `lang`, `block`, `align`, etc.
+- **No escaping needed**: Backtick raw strings avoid escaping `"`, `\`, `\n`
+- **Backtick escaping**: Use triple backticks ` ``` ` to include backticks in code
 
-**Rationale for backtick raw strings in `mi()`**:
+**Rationale for backtick raw strings in `mi()` and `mitex()`**:
 - **LaTeX compatibility**: LaTeX math uses many backslashes (`\frac`, `\sum`, etc.)
 - **Avoid escaping**: `` mi(`\frac{a}{b}`) `` vs `mi("\\frac{a}{b}")`
-- **Current implementation**: Already uses backticks (`` #mi(`...`) ``)
+- **Current implementation**: Already uses backticks (`` #mi(`...`) ``, `` #mitex(`...`) ``)
 - **Typst convention**: Raw strings with backticks are Typst standard
+
+**Unified approach**: All code and math content uses backtick raw strings for consistency and simplicity.
 
 **Example**:
 ```typst
 #[
-  // Code blocks
-  raw(block: true, lang: "python", "def hello():\n    print('world')")
+  // Code blocks (backtick raw string - no escaping)
+  raw(block: true, lang: "python", `
+def hello():
+    print("world")
+`)
 
-  // Inline code
-  raw("code")
+  // Inline code (backtick raw string - no escaping)
+  raw(`print("Hello")`)
+
+  // Code with backticks (use triple backticks)
+  raw(```use `backticks` in code```)
 
   // Inline math (mitex with LaTeX)
   mi(`\frac{a}{b}`)  // Backticks for raw string (no escaping)
