@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **BREAKING: Unified Code Mode Architecture** ([#4](https://github.com/YuSabo90002/typsphinx/issues/4))
+  - Entire document now wrapped in `#{...}` code block for consistent function syntax
+  - All Typst elements use bare function names without `#` prefix inside code block
+  - All text wrapped in `text()` function with proper string escaping
+  - All paragraphs wrapped in `par()` function to mark boundaries
+  - Lists use function calls: `list(...)`, `enum(...)`, `terms(...)`
+  - Inline code uses `raw()` with string escaping for `+` operator compatibility
+  - Math functions use backtick raw strings: `mi(\`...\`)`, `mitex(\`...\`)`
+  - Toctree uses `{...}` scope block for `set` rule isolation
+  - Fixes underscores in text being interpreted as subscript markup
+  - Fixes special characters requiring escaping in content mode
+  - Generated `.typ` files compile cleanly without syntax errors
+  - PDF output remains identical to previous versions
+  - **Migration**: Existing projects will need to regenerate `.typ` files
+
 - **Migrate CI to Tox**
   - GitHub Actions workflows now use tox commands for consistency
   - Added `docs-html`, `docs-pdf`, and `docs` tox environments
