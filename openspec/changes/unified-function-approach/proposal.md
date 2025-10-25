@@ -231,7 +231,8 @@ Inside the code mode block:
 1. **Inline Code**: `` `code` `` → Convert to `raw("code")` (codly compatible)
 2. **Code Blocks**: ` ```lang ... ``` ` → Convert to `raw(block: true, lang: "...", ...)` (codly uses `raw.line`)
 3. **Definition Lists**: `/ term: definition` → Convert to `terms.item(term, description)` (function syntax exists!)
-4. **Math Delimiters**: `$ ... $` → Keep as-is (Typst standard, works in code mode)
+4. **Math (mitex)**: `` #mi(`LaTeX`) `` → Convert to `` mi(`LaTeX`) `` (remove `#` prefix, keep backticks for raw string)
+5. **Math (Typst native)**: `$ typst $` → Keep as-is (Typst standard, works in code mode)
 
 **Rationale for `raw()` conversion**:
 - **Codly compatibility**: codly uses `show raw.where(block: true)` and `raw.line` internally
@@ -239,14 +240,26 @@ Inside the code mode block:
 - **Feature preservation**: codly's line numbers, highlighting with `#codly()`, `#codly-range()` still work
 - **Explicit control**: Can pass parameters like `lang`, `block`, `align`, etc.
 
+**Rationale for backtick raw strings in `mi()`**:
+- **LaTeX compatibility**: LaTeX math uses many backslashes (`\frac`, `\sum`, etc.)
+- **Avoid escaping**: `` mi(`\frac{a}{b}`) `` vs `mi("\\frac{a}{b}")`
+- **Current implementation**: Already uses backticks (`` #mi(`...`) ``)
+- **Typst convention**: Raw strings with backticks are Typst standard
+
 **Example**:
 ```typst
 #[
-  // Instead of ```python
+  // Code blocks
   raw(block: true, lang: "python", "def hello():\n    print('world')")
 
-  // Instead of `code`
+  // Inline code
   raw("code")
+
+  // Math (mitex with LaTeX)
+  mi(`\frac{a}{b}`)  // Backticks for raw string (no escaping)
+
+  // Math (Typst native)
+  $x + y$  // Works in code mode
 ]
 ```
 
@@ -333,7 +346,7 @@ Inside the code mode block:
   - `#table(...)` → `table(...)`
   - `#link(...)` → `link(...)`
   - Admonitions: `#info[...]`, `#warning[...]`, `#tip[...]` → `info[...]`, `warning[...]`, `tip[...]`
-  - Math: `#mi(...)`, `#mitex(...)` → `mi(...)`, `mitex(...)`
+  - Math: `` #mi(`...`) ``, `#mitex(...)` → `` mi(`...`) ``, `mitex(...)` (keep backticks for raw strings)
 
 ### Phase 2: Text Node and Paragraph Wrapping
 - Update `visit_Text()` to wrap text in `text("...")` function

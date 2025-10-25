@@ -453,6 +453,26 @@ THEN the output MUST be `info[...]`, `warning[...]`, `tip[...]`
 AND NOT `#info[...]`, `#warning[...]`, `#tip[...]`
 ```
 
+#### Scenario: Math (mitex) の変換
+
+```gherkin
+GIVEN inline math using mitex with LaTeX content "\frac{a}{b}"
+WHEN the translator processes the math node inside code mode
+THEN the output MUST be `mi(\`\frac{a}{b}\`)`
+AND NOT `#mi(\`\frac{a}{b}\`)` (no # prefix)
+AND MUST use backticks for raw string (no escaping backslashes)
+AND NOT `mi("\\frac{a}{b}")` (string escaping would require double backslashes)
+```
+
+#### Scenario: Math (Typst native) の変換
+
+```gherkin
+GIVEN inline math using Typst native syntax "x + y"
+WHEN the translator processes the math node inside code mode
+THEN the output MUST be `$x + y$`
+AND sugar syntax MUST be kept as-is (works in code mode)
+```
+
 ---
 
 ### Requirement: コードの `raw()` 関数化
@@ -790,6 +810,49 @@ def visit_definition_list(self, node):
 - Each term-definition pair becomes `terms.item(text("term"), text("def"))`
 - NO `#` prefix
 - Requires state redesign similar to lists
+
+### Math with Backtick Raw Strings
+
+Convert math to use backtick raw strings (avoid escaping backslashes):
+
+```python
+# Current (with # prefix)
+def visit_math(self, node):
+    math_content = node.astext()
+    use_mitex = getattr(self.builder.config, "typst_use_mitex", True)
+
+    if use_mitex:
+        self.add_text(f"#mi(`{math_content}`)")  # WITH #
+    else:
+        self.add_text(f"${math_content}$")
+
+# Target (without # prefix)
+def visit_math(self, node):
+    math_content = node.astext()
+    use_mitex = getattr(self.builder.config, "typst_use_mitex", True)
+
+    if use_mitex:
+        self.add_text(f"mi(`{math_content}`)")  # NO # prefix
+    else:
+        self.add_text(f"${math_content}$")  # $ syntax works in code mode
+```
+
+**Why backticks for `mi()`?**
+- LaTeX math contains many backslashes: `\frac`, `\sum`, `\int`, etc.
+- Backtick raw strings: `` mi(`\frac{a}{b}`) `` (no escaping needed)
+- String escaping: `mi("\\frac{a}{b}")` (all backslashes must be doubled)
+- **Backticks are much cleaner** and match current implementation
+
+**Example comparison**:
+```python
+# With backticks (recommended)
+mi(`\frac{d}{dx} \sum_{i=1}^{n} x_i^2`)
+
+# With string escaping (verbose)
+mi("\\frac{d}{dx} \\sum_{i=1}^{n} x_i^2")
+```
+
+**Note**: Typst native math `$...$` works directly in code mode without any changes.
 
 ---
 
