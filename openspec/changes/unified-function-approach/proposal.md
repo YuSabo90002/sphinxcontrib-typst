@@ -8,19 +8,19 @@
 
 ## Summary
 
-This proposal establishes a **unified code mode architecture** for all Typst element generation in sphinx-typst. We will wrap the entire document in a single code mode block (`#[...]`) and use function calls without `#` prefixes inside, eliminating all sugar syntax (`=`, `*`, `_`, `-`, `+`).
+This proposal establishes a **unified code mode architecture** for all Typst element generation in sphinx-typst. We will wrap the entire document in a single code mode block (`#{...}`) and use function calls without `#` prefixes inside, eliminating all sugar syntax (`=`, `*`, `_`, `-`, `+`).
 
 This is an **architectural principle**, not just a set of individual conversions. The goal is to achieve **maximum rigor and complete consistency** across the entire translator implementation.
 
 ### Key Design Decision: Document-Level Code Mode
 
-**Entire document wrapped in `#[...]`** with function calls inside (no `#` prefix needed).
+**Entire document wrapped in `#{...}`** with function calls inside (no `#` prefix needed).
 
 **Critical: All plain text MUST use `text()` function** to avoid markup mode escaping issues.
 
 **Example Output**:
 ```typst
-#[
+#{
 heading(level: 1, text("Introduction"))
 
 par(text("This is ") + emph(text("emphasized")) + text(" and ") + strong(text("strong")) + text(" text."))
@@ -29,7 +29,7 @@ list(
   text("First item"),
   text("Second item"),
 )
-]
+}
 ```
 
 **Why `text()` function?**
@@ -100,7 +100,7 @@ The current implementation mixes three different approaches:
 
 ### Architectural Principle
 
-**Entire document MUST be wrapped in a single code mode block (`#[...]`) with NO `#` prefixes inside.**
+**Entire document MUST be wrapped in a single code mode block (`#{...}`) with NO `#` prefixes inside.**
 
 Inside the code mode block:
 1. ALL function calls use bare function names (e.g., `heading()`, `emph()`, `strong()`)
@@ -127,7 +127,7 @@ Inside the code mode block:
 ### Document Structure
 
 ```typst
-#[
+#{
   // All content here uses function calls without # prefix
   // All text uses text() function to avoid markup escaping
   // All paragraphs use par() function to mark boundaries
@@ -136,14 +136,14 @@ Inside the code mode block:
   par(text("Plain text content in first paragraph."))
 
   par(text("Second paragraph with ") + emph(text("emphasized")) + text(" text."))
-]
+}
 ```
 
 ### Elements to Convert
 
 #### 1. Document Wrapper (NEW)
 **Current**: No wrapper, direct output to file
-**Target**: `#[` at document start, `]` at document end
+**Target**: `#{` at document start, `}` at document end
 **Location**: `translator.py:81-99` (`visit_document`, `depart_document`)
 **Critical**: This enables all other conversions
 
@@ -228,7 +228,7 @@ Inside the code mode block:
 ```
 **Target**:
 ```typst
-// Within document-level #[...]
+// Within document-level #{...}
 set heading(offset: 1)
 include("path/to/doc.typ")
 ```
@@ -271,7 +271,7 @@ include("path/to/doc.typ")
 
 **Example**:
 ```typst
-#[
+#{
   // Code blocks (backtick raw string - no escaping)
   raw(block: true, lang: "python", `def hello():
     print("world")`)
@@ -290,7 +290,7 @@ include("path/to/doc.typ")
 
   // Math (Typst native - both inline and block)
   $x + y$  // Works in code mode
-]
+}
 ```
 
 ## Impact Analysis
@@ -362,8 +362,8 @@ include("path/to/doc.typ")
 ## Implementation Strategy
 
 ### Phase 0: Document Wrapper (Foundation)
-- Update `visit_document()` to output `#[\n`
-- Update `depart_document()` to output `]\n`
+- Update `visit_document()` to output `#{\n`
+- Update `depart_document()` to output `}\n`
 - This enables all other conversions
 
 ### Phase 1: Remove `#` Prefixes from Existing Functions

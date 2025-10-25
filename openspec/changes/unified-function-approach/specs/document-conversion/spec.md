@@ -2,7 +2,7 @@
 
 ## Overview
 
-This specification defines the requirements for establishing a unified code mode architecture in sphinx-typst translator. The entire document will be wrapped in a single `#[...]` code mode block, with all function calls using bare function names (no `#` prefix) and all text wrapped in content blocks `[...]`.
+This specification defines the requirements for establishing a unified code mode architecture in sphinx-typst translator. The entire document will be wrapped in a single `#{...}` code mode block, with all function calls using bare function names (no `#` prefix) and all text wrapped in `text()` functions.
 
 ---
 
@@ -10,16 +10,16 @@ This specification defines the requirements for establishing a unified code mode
 
 ### Requirement: ドキュメント全体のコードモード化
 
-ドキュメント全体は単一のコードモードブロック `#[...]` で包まれなければならない (MUST)。コードモードブロック内のすべての関数呼び出しは `#` プレフィックスを使用してはならない (MUST NOT)。すべてのテキストコンテンツは `text()` 関数で包まれなければならない (MUST)。
+ドキュメント全体は単一のコードモードブロック `#{...}` で包まれなければならない (MUST)。コードモードブロック内のすべての関数呼び出しは `#` プレフィックスを使用してはならない (MUST NOT)。すべてのテキストコンテンツは `text()` 関数で包まれなければならない (MUST)。
 
-**Rationale**: Document-level code mode provides maximum rigor and consistency. `text()` function uses string mode (not markup mode), eliminating the need to escape special characters like `#`, `*`, `_`, `$`, `[`, `]`.
+**Rationale**: Document-level code mode provides maximum rigor and consistency. `text()` function uses string mode (not markup mode), eliminating the need to escape special characters like `#`, `*`, `_`, `$`, `[`, `}`.
 
 #### Scenario: ドキュメントの開始
 
 ```gherkin
 GIVEN a Sphinx document being translated
 WHEN visit_document() is called
-THEN the output MUST start with `#[\n`
+THEN the output MUST start with `#{\n`
 AND NOT with any other content
 ```
 
@@ -28,7 +28,7 @@ AND NOT with any other content
 ```gherkin
 GIVEN a Sphinx document translation completing
 WHEN depart_document() is called
-THEN the output MUST end with `]\n`
+THEN the output MUST end with `}\n`
 AND NOT with any other content
 ```
 
@@ -38,10 +38,10 @@ AND NOT with any other content
 GIVEN a Sphinx document with heading and text
 WHEN the document is fully translated
 THEN the output structure MUST be:
-  #[
+  #{
     heading(level: 1, text("Title"))
     text("Text content")
-  ]
+  }
 AND the entire content MUST be wrapped in the code mode block
 AND all text MUST use text() function
 ```
@@ -334,7 +334,7 @@ THEN the structure MUST be:
 
 テキストノードは `text("...")` 関数で包まれなければならない (MUST)。`[...]` マークアップモードを使用してはならない (MUST NOT)。文字列内では標準的なエスケープシーケンスを使用しなければならない (MUST): `\\` (backslash), `\"` (quote), `\n` (newline), `\r` (carriage return), `\t` (tab), `\u{...}` (Unicode)。
 
-**Rationale**: `text()` function uses string mode, eliminating the need to escape special characters (`#`, `*`, `_`, `$`, `[`, `]`). However, standard string escape sequences must be used for backslash, quotes, newlines, tabs, etc. Markup mode `[...]` requires escaping and can cause syntax errors.
+**Rationale**: `text()` function uses string mode, eliminating the need to escape special characters (`#`, `*`, `_`, `$`, `[`, `}`). However, standard string escape sequences must be used for backslash, quotes, newlines, tabs, etc. Markup mode `[...]` requires escaping and can cause syntax errors.
 
 #### Scenario: 通常のテキストノードの変換
 
@@ -490,9 +490,9 @@ AND sugar syntax MUST be kept as-is (works in code mode)
 
 ### Requirement: Toctree の `include()` 関数化
 
-Toctreeで生成される `include()` 呼び出しは `#` プレフィックスを除去しなければならない (MUST)。ネストされた `#[...]` ブロックを使用してはならない (MUST NOT)。ドキュメントレベルのコードモードブロック内で直接 `include()` と `set` を呼び出さなければならない (MUST)。
+Toctreeで生成される `include()` 呼び出しは `#` プレフィックスを除去しなければならない (MUST)。ネストされた `#{...}` ブロックを使用してはならない (MUST NOT)。ドキュメントレベルのコードモードブロック内で直接 `include()` と `set` を呼び出さなければならない (MUST)。
 
-**Rationale**: The document is already wrapped in a code mode block (`#[...]`). Toctree includes must use bare function names (`include()`, `set`) without `#` prefix, and must not create nested code mode blocks. The `set heading(offset: 1)` rule applies to all included documents within the same code mode scope.
+**Rationale**: The document is already wrapped in a code mode block (`#{...}`). Toctree includes must use bare function names (`include()`, `set`) without `#` prefix, and must not create nested code mode blocks. The `set heading(offset: 1)` rule applies to all included documents within the same code mode scope.
 
 #### Scenario: Toctreeの単純な変換
 
@@ -503,7 +503,7 @@ THEN the output MUST be:
   set heading(offset: 1)
   include("doc1.typ")
   include("doc2.typ")
-AND NOT wrap in nested #[...] block
+AND NOT wrap in nested #{...} block
 AND NOT use #include() or #set (no # prefix)
 ```
 
@@ -610,8 +610,8 @@ AND codly features MUST still work
 ## Validation Rules
 
 1. **Document Wrapped in Code Mode**
-   - MUST start with `#[\n`
-   - MUST end with `]\n`
+   - MUST start with `#{\n`
+   - MUST end with `}\n`
    - ALL content MUST be inside code mode block
 
 2. **No `#` Prefixes Inside Code Mode**
@@ -659,11 +659,11 @@ Wrap entire document in code mode:
 ```python
 # visit_document()
 def visit_document(self, node):
-    self.add_text("#[\n")
+    self.add_text("#{\n")
 
 # depart_document()
 def depart_document(self, node):
-    self.add_text("]\n")
+    self.add_text("}\n")
 ```
 
 ### Remove `#` Prefixes and Use `text()` for Content
@@ -701,7 +701,7 @@ def depart_paragraph(self, node):
 
 **Example output structure:**
 ```typst
-#[
+#{
   heading(level: 1, text("Title"))
 
   par(text("First paragraph content."))
@@ -709,7 +709,7 @@ def depart_paragraph(self, node):
   par(text("Second paragraph with ") + emph(text("emphasis")) + text("."))
 
   par(text("Third paragraph."))
-]
+}
 ```
 
 ### Text Node Wrapping with `text()` Function
@@ -731,7 +731,7 @@ def visit_Text(self, node):
 ```
 
 **Why `text()` not `[...]`?**
-- `text("...")` uses string mode → no need to escape `#`, `*`, `_`, `$`, `[`, `]`
+- `text("...")` uses string mode → no need to escape `#`, `*`, `_`, `$`, `[`, `}`
 - `[...]` uses markup mode → requires escaping special characters
 - Example: `text("$100 #1")` works, `[$100 #1]` breaks
 
@@ -900,21 +900,21 @@ def visit_toctree(self, node):
     entries = node.get("entries", [])
 
     # Generate nested content block
-    self.add_text("#[\n")
+    self.add_text("#{\n")
     self.add_text("  #set heading(offset: 1)\n")
 
     for _title, docname in entries:
         relative_path = self._compute_relative_include_path(docname, current_docname)
         self.add_text(f'  #include("{relative_path}.typ")\n')
 
-    self.add_text("]\n\n")
+    self.add_text("}\n\n")
     raise nodes.SkipNode
 
 # Target (inside document-level code mode, no # prefixes)
 def visit_toctree(self, node):
     entries = node.get("entries", [])
 
-    # NO nested #[...] block (document already wrapped)
+    # NO nested #{...} block (document already wrapped)
     # Generate set and include directly
     self.add_text("set heading(offset: 1)\n")  # NO #
 
@@ -927,13 +927,13 @@ def visit_toctree(self, node):
 ```
 
 **Key changes**:
-- Remove nested `#[...]` block (document is already in code mode)
+- Remove nested `#{...}` block (document is already in code mode)
 - Remove `#` prefix from `set` and `include()`
 - All toctree operations happen inside document-level code mode
 - `set heading(offset: 1)` applies to all subsequent includes in same scope
 
 **Why remove nested block?**
-- Document-level `#[...]` already provides code mode scope
+- Document-level `#{...}` already provides code mode scope
 - Nested blocks are unnecessary and inconsistent
 - `set` rules propagate correctly within single code mode scope
 
