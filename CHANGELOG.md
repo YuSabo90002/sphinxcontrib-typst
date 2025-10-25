@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Image File Copying Support** ([#38](https://github.com/YuSabo90002/typsphinx/issues/38))
+  - Image files referenced in documents are now automatically copied to the output directory
+  - Preserves directory structure when copying images
+  - Enables successful PDF builds for documents containing images
+  - Implemented `post_process_images()` and `copy_image_files()` methods in TypstBuilder
+  - Images are copied before PDF compilation in TypstPDFBuilder
+  - Added 9 comprehensive test cases covering various scenarios
+  - No configuration required - images are copied automatically
+
 ## [0.3.0] - 2025-10-23
 
 ### Changed (Breaking)
