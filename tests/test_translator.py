@@ -2692,7 +2692,10 @@ def test_title_reference_rendering(simple_document, mock_builder):
     title_ref.walkabout(translator)
     output = translator.astext()
 
-    assert 'emph[text("Example Title")]' in output or 'emph(text("Example Title"))' in output
+    assert (
+        'emph[text("Example Title")]' in output
+        or 'emph(text("Example Title"))' in output
+    )
 
 
 def test_full_api_description_structure(simple_document, mock_builder):

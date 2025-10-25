@@ -210,9 +210,7 @@ def test_toctree_single_content_block_multiple_includes(simple_document, mock_bu
     output = translator.astext()
 
     # Should have exactly one opening scope block
-    assert (
-        output.count("{") == 1
-    ), f"Expected 1 opening block, got {output.count('{')}"
+    assert output.count("{") == 1, f"Expected 1 opening block, got {output.count('{')}"
 
     # Should have exactly one closing scope block
     assert output.count("}") == 1, f"Expected 1 closing block, got {output.count('}')}"
