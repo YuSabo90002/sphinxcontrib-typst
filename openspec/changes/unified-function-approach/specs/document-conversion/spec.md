@@ -119,7 +119,7 @@ AND NOT `*critical*` (no sugar syntax)
 GIVEN a Sphinx document with nested strong and emphasis nodes
 WHEN the translator processes strong node containing emphasis node "nested"
 THEN the output MUST be `strong(emph(text("nested")))`
-AND NOT `strong[#emph[nested]]` (no # prefix)
+AND NOT `strong(emph[nested])` (use text() function, not markup mode)
 AND NOT `*_nested_*` (which causes unclosed delimiter errors)
 ```
 
@@ -237,17 +237,18 @@ AND nested formatting MUST be preserved
 
 ### Requirement: サブタイトルの変換
 
-サブタイトルノードは `emph[]` 関数として出力されなければならない (MUST)。Sugar syntax (`_subtitle_`) による出力は使用してはならない (MUST NOT)。
+サブタイトルノードは `emph(text("..."))` 関数として出力されなければならない (MUST)。Sugar syntax (`_subtitle_`) による出力は使用してはならない (MUST NOT)。
 
-**Rationale**: Subtitle semantics map to emphasis in Typst. Using `emph[]` ensures consistency with other emphasis elements.
+**Rationale**: Subtitle semantics map to emphasis in Typst. Using `emph()` with `text()` ensures consistency with other emphasis elements and avoids markup mode escaping issues.
 
 #### Scenario: サブタイトルの変換
 
 ```gherkin
 GIVEN a Sphinx document with a subtitle "A Comprehensive Guide"
 WHEN the translator processes a subtitle node
-THEN the output MUST be `emph[A Comprehensive Guide]`
-AND NOT `_A Comprehensive Guide_`
+THEN the output MUST be `emph(text("A Comprehensive Guide"))`
+AND NOT `emph[A Comprehensive Guide]` (use text() function, not markup mode)
+AND NOT `_A Comprehensive Guide_` (no sugar syntax)
 ```
 
 #### Scenario: サブタイトル内の特殊文字
@@ -255,25 +256,26 @@ AND NOT `_A Comprehensive Guide_`
 ```gherkin
 GIVEN a subtitle containing special characters "Version 1.0 - Beta"
 WHEN the translator processes the subtitle node
-THEN the output MUST be `emph[Version 1.0 - Beta]`
-AND special characters MUST be preserved correctly
+THEN the output MUST be `emph(text("Version 1.0 - Beta"))`
+AND special characters MUST be preserved correctly without escaping
 ```
 
 ---
 
 ### Requirement: APIドキュメントのフィールド名変換
 
-APIドキュメント内のフィールド名は `strong[]` 関数として出力されなければならない (MUST)。`#` プレフィックスを使用してはならない (MUST NOT)。Sugar syntax (`*name*`) による出力は使用してはならない (MUST NOT)。
+APIドキュメント内のフィールド名は `strong(text("..."))` 関数として出力されなければならない (MUST)。`#` プレフィックスを使用してはならない (MUST NOT)。Sugar syntax (`*name*`) による出力は使用してはならない (MUST NOT)。
 
-**Rationale**: Inside code mode block, function calls use bare names. Consistency with the unified code mode approach requires all strong formatting to use `strong[]`.
+**Rationale**: Inside code mode block, function calls use bare names. Consistency with the unified code mode approach requires all strong formatting to use `strong()` with `text()` for content.
 
 #### Scenario: Parameters フィールド名の変換
 
 ```gherkin
 GIVEN an API documentation field with name "Parameters"
 WHEN the translator processes the field_name node inside code mode
-THEN the output MUST be `strong[Parameters:]`
-AND NOT `#strong[Parameters:]` (no # prefix)
+THEN the output MUST be `strong(text("Parameters:"))`
+AND NOT `#strong(text("Parameters:"))` (no # prefix)
+AND NOT `strong[Parameters:]` (use text() function, not markup mode)
 AND NOT `*Parameters:*` (no sugar syntax)
 ```
 
@@ -282,7 +284,8 @@ AND NOT `*Parameters:*` (no sugar syntax)
 ```gherkin
 GIVEN an API documentation field with name "Returns"
 WHEN the translator processes the field_name node inside code mode
-THEN the output MUST be `strong[Returns:]`
+THEN the output MUST be `strong(text("Returns:"))`
+AND NOT `strong[Returns:]` (use text() function, not markup mode)
 AND NOT `*Returns:*` (no sugar syntax)
 ```
 
@@ -572,8 +575,8 @@ AND codly features MUST still work
    - ALL content MUST be inside code mode block
 
 2. **No `#` Prefixes Inside Code Mode**
-   - MUST NOT generate `#heading(...)`, `#emph[...]`, `#strong[...]`
-   - MUST generate `heading(...)`, `emph[...]`, `strong[...]` (bare names)
+   - MUST NOT generate `#heading(...)`, `#emph(...)`, `#strong(...)`
+   - MUST generate `heading(...)`, `emph(...)`, `strong(...)` (bare names)
    - Applies to ALL function calls inside code mode
 
 3. **No Sugar Syntax in Output**
@@ -623,16 +626,18 @@ def depart_document(self, node):
     self.add_text("]\n")
 ```
 
-### Remove `#` Prefixes
+### Remove `#` Prefixes and Use `text()` for Content
 
-All function calls must remove `#` prefix:
+All function calls must remove `#` prefix and use `text()` for text content:
 
 ```python
 # Current
 self.add_text("#emph[")
 
 # Target
-self.add_text("emph[")
+self.add_text("emph(")
+# Content processed by visit_Text() → text("...")
+# Result: emph(text("content"))
 ```
 
 ### Paragraph Wrapping with `par()` Function

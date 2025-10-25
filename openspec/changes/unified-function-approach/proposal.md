@@ -308,8 +308,8 @@ Inside the code mode block:
    - No `#` prefix ambiguity
 
 3. **Clear 1:1 Mapping**
-   - `visit_emphasis` → `emph[]` (clear relationship, no `#` needed)
-   - `visit_strong` → `strong[]` (clear relationship, no `#` needed)
+   - `visit_emphasis` → `emph(text("..."))` (clear relationship, no `#` needed)
+   - `visit_strong` → `strong(text("..."))` (clear relationship, no `#` needed)
    - Visitor pattern becomes self-documenting
 
 4. **Simpler Implementation**
