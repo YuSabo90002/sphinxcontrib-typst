@@ -182,20 +182,38 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a subtitle node.
 
+        Generates emph() function for subtitle (no # prefix in code mode).
+        Child text nodes will be wrapped in text() automatically.
+
         Args:
             node: The subtitle node
         """
-        # Typst subtitle syntax: use emphasized text for subtitle
-        self.add_text("_")
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use emph() function for subtitle (no # prefix in code mode)
+        self.add_text("emph(")
+
+        # Store state to restore in depart
+        self._subtitle_was_in_paragraph = was_in_paragraph
 
     def depart_subtitle(self, node: nodes.subtitle) -> None:
         """
         Depart a subtitle node.
 
+        Closes emph() function.
+
         Args:
             node: The subtitle node
         """
-        self.add_text("_\n\n")
+        # Close emph() function
+        self.add_text(")\n\n")
+
+        # Restore paragraph state
+        if hasattr(self, "_subtitle_was_in_paragraph"):
+            self.in_paragraph = self._subtitle_was_in_paragraph
+            delattr(self, "_subtitle_was_in_paragraph")
 
     def visit_compound(self, node: nodes.compound) -> None:
         """
@@ -1744,6 +1762,9 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The inline math node
         """
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
         # Extract math content
         math_content = node.astext()
 
@@ -1761,8 +1782,8 @@ class TypstTranslator(SphinxTranslator):
                 math_content = self._convert_latex_to_typst(math_content)
             self.add_text(f"${math_content}$")
         else:
-            # Requirement 4.3: LaTeX math via mitex
-            self.add_text(f"#mi(`{math_content}`)")
+            # Requirement 4.3: LaTeX math via mitex (no # prefix in code mode)
+            self.add_text(f"mi(`{math_content}`)")
 
         # Task 6.3: Add label if present
         if "ids" in node and node["ids"]:
@@ -1816,8 +1837,8 @@ class TypstTranslator(SphinxTranslator):
                 math_content = self._convert_latex_to_typst(math_content)
             self.add_text(f"$ {math_content} $")
         else:
-            # Requirement 4.2: LaTeX math via mitex
-            self.add_text(f"#mitex(`{math_content}`)")
+            # Requirement 4.2: LaTeX math via mitex (no # prefix in code mode)
+            self.add_text(f"mitex(`{math_content}`)")
 
         # Task 6.3: Add label if present
         if "ids" in node and node["ids"]:
@@ -2086,13 +2107,27 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a field_name node (field name like 'Parameters', 'Returns').
 
-        Field names are rendered in bold with a colon.
+        Field names are rendered in bold with a colon (no # prefix in code mode).
         """
-        self.body.append("*")
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use strong() function (no # prefix in code mode)
+        self.body.append("strong(")
+
+        # Store state to restore in depart
+        self._field_name_was_in_paragraph = was_in_paragraph
 
     def depart_field_name(self, node: nodes.field_name) -> None:
         """Depart a field_name node."""
-        self.body.append(":*\n")
+        # Close strong() and add colon
+        self.body.append(' + text(":"))\n')
+
+        # Restore paragraph state
+        if hasattr(self, "_field_name_was_in_paragraph"):
+            self.in_paragraph = self._field_name_was_in_paragraph
+            delattr(self, "_field_name_was_in_paragraph")
 
     def visit_field_body(self, node: nodes.field_body) -> None:
         """
