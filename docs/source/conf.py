@@ -5,8 +5,9 @@
 
 import os
 import sys
-import tomllib
 from pathlib import Path
+
+import tomllib
 
 # Add typsphinx to path for autodoc
 sys.path.insert(0, os.path.abspath("../.."))
