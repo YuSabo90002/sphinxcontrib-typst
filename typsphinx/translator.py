@@ -53,6 +53,10 @@ class TypstTranslator(SphinxTranslator):
         self.code_block_caption = ""
         self.code_block_label = ""
 
+        # Unified code mode state
+        self.in_paragraph = False
+        self.paragraph_has_content = False  # Track if paragraph has any content nodes
+
     def astext(self) -> str:
         """
         Return the translated text as a string.
@@ -78,25 +82,41 @@ class TypstTranslator(SphinxTranslator):
         else:
             self.body.append(text)
 
+    def _add_paragraph_separator(self) -> None:
+        """
+        Add + operator for concatenation in paragraph if not first node.
+
+        In unified code mode, paragraph content nodes are concatenated with +.
+        This method adds ' + ' before each node except the first one.
+        """
+        if self.in_paragraph and self.paragraph_has_content:
+            self.add_text(" + ")
+        if self.in_paragraph:
+            self.paragraph_has_content = True
+
     def visit_document(self, node: nodes.document) -> None:
         """
         Visit a document node.
 
+        Generates opening code block wrapper for unified code mode.
+
         Args:
             node: The document node
         """
-        # Document root doesn't need special markup
-        pass
+        # Start code block for unified code mode (all content uses function syntax without # prefix)
+        self.add_text("#{\n")
 
     def depart_document(self, node: nodes.document) -> None:
         """
         Depart a document node.
 
+        Generates closing code block wrapper for unified code mode.
+
         Args:
             node: The document node
         """
-        # Document root doesn't need closing
-        pass
+        # Close code block for unified code mode
+        self.add_text("}\n")
 
     def visit_section(self, node: nodes.section) -> None:
         """
@@ -124,22 +144,26 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a title node.
 
+        Generates heading() function call with level parameter.
+        Child text nodes will be wrapped in text() automatically.
+
         Args:
             node: The title node
         """
-        # Typst heading syntax: = Title, == Title, === Title, etc.
-        # Use section_level to determine heading level
-        heading_prefix = "=" * self.section_level
-        self.add_text(f"{heading_prefix} ")
+        # Use heading() function (no # prefix in code mode)
+        self.add_text(f"heading(level: {self.section_level}, ")
 
     def depart_title(self, node: nodes.title) -> None:
         """
         Depart a title node.
 
+        Closes heading() function call.
+
         Args:
             node: The title node
         """
-        self.add_text("\n\n")
+        # Close heading() function
+        self.add_text(")\n\n")
 
     def visit_subtitle(self, node: nodes.subtitle) -> None:
         """
@@ -224,21 +248,30 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a paragraph node.
 
+        Wraps paragraph content in par() function for unified code mode.
+        Code mode doesn't auto-recognize paragraph breaks from blank lines.
+
         Args:
             node: The paragraph node
         """
-        # Paragraphs don't need special markup in Typst
-        pass
+        # Start par() function (no # prefix in code mode)
+        self.in_paragraph = True
+        self.paragraph_has_content = False
+        self.add_text("par(")
 
     def depart_paragraph(self, node: nodes.paragraph) -> None:
         """
         Depart a paragraph node.
 
+        Closes par() function and adds spacing.
+
         Args:
             node: The paragraph node
         """
-        # Add double newline after paragraphs
-        self.add_text("\n\n")
+        # Close par() function and add spacing
+        self.in_paragraph = False
+        self.paragraph_has_content = False
+        self.add_text(")\n\n")
 
     def visit_comment(self, node: nodes.comment) -> None:
         """
@@ -309,11 +342,26 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a text node.
 
+        Wraps text in text() function for unified code mode.
+        Uses string escaping (not markup escaping).
+
         Args:
             node: The text node
         """
-        # Add the text content
-        self.add_text(node.astext())
+        text_content = node.astext()
+
+        # Escape string content (order matters: backslash first)
+        text_content = text_content.replace("\\", "\\\\")  # Backslash
+        text_content = text_content.replace('"', '\\"')    # Quote
+        text_content = text_content.replace("\n", "\\n")   # Newline
+        text_content = text_content.replace("\r", "\\r")   # Carriage return
+        text_content = text_content.replace("\t", "\\t")   # Tab
+
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Wrap in text() function (no # prefix in code mode)
+        self.add_text(f'text("{text_content}")')
 
     def depart_Text(self, node: nodes.Text) -> None:
         """
@@ -329,58 +377,128 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit an emphasis (italic) node.
 
+        Generates emph() function call. Child text nodes will be
+        wrapped in text() automatically.
+
         Args:
             node: The emphasis node
         """
-        # Typst italic syntax: _text_
-        self.add_text("_")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use emph() function (no # prefix in code mode)
+        self.add_text("emph(")
+
+        # Store state to restore in depart
+        self._emph_was_in_paragraph = was_in_paragraph
 
     def depart_emphasis(self, node: nodes.emphasis) -> None:
         """
         Depart an emphasis (italic) node.
 
+        Closes emph() function call.
+
         Args:
             node: The emphasis node
         """
-        self.add_text("_")
+        # Close emph() function
+        self.add_text(")")
+
+        # Restore paragraph state
+        if hasattr(self, "_emph_was_in_paragraph"):
+            self.in_paragraph = self._emph_was_in_paragraph
+            delattr(self, "_emph_was_in_paragraph")
 
     def visit_strong(self, node: nodes.strong) -> None:
         """
         Visit a strong (bold) node.
 
+        Generates strong() function call. Child text nodes will be
+        wrapped in text() automatically.
+
         Args:
             node: The strong node
         """
-        # Typst bold syntax: *text*
-        self.add_text("*")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use strong() function (no # prefix in code mode)
+        self.add_text("strong(")
+
+        # Store state to restore in depart
+        self._strong_was_in_paragraph = was_in_paragraph
 
     def depart_strong(self, node: nodes.strong) -> None:
         """
         Depart a strong (bold) node.
 
+        Closes strong() function call.
+
         Args:
             node: The strong node
         """
-        self.add_text("*")
+        # Close strong() function
+        self.add_text(")")
+
+        # Restore paragraph state
+        if hasattr(self, "_strong_was_in_paragraph"):
+            self.in_paragraph = self._strong_was_in_paragraph
+            delattr(self, "_strong_was_in_paragraph")
 
     def visit_literal(self, node: nodes.literal) -> None:
         """
         Visit a literal (inline code) node.
 
+        Generates raw() function call with backtick raw string.
+        Uses backticks to avoid escaping issues.
+
         Args:
             node: The literal node
         """
-        # Typst inline code syntax: `code`
-        self.add_text("`")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Get code content directly
+        code_content = node.astext()
+
+        # Count max consecutive backticks in content
+        max_backticks = 0
+        current_backticks = 0
+        for char in code_content:
+            if char == "`":
+                current_backticks += 1
+                max_backticks = max(max_backticks, current_backticks)
+            else:
+                current_backticks = 0
+
+        # Use at least 3 backticks, or more if content has backticks
+        delimiter_count = max(3, max_backticks + 1)
+        delimiter = "`" * delimiter_count
+
+        # Generate raw() function with backtick raw string (no # prefix in code mode)
+        self.add_text(f"raw({delimiter}{code_content}{delimiter})")
+
+        # Skip processing child text nodes (we already got the content)
+        raise nodes.SkipNode
 
     def depart_literal(self, node: nodes.literal) -> None:
         """
         Depart a literal (inline code) node.
 
+        This is not called when SkipNode is raised in visit_literal.
+
         Args:
             node: The literal node
         """
-        self.add_text("`")
+        pass
 
     def visit_subscript(self, node: nodes.subscript) -> None:
         """
