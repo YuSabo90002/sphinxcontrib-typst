@@ -1,12 +1,10 @@
 # Capability: package-structure
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: CI/CD設定
 
 プロジェクトは、継続的インテグレーションとデプロイのための設定を提供しなければならない (SHALL)。
-
-**変更内容**: GitHub ActionsワークフローをTox経由で実行するように変更し、ローカル/CI一貫性を向上させる。
 
 #### Scenario: Toxベースのテスト実行
 
@@ -35,8 +33,6 @@
 - **WHEN** GitHub Actionsのdocsジョブが実行される
 - **THEN** `tox -e docs-html`でHTMLが、`tox -e docs-pdf`でPDFがビルドされる
 - **AND** ローカルで同じtoxコマンドを実行すると同じ出力が得られる
-
-## ADDED Requirements
 
 ### Requirement: Tox環境定義
 
