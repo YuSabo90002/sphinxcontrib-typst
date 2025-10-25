@@ -28,18 +28,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv sync --extra docs
+          uv sync --extra dev
           uv pip install -e .
 
-      - name: Build HTML documentation
-        run: |
-          cd docs
-          uv run sphinx-build -b html source _build/html
+      - name: Build HTML documentation with tox
+        run: uv run tox -e docs-html
 
-      - name: Build PDF documentation
-        run: |
-          cd docs
-          uv run sphinx-build -b typstpdf source _build/pdf
+      - name: Build PDF documentation with tox
+        run: uv run tox -e docs-pdf
 
       - name: Upload HTML artifact
         uses: actions/upload-artifact@v4

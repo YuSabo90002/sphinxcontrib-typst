@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Migrate CI to Tox**
+  - GitHub Actions workflows now use tox commands for consistency
+  - Added `docs-html`, `docs-pdf`, and `docs` tox environments
+  - Simplified CI configuration with single source of truth in `tox.ini`
+  - Improved local/CI consistency - same commands work in both environments
+  - Updated test, lint, type-check, and coverage jobs to use tox
+  - Documentation builds now reproducible locally with `tox -e docs-html` or `tox -e docs-pdf`
+  - Fixed paths in existing tox environments (sphinxcontrib/ → typsphinx/)
+
 ### Added
 
 - **Documentation Site with GitHub Pages** ([#36](https://github.com/YuSabo90002/typsphinx/issues/36))
