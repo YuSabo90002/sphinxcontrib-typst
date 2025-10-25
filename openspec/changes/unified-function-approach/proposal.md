@@ -1,10 +1,11 @@
 # Proposal: Unified Function Approach for All Typst Elements
 
 ## Status
-- **State**: Proposed
+- **State**: Implemented
 - **Related Issue**: #4
 - **Breaking Change**: Yes (Major version bump required)
 - **Created**: 2025-10-25
+- **Implemented**: 2025-10-26
 
 ## Summary
 

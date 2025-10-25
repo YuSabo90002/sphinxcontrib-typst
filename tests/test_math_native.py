@@ -45,9 +45,9 @@ def test_inline_typst_native_math(simple_document, mock_builder):
     translator.depart_math(math_node)
 
     output = translator.astext()
-    # Should generate $x^2 + y^2$ instead of #mi(`...`)
+    # Should generate $x^2 + y^2$ instead of mi(`...`)
     assert "$x^2 + y^2$" in output, "Should use Typst native inline math syntax"
-    assert "#mi(" not in output, "Should not use mitex for typst-native math"
+    assert "mi(" not in output, "Should not use mitex for typst-native math"
 
 
 def test_block_typst_native_math(simple_document, mock_builder):
@@ -71,9 +71,9 @@ def test_block_typst_native_math(simple_document, mock_builder):
     translator.depart_math_block(math_block)
 
     output = translator.astext()
-    # Should generate $ sum_(i=1)^n x_i $ instead of #mitex(`...`)
+    # Should generate $ sum_(i=1)^n x_i $ instead of mitex(`...`)
     assert "$ sum_(i=1)^n x_i $" in output, "Should use Typst native block math syntax"
-    assert "#mitex(" not in output, "Should not use mitex for typst-native math"
+    assert "mitex(" not in output, "Should not use mitex for typst-native math"
 
 
 def test_typst_native_math_with_label(simple_document, mock_builder):
@@ -163,7 +163,7 @@ def test_mixed_latex_and_typst_native_math(simple_document, mock_builder):
 
     output = translator.astext()
     # Should have both formats
-    assert "#mi(" in output, "Should use mitex for LaTeX math"
+    assert "mi(" in output, "Should use mitex for LaTeX math"
     assert r"\alpha + \beta" in output, "Should preserve LaTeX syntax"
     assert "$alpha + beta$" in output, "Should use Typst native for marked math"
 
@@ -188,7 +188,7 @@ def test_latex_math_without_typst_native_class(simple_document, mock_builder):
 
     output = translator.astext()
     # Should still use mitex by default
-    assert "#mi(" in output, "Should use mitex for default math"
+    assert "mi(" in output, "Should use mitex for default math"
     assert r"\frac{a}{b}" in output, "Should preserve LaTeX content"
     assert "$" not in output.replace(
         "`", ""

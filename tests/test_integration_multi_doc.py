@@ -103,15 +103,15 @@ class TestMultiDocumentIntegration:
         index_typ = temp_build_dir / "index.typ"
         content = index_typ.read_text()
 
-        # Should contain #include() directives for chapter1 and chapter2
+        # Should contain include() directives for chapter1 and chapter2
         assert "chapter1.typ" in content
         assert "chapter2.typ" in content
-        assert "#include" in content
+        assert "include(" in content
 
     def test_include_directives_have_heading_offset(
         self, multi_doc_project_dir, temp_build_dir
     ):
-        """Test that #include() directives have heading level offset."""
+        """Test that include() directives have heading level offset."""
         subprocess.run(
             [
                 "uv",
@@ -130,8 +130,8 @@ class TestMultiDocumentIntegration:
         content = index_typ.read_text()
 
         # Should contain heading offset setting
-        # Format: { #set heading(offset: 1); #include("chapter1.typ") }
-        assert "heading(offset:" in content or "#set heading" in content
+        # Format: { set heading(offset: 1); include("chapter1.typ") }
+        assert "heading(offset:" in content or "set heading" in content
 
     def test_chapter_files_contain_content(self, multi_doc_project_dir, temp_build_dir):
         """Test that generated chapter .typ files contain their content."""

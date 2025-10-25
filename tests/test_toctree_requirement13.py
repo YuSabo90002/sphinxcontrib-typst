@@ -46,10 +46,10 @@ def mock_builder():
 
 def test_toctree_generates_include_directives(simple_document, mock_builder):
     """
-    Test that toctree generates #include() directives instead of #outline().
+    Test that toctree generates include() directives instead of outline().
 
     Requirement 13.2: WHEN `addnodes.toctree` ノードが TypstTranslator で処理される
-    THEN 参照された各ドキュメントに対して `#include("relative/path/to/doc.typ")`
+    THEN 参照された各ドキュメントに対して `include("relative/path/to/doc.typ")`
     SHALL 生成される
     """
     from typsphinx.translator import TypstTranslator
@@ -72,21 +72,21 @@ def test_toctree_generates_include_directives(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Should generate #include() directives, NOT #outline()
-    assert "#include(" in output
-    assert '#include("intro.typ")' in output
-    assert '#include("getting_started.typ")' in output
-    assert '#include("api.typ")' in output
-    assert "#outline()" not in output
+    # Should generate include() directives, NOT outline()
+    assert "include(" in output
+    assert 'include("intro.typ")' in output
+    assert 'include("getting_started.typ")' in output
+    assert 'include("api.typ")' in output
+    assert "outline()" not in output
 
 
 def test_toctree_with_heading_offset(simple_document, mock_builder):
     """
-    Test that toctree generates #include() with heading offset.
+    Test that toctree generates include() with heading offset.
 
-    Requirement 13.14: WHEN `#include()` を生成する際に見出しレベルを調整
-    THEN Typst SHALL `#[ #set heading(offset: 1); #include("doc.typ") ]` のように
-    コンテンツブロック内で `#set heading(offset: 1)` を適用する
+    Requirement 13.14: WHEN `include()` を生成する際に見出しレベルを調整
+    THEN Typst SHALL `{ set heading(offset: 1); include("doc.typ") }` のように
+    スコープブロック内で `set heading(offset: 1)` を適用する
     """
     from typsphinx.translator import TypstTranslator
 
@@ -104,10 +104,10 @@ def test_toctree_with_heading_offset(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Should generate heading offset content block with #[...]
-    assert "#set heading(offset: 1)" in output
-    assert "#[\n" in output or "#[" in output
-    assert "]\n" in output or "]" in output
+    # Should generate heading offset scope block with {...}
+    assert "set heading(offset: 1)" in output
+    assert "{\n" in output or "{" in output
+    assert "}\n" in output or "}" in output
 
 
 def test_toctree_with_nested_path(simple_document, mock_builder):
@@ -116,7 +116,7 @@ def test_toctree_with_nested_path(simple_document, mock_builder):
 
     Requirement 13.5: WHEN `toctree` で参照されたドキュメントパスが
     "chapter1/section" の場合 THEN Typst SHALL
-    `#include("chapter1/section.typ")` を生成する
+    `include("chapter1/section.typ")` を生成する
     """
     from typsphinx.translator import TypstTranslator
 
@@ -136,8 +136,8 @@ def test_toctree_with_nested_path(simple_document, mock_builder):
     output = translator.astext()
 
     # Should generate nested paths with .typ extension
-    assert '#include("chapter1/section.typ")' in output
-    assert '#include("chapter2/sub/content.typ")' in output
+    assert 'include("chapter1/section.typ")' in output
+    assert 'include("chapter2/sub/content.typ")' in output
 
 
 def test_toctree_empty_entries(simple_document, mock_builder):
@@ -182,14 +182,14 @@ def test_toctree_skip_node_raised(simple_document, mock_builder):
         translator.visit_toctree(toctree)
 
 
-# Issue #7: Single content block tests
+# Issue #7: Single scope block tests
 def test_toctree_single_content_block_multiple_includes(simple_document, mock_builder):
     """
-    Test that toctree with multiple entries generates a single content block.
+    Test that toctree with multiple entries generates a single scope block.
 
     Issue #7 - Requirement 1.1, 1.2, 1.3:
     WHEN toctree has multiple entries
-    THEN a single content block #[...] SHALL contain all #include() directives
+    THEN a single scope block {...} SHALL contain all include() directives
     """
     from typsphinx.translator import TypstTranslator
 
@@ -209,34 +209,32 @@ def test_toctree_single_content_block_multiple_includes(simple_document, mock_bu
 
     output = translator.astext()
 
-    # Should have exactly one opening content block
-    assert (
-        output.count("#[") == 1
-    ), f"Expected 1 opening block, got {output.count('#[')}"
+    # Should have exactly one opening scope block
+    assert output.count("{") == 1, f"Expected 1 opening block, got {output.count('{')}"
 
-    # Should have exactly one closing content block
-    assert output.count("]") == 1, f"Expected 1 closing block, got {output.count(']')}"
+    # Should have exactly one closing scope block
+    assert output.count("}") == 1, f"Expected 1 closing block, got {output.count('}')}"
 
-    # Extract content block
-    block_start = output.find("#[")
-    block_end = output.find("]", block_start)
-    assert block_start != -1 and block_end != -1, "Content block not found"
+    # Extract scope block
+    block_start = output.find("{")
+    block_end = output.find("}", block_start)
+    assert block_start != -1 and block_end != -1, "Scope block not found"
 
     block_content = output[block_start : block_end + 1]
 
     # All includes should be within the single block
-    assert '#include("chapter1.typ")' in block_content
-    assert '#include("chapter2.typ")' in block_content
-    assert '#include("chapter3.typ")' in block_content
+    assert 'include("chapter1.typ")' in block_content
+    assert 'include("chapter2.typ")' in block_content
+    assert 'include("chapter3.typ")' in block_content
 
 
 def test_toctree_heading_offset_appears_once(simple_document, mock_builder):
     """
-    Test that #set heading(offset: 1) appears exactly once.
+    Test that set heading(offset: 1) appears exactly once.
 
     Issue #7 - Requirement 1.4:
     WHEN toctree with multiple entries is processed
-    THEN #set heading(offset: 1) SHALL appear exactly once
+    THEN set heading(offset: 1) SHALL appear exactly once
     """
     import re
 
@@ -258,13 +256,13 @@ def test_toctree_heading_offset_appears_once(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Count occurrences of #set heading(offset: 1)
-    pattern = r"#set heading\(offset: 1\)"
+    # Count occurrences of set heading(offset: 1)
+    pattern = r"set heading\(offset: 1\)"
     matches = re.findall(pattern, output)
 
     assert (
         len(matches) == 1
-    ), f"Expected 1 occurrence of #set heading(offset: 1), got {len(matches)}"
+    ), f"Expected 1 occurrence of set heading(offset: 1), got {len(matches)}"
 
 
 def test_toctree_reduced_line_count(simple_document, mock_builder):
@@ -295,12 +293,12 @@ def test_toctree_reduced_line_count(simple_document, mock_builder):
     lines = [line for line in output.split("\n") if line.strip()]
 
     # Expected structure:
-    # 1. #[
-    # 2.   #set heading(offset: 1)
-    # 3.   #include("entry1.typ")
-    # 4.   #include("entry2.typ")
-    # 5.   #include("entry3.typ")
-    # 6. ]
+    # 1. {
+    # 2.   set heading(offset: 1)
+    # 3.   include("entry1.typ")
+    # 4.   include("entry2.typ")
+    # 5.   include("entry3.typ")
+    # 6. }
     # Total: ~5-6 lines (vs ~12 lines with individual blocks)
 
     assert len(lines) <= 6, f"Expected <= 6 lines, got {len(lines)}: {lines}"
@@ -309,11 +307,11 @@ def test_toctree_reduced_line_count(simple_document, mock_builder):
 
 def test_toctree_single_entry_with_single_block(simple_document, mock_builder):
     """
-    Test that even a single entry uses a single content block.
+    Test that even a single entry uses a single scope block.
 
     Issue #7 - Requirement 1.1:
     WHEN toctree has a single entry
-    THEN a single content block #[...] SHALL be generated
+    THEN a single scope block {...} SHALL be generated
     """
     from typsphinx.translator import TypstTranslator
 
@@ -331,10 +329,10 @@ def test_toctree_single_entry_with_single_block(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Should still have exactly one content block
-    assert output.count("#[") == 1
-    assert output.count("]") == 1
+    # Should still have exactly one scope block
+    assert output.count("{") == 1
+    assert output.count("}") == 1
 
     # Should contain the include
-    assert '#include("single.typ")' in output
-    assert "#set heading(offset: 1)" in output
+    assert 'include("single.typ")' in output
+    assert "set heading(offset: 1)" in output

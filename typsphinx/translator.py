@@ -6,7 +6,7 @@ nodes to Typst markup.
 """
 
 import re
-from typing import Any, Optional
+from typing import Any, List, Optional, Union
 
 from docutils import nodes
 from sphinx import addnodes
@@ -53,6 +53,27 @@ class TypstTranslator(SphinxTranslator):
         self.code_block_caption = ""
         self.code_block_label = ""
 
+        # Unified code mode state
+        self.in_paragraph = False
+        self.paragraph_has_content = False  # Track if paragraph has any content nodes
+        self.in_list_item = False  # Track if currently in a list item
+        self.in_literal_block = False  # Track if currently in a code block
+
+        # List collection state for unified code mode
+        self.list_items_stack = []  # Stack of lists: [(type, [items]), ...]
+        self.current_list_item_buffer: Optional[List[str]] = (
+            None  # Buffer for current list item content
+        )
+        self.saved_body: Optional[List[str]] = (
+            None  # Saved body when buffering list items
+        )
+
+        # Definition list state
+        self.in_definition_list = False
+        self.current_term_buffer: Union[str, List[str], None] = None
+        self.current_definition_buffer: Optional[List[str]] = None
+        self.definition_list_items = []  # List of (term, definition) tuples
+
     def astext(self) -> str:
         """
         Return the translated text as a string.
@@ -78,25 +99,41 @@ class TypstTranslator(SphinxTranslator):
         else:
             self.body.append(text)
 
+    def _add_paragraph_separator(self) -> None:
+        """
+        Add + operator for concatenation in paragraph if not first node.
+
+        In unified code mode, paragraph content nodes are concatenated with +.
+        This method adds ' + ' before each node except the first one.
+        """
+        if self.in_paragraph and self.paragraph_has_content:
+            self.add_text(" + ")
+        if self.in_paragraph:
+            self.paragraph_has_content = True
+
     def visit_document(self, node: nodes.document) -> None:
         """
         Visit a document node.
 
+        Generates opening code block wrapper for unified code mode.
+
         Args:
             node: The document node
         """
-        # Document root doesn't need special markup
-        pass
+        # Start code block for unified code mode (all content uses function syntax without # prefix)
+        self.add_text("#{\n")
 
     def depart_document(self, node: nodes.document) -> None:
         """
         Depart a document node.
 
+        Generates closing code block wrapper for unified code mode.
+
         Args:
             node: The document node
         """
-        # Document root doesn't need closing
-        pass
+        # Close code block for unified code mode
+        self.add_text("}\n")
 
     def visit_section(self, node: nodes.section) -> None:
         """
@@ -124,41 +161,63 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a title node.
 
+        Generates heading() function call with level parameter.
+        Child text nodes will be wrapped in text() automatically.
+
         Args:
             node: The title node
         """
-        # Typst heading syntax: = Title, == Title, === Title, etc.
-        # Use section_level to determine heading level
-        heading_prefix = "=" * self.section_level
-        self.add_text(f"{heading_prefix} ")
+        # Use heading() function (no # prefix in code mode)
+        self.add_text(f"heading(level: {self.section_level}, ")
 
     def depart_title(self, node: nodes.title) -> None:
         """
         Depart a title node.
 
+        Closes heading() function call.
+
         Args:
             node: The title node
         """
-        self.add_text("\n\n")
+        # Close heading() function
+        self.add_text(")\n\n")
 
     def visit_subtitle(self, node: nodes.subtitle) -> None:
         """
         Visit a subtitle node.
 
+        Generates emph() function for subtitle (no # prefix in code mode).
+        Child text nodes will be wrapped in text() automatically.
+
         Args:
             node: The subtitle node
         """
-        # Typst subtitle syntax: use emphasized text for subtitle
-        self.add_text("_")
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use emph() function for subtitle (no # prefix in code mode)
+        self.add_text("emph(")
+
+        # Store state to restore in depart
+        self._subtitle_was_in_paragraph = was_in_paragraph
 
     def depart_subtitle(self, node: nodes.subtitle) -> None:
         """
         Depart a subtitle node.
 
+        Closes emph() function.
+
         Args:
             node: The subtitle node
         """
-        self.add_text("_\n\n")
+        # Close emph() function
+        self.add_text(")\n\n")
+
+        # Restore paragraph state
+        if hasattr(self, "_subtitle_was_in_paragraph"):
+            self.in_paragraph = self._subtitle_was_in_paragraph
+            delattr(self, "_subtitle_was_in_paragraph")
 
     def visit_compound(self, node: nodes.compound) -> None:
         """
@@ -224,21 +283,42 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a paragraph node.
 
+        Wraps paragraph content in par() function for unified code mode.
+        Code mode doesn't auto-recognize paragraph breaks from blank lines.
+
+        Exception: Inside list items, paragraphs are not wrapped in par()
+        to avoid syntax like "- par(text(...))" which is invalid.
+
         Args:
             node: The paragraph node
         """
-        # Paragraphs don't need special markup in Typst
-        pass
+        # Skip par() wrapping inside list items
+        if self.in_list_item:
+            self.in_paragraph = False
+            return
+
+        # Start par() function (no # prefix in code mode)
+        self.in_paragraph = True
+        self.paragraph_has_content = False
+        self.add_text("par(")
 
     def depart_paragraph(self, node: nodes.paragraph) -> None:
         """
         Depart a paragraph node.
 
+        Closes par() function and adds spacing.
+
         Args:
             node: The paragraph node
         """
-        # Add double newline after paragraphs
-        self.add_text("\n\n")
+        # Skip closing if inside list items
+        if self.in_list_item:
+            return
+
+        # Close par() function and add spacing
+        self.in_paragraph = False
+        self.paragraph_has_content = False
+        self.add_text(")\n\n")
 
     def visit_comment(self, node: nodes.comment) -> None:
         """
@@ -309,11 +389,34 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a text node.
 
+        Wraps text in text() function for unified code mode.
+        Uses string escaping (not markup escaping).
+
+        Exception: Inside literal blocks, text is output directly
+        without text() wrapping to preserve code content.
+
         Args:
             node: The text node
         """
-        # Add the text content
-        self.add_text(node.astext())
+        text_content = node.astext()
+
+        # Inside literal blocks, output text directly (no wrapping)
+        if self.in_literal_block:
+            self.add_text(text_content)
+            return
+
+        # Escape string content (order matters: backslash first)
+        text_content = text_content.replace("\\", "\\\\")  # Backslash
+        text_content = text_content.replace('"', '\\"')  # Quote
+        text_content = text_content.replace("\n", "\\n")  # Newline
+        text_content = text_content.replace("\r", "\\r")  # Carriage return
+        text_content = text_content.replace("\t", "\\t")  # Tab
+
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Wrap in text() function (no # prefix in code mode)
+        self.add_text(f'text("{text_content}")')
 
     def depart_Text(self, node: nodes.Text) -> None:
         """
@@ -329,159 +432,313 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit an emphasis (italic) node.
 
+        Generates emph() function call. Child text nodes will be
+        wrapped in text() automatically.
+
         Args:
             node: The emphasis node
         """
-        # Typst italic syntax: _text_
-        self.add_text("_")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use emph() function (no # prefix in code mode)
+        self.add_text("emph(")
+
+        # Store state to restore in depart
+        self._emph_was_in_paragraph = was_in_paragraph
 
     def depart_emphasis(self, node: nodes.emphasis) -> None:
         """
         Depart an emphasis (italic) node.
 
+        Closes emph() function call.
+
         Args:
             node: The emphasis node
         """
-        self.add_text("_")
+        # Close emph() function
+        self.add_text(")")
+
+        # Restore paragraph state
+        if hasattr(self, "_emph_was_in_paragraph"):
+            self.in_paragraph = self._emph_was_in_paragraph
+            delattr(self, "_emph_was_in_paragraph")
 
     def visit_strong(self, node: nodes.strong) -> None:
         """
         Visit a strong (bold) node.
 
+        Generates strong() function call. Child text nodes will be
+        wrapped in text() automatically.
+
         Args:
             node: The strong node
         """
-        # Typst bold syntax: *text*
-        self.add_text("*")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use strong() function (no # prefix in code mode)
+        self.add_text("strong(")
+
+        # Store state to restore in depart
+        self._strong_was_in_paragraph = was_in_paragraph
 
     def depart_strong(self, node: nodes.strong) -> None:
         """
         Depart a strong (bold) node.
 
+        Closes strong() function call.
+
         Args:
             node: The strong node
         """
-        self.add_text("*")
+        # Close strong() function
+        self.add_text(")")
+
+        # Restore paragraph state
+        if hasattr(self, "_strong_was_in_paragraph"):
+            self.in_paragraph = self._strong_was_in_paragraph
+            delattr(self, "_strong_was_in_paragraph")
 
     def visit_literal(self, node: nodes.literal) -> None:
         """
         Visit a literal (inline code) node.
 
+        Generates raw() function call with backtick raw string.
+        Uses backticks to avoid escaping issues.
+
         Args:
             node: The literal node
         """
-        # Typst inline code syntax: `code`
-        self.add_text("`")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Get code content directly
+        code_content = node.astext()
+
+        # Escape code content for string parameter
+        escaped_code = code_content.replace("\\", "\\\\")  # Backslash
+        escaped_code = escaped_code.replace('"', '\\"')  # Quote
+
+        # Generate raw() function with string parameter (no # prefix in code mode)
+        # Using string instead of backtick raw literal for compatibility with + operator
+        self.add_text(f'raw("{escaped_code}")')
+
+        # Skip processing child text nodes (we already got the content)
+        raise nodes.SkipNode
 
     def depart_literal(self, node: nodes.literal) -> None:
         """
         Depart a literal (inline code) node.
 
+        This is not called when SkipNode is raised in visit_literal.
+
         Args:
             node: The literal node
         """
-        self.add_text("`")
+        pass
 
     def visit_subscript(self, node: nodes.subscript) -> None:
         """
         Visit a subscript node.
 
+        Generates sub() function call. Child text nodes will be
+        wrapped in text() automatically.
+
         Args:
             node: The subscript node
         """
-        # Typst subscript syntax: #sub[text]
-        self.add_text("#sub[")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use sub() function (no # prefix in code mode)
+        self.add_text("sub(")
+
+        # Store state to restore in depart
+        self._subscript_was_in_paragraph = was_in_paragraph
 
     def depart_subscript(self, node: nodes.subscript) -> None:
         """
         Depart a subscript node.
 
+        Closes sub() function call.
+
         Args:
             node: The subscript node
         """
-        self.add_text("]")
+        # Close sub() function
+        self.add_text(")")
+
+        # Restore paragraph state
+        if hasattr(self, "_subscript_was_in_paragraph"):
+            self.in_paragraph = self._subscript_was_in_paragraph
+            delattr(self, "_subscript_was_in_paragraph")
 
     def visit_superscript(self, node: nodes.superscript) -> None:
         """
         Visit a superscript node.
 
+        Generates super() function call. Child text nodes will be
+        wrapped in text() automatically.
+
         Args:
             node: The superscript node
         """
-        # Typst superscript syntax: #super[text]
-        self.add_text("#super[")
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use super() function (no # prefix in code mode)
+        self.add_text("super(")
+
+        # Store state to restore in depart
+        self._superscript_was_in_paragraph = was_in_paragraph
 
     def depart_superscript(self, node: nodes.superscript) -> None:
         """
         Depart a superscript node.
 
+        Closes super() function call.
+
         Args:
             node: The superscript node
         """
-        self.add_text("]")
+        # Close super() function
+        self.add_text(")")
+
+        # Restore paragraph state
+        if hasattr(self, "_superscript_was_in_paragraph"):
+            self.in_paragraph = self._superscript_was_in_paragraph
+            delattr(self, "_superscript_was_in_paragraph")
 
     def visit_bullet_list(self, node: nodes.bullet_list) -> None:
         """
         Visit a bullet list node.
 
+        Collects all list items and generates list() function call
+        in unified code mode.
+
         Args:
             node: The bullet list node
         """
         self.list_stack.append("bullet")
+        # Start collecting items for this list
+        self.list_items_stack.append(("bullet", []))
 
     def depart_bullet_list(self, node: nodes.bullet_list) -> None:
         """
         Depart a bullet list node.
 
+        Generates list() function with all collected items.
+
         Args:
             node: The bullet list node
         """
         self.list_stack.pop()
-        self.add_text("\n")
+
+        # Get collected items for this list
+        list_type, items = self.list_items_stack.pop()
+
+        # Generate list() function with all items (no # prefix in code mode)
+        if items:
+            items_str = ", ".join(items)
+            self.add_text(f"list({items_str})\n\n")
+        else:
+            self.add_text("list()\n\n")
 
     def visit_enumerated_list(self, node: nodes.enumerated_list) -> None:
         """
         Visit an enumerated (numbered) list node.
 
+        Collects all list items and generates enum() function call
+        in unified code mode.
+
         Args:
             node: The enumerated list node
         """
         self.list_stack.append("enumerated")
+        # Start collecting items for this list
+        self.list_items_stack.append(("enumerated", []))
 
     def depart_enumerated_list(self, node: nodes.enumerated_list) -> None:
         """
         Depart an enumerated (numbered) list node.
 
+        Generates enum() function with all collected items.
+
         Args:
             node: The enumerated list node
         """
         self.list_stack.pop()
-        self.add_text("\n")
+
+        # Get collected items for this list
+        list_type, items = self.list_items_stack.pop()
+
+        # Generate enum() function with all items (no # prefix in code mode)
+        if items:
+            items_str = ", ".join(items)
+            self.add_text(f"enum({items_str})\n\n")
+        else:
+            self.add_text("enum()\n\n")
 
     def visit_list_item(self, node: nodes.list_item) -> None:
         """
         Visit a list item node.
 
+        Starts buffering item content for later collection.
+
         Args:
             node: The list item node
         """
-        # Calculate indentation based on nesting level
-        indent = "  " * (len(self.list_stack) - 1)
+        # Mark that we're in a list item (disable par() wrapping)
+        self.in_list_item = True
 
-        # Determine list marker based on list type
-        if self.list_stack and self.list_stack[-1] == "bullet":
-            self.add_text(f"{indent}- ")
-        elif self.list_stack and self.list_stack[-1] == "enumerated":
-            self.add_text(f"{indent}+ ")
+        # Start buffering this item's content
+        self.saved_body = self.body
+        self.current_list_item_buffer = []
+        self.body = self.current_list_item_buffer
 
     def depart_list_item(self, node: nodes.list_item) -> None:
         """
         Depart a list item node.
 
+        Saves buffered content to the current list's items.
+
         Args:
             node: The list item node
         """
-        self.add_text("\n")
+        self.in_list_item = False
+
+        # Get buffered content
+        item_content = "".join(self.current_list_item_buffer or []).strip()
+
+        # Restore original body
+        if self.saved_body is not None:
+            self.body = self.saved_body
+        self.saved_body = None
+        self.current_list_item_buffer = None
+
+        # Add item to current list
+        if self.list_items_stack:
+            list_type, items = self.list_items_stack[-1]
+            items.append(item_content)
+            # Update the stack with the new items list
+            self.list_items_stack[-1] = (list_type, items)
 
     def visit_literal_block(self, node: nodes.literal_block) -> None:
         """
@@ -496,20 +753,25 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The literal block node
         """
+        # Mark that we're in a literal block (disable text() wrapping)
+        self.in_literal_block = True
+
         # Issue #20: Handle captioned code blocks
         # If we're in a captioned code block (literal-block-wrapper container),
-        # wrap the code block in a #figure()
+        # wrap the code block in figure() (no # prefix in code mode)
         if self.in_captioned_code_block and self.code_block_caption:
             # Escape special characters in caption
             escaped_caption = self.code_block_caption
             # Start figure with caption (will add closing bracket in depart)
-            self.add_text(f"#figure(caption: [{escaped_caption}])[\n")
+            # No # prefix in code mode
+            self.add_text(f"figure(caption: [{escaped_caption}])[\n")
 
         # Check for :linenos: option (Issue #20)
         # If linenos is not set or False, disable line numbers in codly
         linenos = node.get("linenos", False)
         if not linenos:
-            self.add_text("#codly(number-format: none)\n")
+            # No # prefix in code mode
+            self.add_text("codly(number-format: none)\n")
 
         # Extract highlight_args if present (Task 4.2.2)
         highlight_args = node.get("highlight_args", {})
@@ -519,15 +781,17 @@ class TypstTranslator(SphinxTranslator):
         # Sphinx stores lineno-start in highlight_args['linenostart']
         lineno_start = highlight_args.get("linenostart")
         if linenos and lineno_start is not None:
-            self.add_text(f"#codly(start: {lineno_start})\n")
+            # No # prefix in code mode
+            self.add_text(f"codly(start: {lineno_start})\n")
 
-        # Generate #codly-range() if highlight lines are specified
+        # Generate codly-range() if highlight lines are specified
         if hl_lines:
             # Convert list of line numbers to Typst array format
-            # Example: [2, 3] -> #codly-range(highlight: (2, 3))
-            # Example: [2, 4, 5, 6] -> #codly-range(highlight: (2, 4, 5, 6))
+            # Example: [2, 3] -> codly-range(highlight: (2, 3))
+            # Example: [2, 4, 5, 6] -> codly-range(highlight: (2, 4, 5, 6))
             highlight_str = ", ".join(str(line) for line in hl_lines)
-            self.add_text(f"#codly-range(highlight: ({highlight_str}))\n")
+            # No # prefix in code mode
+            self.add_text(f"codly-range(highlight: ({highlight_str}))\n")
 
         # Typst code block syntax: ```language\ncode\n```
         # Extract language if specified
@@ -546,6 +810,9 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The literal block node
         """
+        # Clear literal block flag
+        self.in_literal_block = False
+
         # Close code block
         self.add_text("\n```\n")
 
@@ -569,21 +836,38 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a definition list node.
 
+        Collects all term-definition pairs and generates terms() function
+        in unified code mode.
+
         Args:
             node: The definition list node
         """
-        # Definition lists don't need special opening markup in Typst
-        pass
+        self.in_definition_list = True
+        self.definition_list_items = []
 
     def depart_definition_list(self, node: nodes.definition_list) -> None:
         """
         Depart a definition list node.
 
+        Generates terms() function with all collected term-definition pairs.
+
         Args:
             node: The definition list node
         """
-        # Add newline after definition list
-        self.add_text("\n")
+        self.in_definition_list = False
+
+        # Generate terms() function with all items (no # prefix in code mode)
+        if self.definition_list_items:
+            items_str = ", ".join(
+                f"terms.item({term}, {definition})"
+                for term, definition in self.definition_list_items
+            )
+            self.add_text(f"terms({items_str})\n\n")
+        else:
+            self.add_text("terms()\n\n")
+
+        # Clear collected items
+        self.definition_list_items = []
 
     def visit_definition_list_item(self, node: nodes.definition_list_item) -> None:
         """
@@ -609,45 +893,84 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a term (definition list term) node.
 
+        Starts buffering term content.
+
         Args:
             node: The term node
         """
-        # Typst definition list syntax: / term: definition
-        self.add_text("/ ")
+        # Start buffering term content
+        self.saved_body = self.body
+        self.current_term_buffer = []
+        self.body = self.current_term_buffer
 
     def depart_term(self, node: nodes.term) -> None:
         """
         Depart a term (definition list term) node.
 
+        Saves buffered term content.
+
         Args:
             node: The term node
         """
-        # Add colon after term
-        self.add_text(": ")
+        # Get buffered term content
+        if isinstance(self.current_term_buffer, list):
+            term_content = "".join(self.current_term_buffer).strip()
+        else:
+            term_content = ""
+
+        # Restore original body
+        if self.saved_body is not None:
+            self.body = self.saved_body
+        self.saved_body = None
+
+        # Store term for later (will be paired with definition)
+        self.current_term_buffer = term_content
 
     def visit_definition(self, node: nodes.definition) -> None:
         """
         Visit a definition (definition list definition) node.
 
+        Starts buffering definition content.
+
         Args:
             node: The definition node
         """
-        # Definitions don't need special opening markup
-        pass
+        # Start buffering definition content
+        self.saved_body = self.body
+        self.current_definition_buffer = []
+        self.body = self.current_definition_buffer
 
     def depart_definition(self, node: nodes.definition) -> None:
         """
         Depart a definition (definition list definition) node.
 
+        Saves buffered definition content and pairs it with the term.
+
         Args:
             node: The definition node
         """
-        # Add newline after definition
-        self.add_text("\n")
+        # Get buffered definition content
+        definition_content = "".join(self.current_definition_buffer or []).strip()
+
+        # Restore original body
+        if self.saved_body is not None:
+            self.body = self.saved_body
+        self.saved_body = None
+
+        # Pair term and definition
+        if isinstance(self.current_term_buffer, str):
+            self.definition_list_items.append(
+                (self.current_term_buffer, definition_content)
+            )
+            self.current_term_buffer = None
+
+        self.current_definition_buffer = None
 
     def visit_figure(self, node: nodes.figure) -> None:
         """
         Visit a figure node.
+
+        Generates figure() function call (no # prefix in code mode).
 
         Args:
             node: The figure node
@@ -656,8 +979,8 @@ class TypstTranslator(SphinxTranslator):
         self.figure_content = []  # Store figure content (image)
         self.figure_caption = ""  # Store caption text
 
-        # Start figure with potential label
-        self.add_text("#figure(\n")
+        # Start figure with potential label (no # prefix in code mode)
+        self.add_text("figure(\n")
 
     def depart_figure(self, node: nodes.figure) -> None:
         """
@@ -932,18 +1255,19 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a block quote node.
 
+        Generates quote() function call (no # prefix in code mode).
+
         Args:
             node: The block quote node
         """
-        # Typst block quote syntax: #quote[...]
         # Check if there's an attribution child node
         has_attribution = any(isinstance(child, nodes.attribution) for child in node)
 
         if has_attribution:
             # Will add attribution parameter when we encounter the attribution node
-            self.add_text("#quote(")
+            self.add_text("quote(")
         else:
-            self.add_text("#quote[")
+            self.add_text("quote[")
 
     def depart_block_quote(self, node: nodes.block_quote) -> None:
         """
@@ -984,17 +1308,19 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit an image node.
 
+        Generates image() function call (no # prefix in code mode).
+
         Args:
             node: The image node
         """
-        # Typst image syntax: #image("path", width: value)
         uri = node.get("uri", "")
 
-        # If inside a figure, don't add # prefix (figure will handle it)
+        # Add proper indentation if inside a figure
         if self.in_figure:
             self.add_text(f'  image("{uri}"')
         else:
-            self.add_text(f'#image("{uri}"')
+            # No # prefix in code mode
+            self.add_text(f'image("{uri}"')
 
         # Add optional attributes
         if "width" in node:
@@ -1225,28 +1551,29 @@ class TypstTranslator(SphinxTranslator):
             f"entries: {[docname for _, docname in entries]}"
         )
 
-        # Issue #7: Generate single content block for all includes
-        # Start single content block
-        self.add_text("#[\n")
-        self.add_text("  #set heading(offset: 1)\n")
+        # Generate scope block for all includes (unified code mode)
+        # Use {...} scope block to isolate set rules while maintaining code mode
+        # Start scope block (no # prefix in code mode)
+        self.add_text("{\n")
+        self.add_text("  set heading(offset: 1)\n")
 
-        # Generate #include() for each entry within the single block
+        # Generate include() for each entry within the scope block
         # Each included file has its own imports, so block scope is safe
         for _title, docname in entries:
-            # Compute relative path for #include() (Issue #5 fix)
+            # Compute relative path for include() (Issue #5 fix)
             relative_path = self._compute_relative_include_path(
                 docname, current_docname
             )
 
             logger.debug(
-                f"Generated #include() for toctree: {docname} -> {relative_path}.typ"
+                f"Generated include() for toctree: {docname} -> {relative_path}.typ"
             )
 
-            # Issue #7: Generate only #include() within the block
-            self.add_text(f'  #include("{relative_path}.typ")\n')
+            # Generate include() within the block (no # prefix in code mode)
+            self.add_text(f'  include("{relative_path}.typ")\n')
 
-        # End single content block
-        self.add_text("]\n\n")
+        # End scope block
+        self.add_text("}\n\n")
 
         # Skip processing children as we've handled the toctree entries
         raise nodes.SkipNode
@@ -1265,6 +1592,8 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a reference node (link).
 
+        Generates link() function call (no # prefix in code mode).
+
         Args:
             node: The reference node
         """
@@ -1275,10 +1604,12 @@ class TypstTranslator(SphinxTranslator):
         if refuri.startswith("#"):
             # Internal reference to a label
             label = refuri[1:]  # Remove the #
-            self.add_text(f"#link(<{label}>)[")
+            # No # prefix in code mode
+            self.add_text(f"link(<{label}>)[")
         else:
             # External reference (HTTP/HTTPS URL or relative path)
-            self.add_text(f'#link("{refuri}")[')
+            # No # prefix in code mode
+            self.add_text(f'link("{refuri}")[')
 
     def depart_reference(self, node: nodes.reference) -> None:
         """
@@ -1443,6 +1774,9 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The inline math node
         """
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
         # Extract math content
         math_content = node.astext()
 
@@ -1460,8 +1794,8 @@ class TypstTranslator(SphinxTranslator):
                 math_content = self._convert_latex_to_typst(math_content)
             self.add_text(f"${math_content}$")
         else:
-            # Requirement 4.3: LaTeX math via mitex
-            self.add_text(f"#mi(`{math_content}`)")
+            # Requirement 4.3: LaTeX math via mitex (no # prefix in code mode)
+            self.add_text(f"mi(`{math_content}`)")
 
         # Task 6.3: Add label if present
         if "ids" in node and node["ids"]:
@@ -1515,8 +1849,8 @@ class TypstTranslator(SphinxTranslator):
                 math_content = self._convert_latex_to_typst(math_content)
             self.add_text(f"$ {math_content} $")
         else:
-            # Requirement 4.2: LaTeX math via mitex
-            self.add_text(f"#mitex(`{math_content}`)")
+            # Requirement 4.2: LaTeX math via mitex (no # prefix in code mode)
+            self.add_text(f"mitex(`{math_content}`)")
 
         # Task 6.3: Add label if present
         if "ids" in node and node["ids"]:
@@ -1785,13 +2119,27 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a field_name node (field name like 'Parameters', 'Returns').
 
-        Field names are rendered in bold with a colon.
+        Field names are rendered in bold with a colon (no # prefix in code mode).
         """
-        self.body.append("*")
+        # Temporarily disable paragraph state for children
+        was_in_paragraph = self.in_paragraph
+        self.in_paragraph = False
+
+        # Use strong() function (no # prefix in code mode)
+        self.body.append("strong(")
+
+        # Store state to restore in depart
+        self._field_name_was_in_paragraph = was_in_paragraph
 
     def depart_field_name(self, node: nodes.field_name) -> None:
         """Depart a field_name node."""
-        self.body.append(":*\n")
+        # Close strong() and add colon
+        self.body.append(' + text(":"))\n')
+
+        # Restore paragraph state
+        if hasattr(self, "_field_name_was_in_paragraph"):
+            self.in_paragraph = self._field_name_was_in_paragraph
+            delattr(self, "_field_name_was_in_paragraph")
 
     def visit_field_body(self, node: nodes.field_body) -> None:
         """
@@ -1823,9 +2171,9 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a title_reference node (reference to a title).
 
-        Title references are rendered in emphasis.
+        Title references are rendered in emphasis (no # prefix in code mode).
         """
-        self.body.append("#emph[")
+        self.body.append("emph[")
 
     def depart_title_reference(self, node: nodes.title_reference) -> None:
         """Depart a title_reference node."""
@@ -1876,16 +2224,16 @@ class TypstTranslator(SphinxTranslator):
     # Literal nodes for API documentation
 
     def visit_literal_strong(self, node: nodes.inline) -> None:
-        """Visit a literal_strong node (bold literal text in field lists)."""
-        self.body.append("#strong[")
+        """Visit a literal_strong node (bold literal text in field lists - no # prefix in code mode)."""
+        self.body.append("strong[")
 
     def depart_literal_strong(self, node: nodes.inline) -> None:
         """Depart a literal_strong node."""
         self.body.append("]")
 
     def visit_literal_emphasis(self, node: nodes.inline) -> None:
-        """Visit a literal_emphasis node (emphasized literal text in field lists)."""
-        self.body.append("#emph[")
+        """Visit a literal_emphasis node (emphasized literal text in field lists - no # prefix in code mode)."""
+        self.body.append("emph[")
 
     def depart_literal_emphasis(self, node: nodes.inline) -> None:
         """Depart a literal_emphasis node."""

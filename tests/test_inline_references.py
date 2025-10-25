@@ -46,7 +46,7 @@ class TestInlineReferenceConversion:
         output = translator.astext()
         assert "regular inline text" in output
         # Should not have any special formatting
-        assert "#link" not in output
+        assert "link(" not in output
 
     def test_inline_with_xref_class(self, temp_sphinx_app: SphinxTestApp):
         """Test that inline nodes with 'xref' class are handled specially."""
@@ -184,5 +184,5 @@ class TestInlineReferenceConversion:
         doc.walkabout(translator)
 
         output = translator.astext()
-        # Literal should use backticks
-        assert "`code_reference`" in output
+        # Literal should use raw() function in unified code mode
+        assert 'raw("code_reference")' in output
