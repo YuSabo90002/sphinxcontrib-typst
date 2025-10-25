@@ -2070,3 +2070,205 @@ def test_code_block_all_options(simple_document, mock_builder):
     assert "<code-example>" in output
     # Should contain code block
     assert "```python" in output
+
+
+# --- Issue #40: Table Header Support ---
+
+
+def test_table_header_wrapping(simple_document, mock_builder):
+    """Test that table headers are wrapped in table.header()."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a simple 2x2 table with header
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+
+    # Add column specifications
+    colspec1 = nodes.colspec(colwidth=1)
+    colspec2 = nodes.colspec(colwidth=1)
+    tgroup += colspec1
+    tgroup += colspec2
+
+    # Add header row
+    thead = nodes.thead()
+    row1 = nodes.row()
+    entry1 = nodes.entry()
+    entry1 += nodes.paragraph(text="Header 1")
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="Header 2")
+    row1 += entry1
+    row1 += entry2
+    thead += row1
+    tgroup += thead
+
+    # Add body row
+    tbody = nodes.tbody()
+    row2 = nodes.row()
+    entry3 = nodes.entry()
+    entry3 += nodes.paragraph(text="Cell 1")
+    entry4 = nodes.entry()
+    entry4 += nodes.paragraph(text="Cell 2")
+    row2 += entry3
+    row2 += entry4
+    tbody += row2
+    tgroup += tbody
+
+    table += tgroup
+
+    # Visit the table using walkabout
+    table.walkabout(translator)
+
+    output = translator.astext()
+
+    # Check that table.header() wrapper is generated
+    assert "table.header(" in output
+    assert "Header 1" in output
+    assert "Header 2" in output
+    assert "Cell 1" in output
+    assert "Cell 2" in output
+
+
+def test_table_without_header(simple_document, mock_builder):
+    """Test that tables without headers work correctly (no table.header())."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a simple 2x2 table WITHOUT header (only tbody)
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+
+    # Add column specifications
+    colspec1 = nodes.colspec(colwidth=1)
+    colspec2 = nodes.colspec(colwidth=1)
+    tgroup += colspec1
+    tgroup += colspec2
+
+    # Add body rows only (no thead)
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+    entry1 = nodes.entry()
+    entry1 += nodes.paragraph(text="Cell 1")
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="Cell 2")
+    row1 += entry1
+    row1 += entry2
+    tbody += row1
+
+    row2 = nodes.row()
+    entry3 = nodes.entry()
+    entry3 += nodes.paragraph(text="Cell 3")
+    entry4 = nodes.entry()
+    entry4 += nodes.paragraph(text="Cell 4")
+    row2 += entry3
+    row2 += entry4
+    tbody += row2
+
+    tgroup += tbody
+    table += tgroup
+
+    # Visit the table using walkabout
+    table.walkabout(translator)
+
+    output = translator.astext()
+
+    # Check that table.header() is NOT generated
+    assert "table.header(" not in output
+    # But table() should still be generated
+    assert "#table(" in output
+    assert "Cell 1" in output
+    assert "Cell 2" in output
+    assert "Cell 3" in output
+    assert "Cell 4" in output
+
+
+def test_table_multi_row_header(simple_document, mock_builder):
+    """Test that tables with multiple header rows wrap all headers in table.header()."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a table with 2 header rows and 1 body row
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+
+    # Add column specifications
+    colspec1 = nodes.colspec(colwidth=1)
+    colspec2 = nodes.colspec(colwidth=1)
+    tgroup += colspec1
+    tgroup += colspec2
+
+    # Add 2 header rows
+    thead = nodes.thead()
+    row1 = nodes.row()
+    entry1 = nodes.entry()
+    entry1 += nodes.paragraph(text="Header 1-1")
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="Header 1-2")
+    row1 += entry1
+    row1 += entry2
+    thead += row1
+
+    row2 = nodes.row()
+    entry3 = nodes.entry()
+    entry3 += nodes.paragraph(text="Header 2-1")
+    entry4 = nodes.entry()
+    entry4 += nodes.paragraph(text="Header 2-2")
+    row2 += entry3
+    row2 += entry4
+    thead += row2
+    tgroup += thead
+
+    # Add body row
+    tbody = nodes.tbody()
+    row3 = nodes.row()
+    entry5 = nodes.entry()
+    entry5 += nodes.paragraph(text="Body 1")
+    entry6 = nodes.entry()
+    entry6 += nodes.paragraph(text="Body 2")
+    row3 += entry5
+    row3 += entry6
+    tbody += row3
+    tgroup += tbody
+
+    table += tgroup
+
+    # Visit the table using walkabout
+    table.walkabout(translator)
+
+    output = translator.astext()
+
+    # Check that table.header() wrapper contains all 4 header cells
+    assert "table.header(" in output
+    assert "Header 1-1" in output
+    assert "Header 1-2" in output
+    assert "Header 2-1" in output
+    assert "Header 2-2" in output
+    assert "Body 1" in output
+    assert "Body 2" in output
+
+    # Verify structure: header cells should come before body cells
+    header_pos = output.index("table.header(")
+    body1_pos = output.index("Body 1")
+    assert header_pos < body1_pos
+
+
+def test_in_thead_state_management(simple_document, mock_builder):
+    """Test that in_thead state is managed correctly."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Initially not in thead
+    assert translator.in_thead is False
+
+    # Visit a thead
+    thead = nodes.thead()
+    translator.visit_thead(thead)
+    assert translator.in_thead is True
+
+    # Depart thead
+    translator.depart_thead(thead)
+    assert translator.in_thead is False
