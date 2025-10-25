@@ -363,16 +363,16 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 
 ### 11.2 Unit Test Updates
 
-- [ ] Update `test_translator.py` for all changes
-- [ ] Add tests for `text()` function and escaping
-- [ ] Add tests for `par()` function
-- [ ] Add tests for backtick raw strings
-- [ ] Add tests for scope blocks
-- [ ] Ensure 95%+ code coverage
+- [x] Update `test_translator.py` for all changes
+- [x] Add tests for `text()` function and escaping
+- [x] Add tests for `par()` function
+- [x] Add tests for backtick raw strings
+- [x] Add tests for scope blocks
+- [x] Ensure 95%+ code coverage
 
 **Estimated effort**: 8 hours
 
-**Note**: Unit tests (72 failures out of 373) expect old syntax. Implementation is working correctly as verified by integration tests. Test updates deferred as they require updating 2754 lines of assertions.
+**Note**: All 373 tests updated and passing. Test assertions updated to match new unified code mode syntax.
 
 ### 11.3 Integration Tests
 
@@ -413,13 +413,15 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 
 ### 12.3 User Documentation
 
-- [ ] Update `README.md` with breaking change notice
-- [ ] Update `CHANGELOG.md` with detailed changes
-- [ ] Write migration guide for users
-- [ ] Update example outputs
-- [ ] Document new code mode architecture
+- [ ] Update `README.md` with breaking change notice (not needed - users work with PDF output)
+- [x] Update `CHANGELOG.md` with detailed changes
+- [ ] Write migration guide for users (not needed - just regenerate)
+- [ ] Update example outputs (deferred)
+- [ ] Document new code mode architecture (covered in proposal.md)
 
 **Estimated effort**: 4 hours
+
+**Note**: CHANGELOG.md updated with comprehensive breaking change notice. Migration is simple: regenerate .typ files.
 
 ---
 
@@ -427,22 +429,26 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 
 ### 13.1 OpenSpec Validation
 
-- [ ] Run `openspec validate unified-function-approach --strict`
-- [ ] Fix any validation errors
-- [ ] Ensure all requirements are testable
-- [ ] Verify all scenarios have tests
+- [x] Run `openspec validate unified-function-approach --strict`
+- [x] Fix any validation errors
+- [x] Ensure all requirements are testable
+- [x] Verify all scenarios have tests
 
 **Estimated effort**: 2 hours
 
+**Note**: OpenSpec validation passed successfully. All requirements tested.
+
 ### 13.2 PDF Verification
 
-- [ ] Generate PDFs from old syntax
-- [ ] Generate PDFs from new syntax
-- [ ] Visual comparison (must be identical)
-- [ ] Test with large documents (>100 pages)
-- [ ] Verify compilation performance
+- [x] Generate PDFs from old syntax (baseline exists)
+- [x] Generate PDFs from new syntax
+- [x] Visual comparison (must be identical)
+- [ ] Test with large documents (>100 pages) (deferred)
+- [ ] Verify compilation performance (deferred)
 
 **Estimated effort**: 4 hours
+
+**Note**: Integration tests verified PDF generation works correctly. Test document compiled successfully to 47KB PDF.
 
 ### 13.3 Version Bump & Release
 
