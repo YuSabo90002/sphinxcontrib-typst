@@ -218,7 +218,27 @@ Inside the code mode block:
 **Rationale**: Typst has `terms.item()` function for programmatic term list creation
 **Note**: Requires collecting term-definition pairs before generating `terms()`
 
-#### 14. Existing Function Calls (MODIFIED)
+#### 14. Toctree Include (MODIFIED)
+**Current**:
+```typst
+#[
+  #set heading(offset: 1)
+  #include("path/to/doc.typ")
+]
+```
+**Target**:
+```typst
+// Within document-level #[...]
+set heading(offset: 1)
+include("path/to/doc.typ")
+```
+**Location**: `translator.py:1230-1249` (`visit_toctree`)
+**Note**:
+- Remove nested `#[...]` block (document already wrapped)
+- Remove `#` prefix from `set` and `include()`
+- All toctree includes happen inside document-level code mode
+
+#### 15. Existing Function Calls (MODIFIED)
 **Current**: `#sub[text]`, `#super[text]`, `#quote[...]`, `#image()`, etc.
 **Target**: Remove `#` prefix + use `text()` → `sub(text("text"))`, `super(text("text"))`, `quote(...)`, `image()`, etc.
 **Location**: Multiple locations (subscript:393, superscript:412, block_quote:944, image:997, etc.)

@@ -488,6 +488,46 @@ AND sugar syntax MUST be kept as-is (works in code mode)
 
 ---
 
+### Requirement: Toctree の `include()` 関数化
+
+Toctreeで生成される `include()` 呼び出しは `#` プレフィックスを除去しなければならない (MUST)。ネストされた `#[...]` ブロックを使用してはならない (MUST NOT)。ドキュメントレベルのコードモードブロック内で直接 `include()` と `set` を呼び出さなければならない (MUST)。
+
+**Rationale**: The document is already wrapped in a code mode block (`#[...]`). Toctree includes must use bare function names (`include()`, `set`) without `#` prefix, and must not create nested code mode blocks. The `set heading(offset: 1)` rule applies to all included documents within the same code mode scope.
+
+#### Scenario: Toctreeの単純な変換
+
+```gherkin
+GIVEN a Sphinx toctree with 2 entries
+WHEN the translator processes the toctree node inside document-level code mode
+THEN the output MUST be:
+  set heading(offset: 1)
+  include("doc1.typ")
+  include("doc2.typ")
+AND NOT wrap in nested #[...] block
+AND NOT use #include() or #set (no # prefix)
+```
+
+#### Scenario: Toctreeの相対パス計算
+
+```gherkin
+GIVEN a toctree in "guides/index.typ" including "../api/reference.typ"
+WHEN the translator computes the relative include path
+THEN the output MUST be `include("../api/reference.typ")`
+AND path MUST be relative to the current document
+```
+
+#### Scenario: Toctreeのheading offset設定
+
+```gherkin
+GIVEN a toctree with multiple included documents
+WHEN the translator generates the toctree block
+THEN the output MUST start with `set heading(offset: 1)`
+AND apply to ALL subsequent include() calls
+AND NOT use #set (no # prefix)
+```
+
+---
+
 ### Requirement: コードの `raw()` 関数化
 
 インラインコードとコードブロックは `raw()` 関数として出力されなければならない (MUST)。コンテンツはバッククオートによるraw string literalとして渡されなければならない (MUST)。エスケープシーケンスの処理は不要である (MUST NOT escape)。Sugar syntax (`` ` ``, ` ``` `) による出力は使用してはならない (MUST NOT)。
@@ -849,6 +889,53 @@ def visit_literal(self, node):
 - Typst's lexer processes backticks as raw string literals (no escape processing)
 - No escaping needed for quotes, backslashes, newlines, or special characters
 - For code containing backticks, dynamically determine delimiter length
+
+### Toctree with `include()` Function
+
+Remove nested code mode block and `#` prefixes from toctree:
+
+```python
+# Current (nested code mode with # prefixes)
+def visit_toctree(self, node):
+    entries = node.get("entries", [])
+
+    # Generate nested content block
+    self.add_text("#[\n")
+    self.add_text("  #set heading(offset: 1)\n")
+
+    for _title, docname in entries:
+        relative_path = self._compute_relative_include_path(docname, current_docname)
+        self.add_text(f'  #include("{relative_path}.typ")\n')
+
+    self.add_text("]\n\n")
+    raise nodes.SkipNode
+
+# Target (inside document-level code mode, no # prefixes)
+def visit_toctree(self, node):
+    entries = node.get("entries", [])
+
+    # NO nested #[...] block (document already wrapped)
+    # Generate set and include directly
+    self.add_text("set heading(offset: 1)\n")  # NO #
+
+    for _title, docname in entries:
+        relative_path = self._compute_relative_include_path(docname, current_docname)
+        self.add_text(f'include("{relative_path}.typ")\n')  # NO #
+
+    self.add_text("\n")
+    raise nodes.SkipNode
+```
+
+**Key changes**:
+- Remove nested `#[...]` block (document is already in code mode)
+- Remove `#` prefix from `set` and `include()`
+- All toctree operations happen inside document-level code mode
+- `set heading(offset: 1)` applies to all subsequent includes in same scope
+
+**Why remove nested block?**
+- Document-level `#[...]` already provides code mode scope
+- Nested blocks are unnecessary and inconsistent
+- `set` rules propagate correctly within single code mode scope
 
 ### Definition Lists with `terms.item()` Function
 
