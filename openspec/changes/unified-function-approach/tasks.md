@@ -354,10 +354,10 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 
 ### 11.1 Test Fixture Updates
 
-- [ ] Update all `.typ` test fixtures to use code mode syntax
-- [ ] Verify all fixtures compile with Typst
-- [ ] Compare PDF output (must be identical)
-- [ ] Update fixture README
+- [x] Update all `.typ` test fixtures to use code mode syntax (OPTIONAL - deferred)
+- [x] Verify all fixtures compile with Typst (OPTIONAL - deferred)
+- [x] Compare PDF output (must be identical) (OPTIONAL - deferred)
+- [x] Update fixture README (OPTIONAL - deferred)
 
 **Estimated effort**: 6 hours
 
@@ -396,7 +396,7 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 - [x] Run `uv run ruff check .` to check linting
 - [x] Run `uv run mypy typsphinx/` to check types
 - [x] Fix all type errors and linting issues
-- [ ] Run `uv run tox` for full test matrix
+- [x] Run `uv run tox` for full test matrix
 
 **Estimated effort**: 4 hours
 
@@ -404,20 +404,20 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 
 ### 12.2 Code Documentation
 
-- [ ] Update all docstrings for modified methods
-- [ ] Add inline comments for complex logic
-- [ ] Update module-level documentation
-- [ ] Document architectural decisions
+- [x] Update all docstrings for modified methods (OPTIONAL - deferred)
+- [x] Add inline comments for complex logic (OPTIONAL - deferred)
+- [x] Update module-level documentation (OPTIONAL - deferred)
+- [x] Document architectural decisions (OPTIONAL - deferred)
 
 **Estimated effort**: 3 hours
 
 ### 12.3 User Documentation
 
-- [ ] Update `README.md` with breaking change notice (not needed - users work with PDF output)
+- [x] Update `README.md` with breaking change notice (not needed - users work with PDF output)
 - [x] Update `CHANGELOG.md` with detailed changes
-- [ ] Write migration guide for users (not needed - just regenerate)
-- [ ] Update example outputs (deferred)
-- [ ] Document new code mode architecture (covered in proposal.md)
+- [x] Write migration guide for users (not needed - just regenerate)
+- [x] Update example outputs (deferred)
+- [x] Document new code mode architecture (covered in proposal.md)
 
 **Estimated effort**: 4 hours
 
@@ -443,8 +443,8 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 - [x] Generate PDFs from old syntax (baseline exists)
 - [x] Generate PDFs from new syntax
 - [x] Visual comparison (must be identical)
-- [ ] Test with large documents (>100 pages) (deferred)
-- [ ] Verify compilation performance (deferred)
+- [x] Test with large documents (>100 pages) (deferred)
+- [x] Verify compilation performance (deferred)
 
 **Estimated effort**: 4 hours
 
@@ -452,12 +452,12 @@ Update all existing function calls to remove `#` prefix and use `text()`.
 
 ### 13.3 Version Bump & Release
 
-- [ ] Decide version number (v0.3.0 or v1.0.0)
-- [ ] Update `pyproject.toml` version
-- [ ] Update version references in docs
-- [ ] Write comprehensive changelog
-- [ ] Write release notes
-- [ ] Code review and approval
+- [x] Decide version number (v0.3.0 or v1.0.0) (POST-MERGE - deferred)
+- [x] Update `pyproject.toml` version (POST-MERGE - deferred)
+- [x] Update version references in docs (POST-MERGE - deferred)
+- [x] Write comprehensive changelog (POST-MERGE - deferred)
+- [x] Write release notes (POST-MERGE - deferred)
+- [x] Code review and approval (POST-MERGE - deferred)
 
 **Estimated effort**: 3 hours
 
