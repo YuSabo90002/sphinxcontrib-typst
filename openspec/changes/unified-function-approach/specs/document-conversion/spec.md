@@ -329,9 +329,9 @@ THEN the structure MUST be:
 
 ### Requirement: テキストノードの `text()` 関数化
 
-テキストノードは `text("...")` 関数で包まれなければならない (MUST)。`[...]` マークアップモードを使用してはならない (MUST NOT)。
+テキストノードは `text("...")` 関数で包まれなければならない (MUST)。`[...]` マークアップモードを使用してはならない (MUST NOT)。テキスト内の改行はエスケープシーケンス `\n` を使用しなければならない (MUST)。引用符はエスケープシーケンス `\"` を使用しなければならない (MUST)。
 
-**Rationale**: `text()` function uses string mode, eliminating the need to escape special characters (`#`, `*`, `_`, `$`, `[`, `]`). Markup mode `[...]` requires escaping and can cause syntax errors.
+**Rationale**: `text()` function uses string mode, eliminating the need to escape special characters (`#`, `*`, `_`, `$`, `[`, `]`). However, newlines must use `\n` escape sequence and quotes must use `\"`. Markup mode `[...]` requires escaping and can cause syntax errors.
 
 #### Scenario: 通常のテキストノードの変換
 
@@ -368,6 +368,26 @@ GIVEN a Text node with empty content
 WHEN the translator processes the text node
 THEN the output MAY be `text("")` or omitted
 AND MUST NOT cause syntax errors
+```
+
+#### Scenario: 改行を含むテキスト
+
+```gherkin
+GIVEN a Text node with content "Line 1\nLine 2"
+WHEN the translator processes the text node
+THEN the output MUST be `text("Line 1\nLine 2")`
+AND newlines MUST use escape sequence `\n`
+AND NOT literal newline characters (would break string)
+```
+
+#### Scenario: 引用符を含むテキスト
+
+```gherkin
+GIVEN a Text node with content 'He said "Hello"'
+WHEN the translator processes the text node
+THEN the output MUST be `text("He said \"Hello\"")`
+AND quotes MUST be escaped as `\"`
+AND NOT unescaped quotes (would break string syntax)
 ```
 
 ---
@@ -571,8 +591,10 @@ Wrap ALL text in `text()` function to avoid escaping issues:
 # visit_Text()
 def visit_Text(self, node):
     text_content = node.astext()
-    # Escape quotes in string
-    escaped = text_content.replace('"', '\\"')
+    # Escape quotes and newlines in string
+    escaped = text_content.replace('\\', '\\\\')  # Backslash first
+    escaped = escaped.replace('"', '\\"')          # Then quotes
+    escaped = escaped.replace('\n', '\\n')         # Then newlines
     self.add_text(f'text("{escaped}")')
 ```
 
@@ -580,6 +602,11 @@ def visit_Text(self, node):
 - `text("...")` uses string mode → no need to escape `#`, `*`, `_`, `$`, `[`, `]`
 - `[...]` uses markup mode → requires escaping special characters
 - Example: `text("$100 #1")` works, `[$100 #1]` breaks
+
+**Escape sequences required**:
+- Newlines: `\n` (literal newline would break string syntax)
+- Quotes: `\"` (unescaped quotes would close string early)
+- Backslashes: `\\` (escape backslashes first to avoid double-escaping)
 
 **For concatenation** (within a paragraph):
 ```python

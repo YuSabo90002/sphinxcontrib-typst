@@ -34,8 +34,9 @@ list(
 
 **Why `text()` function?**
 - `[...]` uses markup mode → special characters (`#`, `*`, `_`, `$`, `[`, `]`) need escaping
-- `text("...")` uses string mode → no escaping needed, all characters literal
+- `text("...")` uses string mode → no escaping needed for special characters, all characters literal
 - Example: `text("Price: $100 #1")` works correctly, `[Price: $100 #1]` breaks
+- **Note**: Newlines within `text()` must use escape sequence `\n` (e.g., `text("Line 1\nLine 2")`)
 
 This approach matches the existing toctree implementation pattern at [translator.py:1230](https://github.com/YuSabo90002/typsphinx/blob/main/typsphinx/translator.py#L1230).
 
@@ -103,7 +104,8 @@ Inside the code mode block:
 
 **Why `text()` instead of `[...]`?**
 - `[...]` = markup mode → requires escaping `#`, `*`, `_`, `$`, `[`, `]`
-- `text("...")` = string mode → no escaping, all characters literal
+- `text("...")` = string mode → no escaping for special characters, all characters literal
+- **Escape sequences**: Newlines require `\n`, quotes require `\"`
 
 **Why `par()` function?**
 - Code mode doesn't automatically recognize paragraph breaks from blank lines
