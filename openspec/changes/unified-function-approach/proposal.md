@@ -200,13 +200,13 @@ Inside the code mode block:
 
 #### 11. Inline Code (NEW)
 **Current**: `` `code` ``
-**Target**: `raw("code")` (NO `#` prefix)
+**Target**: ``raw(`code`)`` (NO `#` prefix, backtick raw string literal)
 **Location**: `translator.py:374` (`visit_literal`)
-**Rationale**: Codly compatible, consistent with function approach
+**Rationale**: Codly compatible, consistent with function approach, no escaping needed
 
 #### 12. Code Blocks (NEW)
 **Current**: ` ```lang ... ``` ` with `#codly()`, `#codly-range()` calls
-**Target**: `raw(block: true, lang: "...", "code")` with `codly()`, `codly-range()` calls (NO `#` prefix)
+**Target**: ``raw(block: true, lang: "...", `code`)`` with `codly()`, `codly-range()` calls (NO `#` prefix, backtick raw string literal)
 **Location**: `translator.py:536` (`visit_literal_block`)
 **Rationale**: Codly uses `show raw.where(block: true)` and `raw.line` internally
 **Note**: Preserve existing codly features (line numbers, highlighting, captions)
@@ -228,48 +228,45 @@ Inside the code mode block:
 
 ### Elements to Convert to Functions or Keep
 
-1. **Inline Code**: `` `code` `` → Convert to `raw("code")` (string parameter, codly compatible)
-2. **Code Blocks**: ` ```lang ... ``` ` → Convert to `raw(block: true, lang: "...", "code")` (string parameter, codly uses `raw.line`)
+1. **Inline Code**: `` `code` `` → Convert to ``raw(`code`)`` (backtick raw string literal, codly compatible)
+2. **Code Blocks**: ` ```lang ... ``` ` → Convert to ``raw(block: true, lang: "...", `code`)`` (backtick raw string literal, codly uses `raw.line`)
 3. **Definition Lists**: `/ term: definition` → Convert to `terms.item(term, description)` (function syntax exists!)
 4. **Inline Math (mitex)**: `` #mi(`LaTeX`) `` → Convert to `` mi(`LaTeX`) `` (remove `#` prefix, keep backticks for raw string)
 5. **Block Math (mitex)**: `` #mitex(`LaTeX`) `` → Convert to `` mitex(`LaTeX`) `` (remove `#` prefix, keep backticks for raw string)
 6. **Math (Typst native)**: `$ typst $` → Keep as-is (Typst standard, works in code mode)
 
-**Rationale for `raw()` with string parameters**:
+**Rationale for `raw()` with backtick raw string literals**:
 - **Codly compatibility**: codly uses `show raw.where(block: true)` and `raw.line` internally
+- **No escaping needed**: Backticks preserve content literally (quotes, backslashes, special chars)
 - **Consistency**: All elements use function syntax inside code mode
 - **Feature preservation**: codly's line numbers, highlighting with `codly()`, `codly-range()` still work
 - **Explicit control**: Can pass parameters like `lang`, `block`, `align`, etc.
-- **Function signature**: `raw()` takes a string parameter, not content
+- **Lexer verification**: Typst's lexer handles backticks as raw string literals (no escape processing)
 
-**String escaping in `raw()`**:
-- Quotes: `"` → `\"`
-- Newlines: literal newline or `\n`
-- Backslashes: `\` → `\\`
-- Similar to `text()` function escaping
-
-**Rationale for backtick raw strings in `mi()` and `mitex()`**:
-- **LaTeX compatibility**: LaTeX math uses many backslashes (`\frac`, `\sum`, etc.)
-- **Avoid escaping**: `` mi(`\frac{a}{b}`) `` vs `mi("\\frac{a}{b}")`
-- **Current implementation**: Already uses backticks (`` #mi(`...`) ``, `` #mitex(`...`) ``)
-- **Typst convention**: Backticks are raw string literals in Typst
-
-**Note**: `mi()` and `mitex()` accept raw string literals (backticks), while `raw()` accepts regular string parameters.
+**Backtick raw strings in `raw()`, `mi()`, and `mitex()`**:
+- **All three use backticks**: No escaping needed for `\`, `"`, or other special characters
+- **Typst lexer**: Backticks are processed as raw string literals at lexer level
+- **No escape sequences**: Content between backticks is preserved literally
+- **For code with backticks**: Use multiple backticks as delimiters (`` `` or ``` ```)
 
 **Example**:
 ```typst
 #[
-  // Code blocks (string parameter with escaping)
-  raw(block: true, lang: "python", "def hello():\n    print(\"world\")")
+  // Code blocks (backtick raw string - no escaping)
+  raw(block: true, lang: "python", `def hello():
+    print("world")`)
 
-  // Inline code (string parameter with escaping)
-  raw("print(\"Hello\")")
+  // Inline code (backtick raw string - no escaping)
+  raw(`print("Hello")`)
+
+  // Code with backticks (use multiple backtick delimiters)
+  raw(``code with `backtick` inside``)
 
   // Inline math (mitex with LaTeX - backticks for raw string literal)
-  mi(`\frac{a}{b}`)  // Backticks work here (no escaping backslashes)
+  mi(`\frac{a}{b}`)  // No escaping backslashes
 
   // Block math (mitex with LaTeX - backticks for raw string literal)
-  mitex(`\int_0^1 f(x) dx`)  // Backticks work here
+  mitex(`\int_0^1 f(x) dx`)  // No escaping backslashes
 
   // Math (Typst native - both inline and block)
   $x + y$  // Works in code mode
@@ -376,8 +373,8 @@ Inside the code mode block:
 3. Subtitle: `_subtitle_` → `emph(text("subtitle"))` (NO `#`)
 4. Field Names: `*name*` → `strong(text("name"))` (NO `#`)
 5. Headings: `= Heading` → `heading(level: N, text("Heading"))` (NO `#`)
-6. Inline Code: `` `code` `` → `raw("code")` (NO `#`)
-7. Code Blocks: ` ```lang ` → `raw(block: true, lang: "...", "code")` (NO `#`, preserve codly integration)
+6. Inline Code: `` `code` `` → ``raw(`code`)`` (NO `#`, backtick raw string)
+7. Code Blocks: ` ```lang ` → ``raw(block: true, lang: "...", `code`)`` (NO `#`, backtick raw string, preserve codly integration)
 
 ### Phase 4: Lists (State Redesign)
 - Current: Incremental generation (`visit_list_item` adds `- ` per item)

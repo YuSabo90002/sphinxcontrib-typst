@@ -487,18 +487,19 @@ AND sugar syntax MUST be kept as-is (works in code mode)
 
 ### Requirement: コードの `raw()` 関数化
 
-インラインコードとコードブロックは `raw()` 関数として出力されなければならない (MUST)。コンテンツは文字列パラメータとして渡されなければならない (MUST)。文字列内では標準的なエスケープシーケンスを使用しなければならない (MUST): `\"` (quote), `\\` (backslash), `\n` (newline), `\r`, `\t`。Sugar syntax (`` ` ``, ` ``` `) による出力は使用してはならない (MUST NOT)。
+インラインコードとコードブロックは `raw()` 関数として出力されなければならない (MUST)。コンテンツはバッククオートによるraw string literalとして渡されなければならない (MUST)。エスケープシーケンスの処理は不要である (MUST NOT escape)。Sugar syntax (`` ` ``, ` ``` `) による出力は使用してはならない (MUST NOT)。
 
-**Rationale**: `raw()` function signature requires a string parameter (not content or raw string literal). Codly uses `show raw.where(block: true)` and `raw.line` internally, making `raw()` function the proper way to integrate with codly. String escaping is required for quotes, backslashes, and newlines. This differs from `mi()`/`mitex()` which accept raw string literals (backticks).
+**Rationale**: Typst's lexer processes backticks as raw string literals at lexer level, preserving content literally without escape processing. This eliminates the need to escape quotes, backslashes, and special characters. Codly uses `show raw.where(block: true)` and `raw.line` internally, making `raw()` function the proper way to integrate with codly. For code containing backticks, use multiple backticks as delimiters (`` `` or ``` ```).
 
 #### Scenario: インラインコードの変換
 
 ```gherkin
 GIVEN a Sphinx document with inline code "print(x)"
 WHEN the translator processes a literal node inside code mode
-THEN the output MUST be `raw("print(x)")`
-AND use string parameter with proper escaping
+THEN the output MUST be `raw(\`print(x)\`)`
+AND use backtick raw string literal (no escaping)
 AND NOT `` `print(x)` `` (sugar syntax)
+AND NOT `raw("print(x)")` (string parameter requires escaping)
 ```
 
 #### Scenario: 引用符を含むインラインコード
@@ -506,8 +507,19 @@ AND NOT `` `print(x)` `` (sugar syntax)
 ```gherkin
 GIVEN a Sphinx document with inline code containing quotes: print("hello")
 WHEN the translator processes the literal node inside code mode
-THEN the output MUST be `raw("print(\"hello\")")`
-AND quotes MUST be escaped as `\"`
+THEN the output MUST be `raw(\`print("hello")\`)`
+AND quotes MUST NOT be escaped (backticks preserve them literally)
+AND NOT `raw("print(\"hello\")")` (string escaping not needed)
+```
+
+#### Scenario: バックスラッシュを含むインラインコード
+
+```gherkin
+GIVEN a Sphinx document with inline code containing backslashes: C:\path\file
+WHEN the translator processes the literal node inside code mode
+THEN the output MUST be `raw(\`C:\path\file\`)`
+AND backslashes MUST NOT be escaped (backticks preserve them literally)
+AND NOT `raw("C:\\path\\file")` (string escaping not needed)
 ```
 
 #### Scenario: コードブロックの変換
@@ -515,9 +527,21 @@ AND quotes MUST be escaped as `\"`
 ```gherkin
 GIVEN a Sphinx document with a Python code block containing quotes and newlines
 WHEN the translator processes a literal_block node inside code mode
-THEN the output MUST be `raw(block: true, lang: "python", "def hello():\n    print(\"world\")")`
-AND use string parameter with proper escaping for quotes and newlines
+THEN the output MUST be `raw(block: true, lang: "python", \`def hello():
+    print("world")\`)`
+AND use backtick raw string literal (no escaping)
 AND NOT ` ```python\ncode\n``` ` (sugar syntax)
+AND NOT `raw(block: true, lang: "python", "def hello():\n    print(\"world\")")` (string escaping not needed)
+```
+
+#### Scenario: バッククオートを含むコード
+
+```gherkin
+GIVEN a Sphinx document with code containing a single backtick: `code`
+WHEN the translator processes the literal node inside code mode
+THEN the output MUST be `raw(\`\`code with \`backtick\` inside\`\`)`
+AND use double backticks as delimiters
+AND inner backticks MUST be preserved literally
 ```
 
 #### Scenario: Codly統合の維持
@@ -534,7 +558,7 @@ AND raw() function MUST integrate with codly's show rules
 ```gherkin
 GIVEN a code block with :caption: option
 WHEN the translator generates output inside code mode
-THEN the output MUST be `figure(caption: text("..."), raw(block: true, lang: "...", "code"))`
+THEN the output MUST be `figure(caption: text("..."), raw(block: true, lang: "...", \`code\`))`
 AND codly features MUST still work
 ```
 
@@ -563,8 +587,8 @@ AND codly features MUST still work
    - MUST generate `heading(level: N, text("..."))` (no `#`, use `text()`)
    - MUST generate `emph(text("..."))`, `strong(text("..."))` (no `#`, use `text()`)
    - MUST generate `list(text("..."), text("..."))`, `enum(text("..."), text("..."))` (no `#`, use `text()`)
-   - MUST generate `raw("code")` for inline code (no `#`)
-   - MUST generate `raw(block: true, lang: "...", "code")` for code blocks (no `#`)
+   - MUST generate ``raw(`code`)`` for inline code (no `#`, backtick raw string)
+   - MUST generate ``raw(block: true, lang: "...", `code`)`` for code blocks (no `#`, backtick raw string)
    - MUST generate `terms(terms.item(text("term"), text("def")), ...)` for definition lists (no `#`)
 
 5. **Text Nodes Use `text()` Function**
@@ -733,7 +757,7 @@ Note: NO `#` prefix, heading content uses `text()`
 
 ### Code Block with `raw()` Function and Codly Integration
 
-Convert code blocks to `raw()` function with string escaping:
+Convert code blocks to `raw()` function with backtick raw string literals:
 
 ```python
 # Current (sugar syntax with codly)
@@ -744,7 +768,7 @@ def visit_literal_block(self, node):
         self.add_text(f"#codly-range(highlight: ({highlight_str}))\n")
     self.add_text(f"```{language}\n")
 
-# Target (raw() function with codly and string escaping)
+# Target (raw() function with codly and backtick raw strings)
 def visit_literal_block(self, node):
     if not linenos:
         self.add_text("codly(number-format: none)\n")  # NO #
@@ -755,18 +779,27 @@ def visit_literal_block(self, node):
     code_content = node.astext()
     lang = node.get("language", "")
 
-    # Escape string content (similar to text())
-    escaped = code_content.replace('\\', '\\\\')  # Backslash first
-    escaped = escaped.replace('"', '\\"')          # Then quotes
-    escaped = escaped.replace('\n', '\\n')         # Newlines
-    escaped = escaped.replace('\r', '\\r')         # Carriage returns
-    escaped = escaped.replace('\t', '\\t')         # Tabs
+    # Detect if code contains backticks
+    backtick_count = self._count_max_consecutive_backticks(code_content)
+    delimiter = "`" * (backtick_count + 1)  # Use one more backtick than max found
 
-    # Generate raw() function
+    # Generate raw() function with backtick raw string (no escaping)
     if lang:
-        self.add_text(f'raw(block: true, lang: "{lang}", "{escaped}")\n')
+        self.add_text(f'raw(block: true, lang: "{lang}", {delimiter}{code_content}{delimiter})\n')
     else:
-        self.add_text(f'raw(block: true, "{escaped}")\n')
+        self.add_text(f'raw(block: true, {delimiter}{code_content}{delimiter})\n')
+
+def _count_max_consecutive_backticks(self, text):
+    """Count the maximum consecutive backticks in text."""
+    max_count = 0
+    current_count = 0
+    for char in text:
+        if char == '`':
+            current_count += 1
+            max_count = max(max_count, current_count)
+        else:
+            current_count = 0
+    return max_count
 ```
 
 **Codly compatibility**:
@@ -774,13 +807,15 @@ def visit_literal_block(self, node):
 - `raw()` function integrates with codly's `raw.line` processing
 - All features preserved: line numbers, highlighting, zebra striping, annotations
 
-**String escaping for `raw()`**:
-- `raw()` requires string parameter, not raw string literal
-- Same escaping as `text()`: `\"`, `\\`, `\n`, `\r`, `\t`
+**Backtick raw strings for `raw()`**:
+- Typst's lexer processes backticks as raw string literals (no escape processing)
+- No escaping needed for `\"`, `\\`, `\n`, or any special characters
+- Content preserved literally (quotes, backslashes, newlines)
+- For code containing backticks, use multiple backticks as delimiters
 
 ### Inline Code with `raw()` Function
 
-Convert inline code to `raw()` function with string escaping:
+Convert inline code to `raw()` function with backtick raw strings:
 
 ```python
 # Current
@@ -794,19 +829,19 @@ def depart_literal(self, node):
 def visit_literal(self, node):
     code_content = node.astext()
 
-    # Escape string content (similar to text())
-    escaped = code_content.replace('\\', '\\\\')  # Backslash first
-    escaped = escaped.replace('"', '\\"')          # Then quotes
-    # Newlines can be literal or \n in single-line code
+    # Detect if code contains backticks
+    backtick_count = self._count_max_consecutive_backticks(code_content)
+    delimiter = "`" * (backtick_count + 1)  # Use one more backtick than max found
 
-    self.add_text(f'raw("{escaped}")')
+    # Generate raw() with backtick raw string (no escaping)
+    self.add_text(f'raw({delimiter}{code_content}{delimiter})')
     raise nodes.SkipNode  # Don't process children
 ```
 
-**Why string escaping for `raw()`?**
-- `raw()` function signature requires string parameter
-- Backticks (`` ` ``) are sugar syntax for `raw()`, not parameter type
-- Same escaping rules as `text()`: `\"`, `\\`, `\n`, `\r`, `\t`
+**Why backtick raw strings for `raw()`?**
+- Typst's lexer processes backticks as raw string literals (no escape processing)
+- No escaping needed for quotes, backslashes, newlines, or special characters
+- For code containing backticks, dynamically determine delimiter length
 
 ### Definition Lists with `terms.item()` Function
 
