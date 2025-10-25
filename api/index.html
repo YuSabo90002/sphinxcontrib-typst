@@ -740,6 +740,7 @@ corresponding Typst markup.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_document">
 <span class="sig-name descname"><span class="pre">visit_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_document" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a document node.</p>
+<p>Generates opening code block wrapper for unified code mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">document</span></code></span>) – The document node</p>
@@ -754,6 +755,7 @@ corresponding Typst markup.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_document">
 <span class="sig-name descname"><span class="pre">depart_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_document" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a document node.</p>
+<p>Generates closing code block wrapper for unified code mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">document</span></code></span>) – The document node</p>
@@ -796,6 +798,8 @@ corresponding Typst markup.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_title">
 <span class="sig-name descname"><span class="pre">visit_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_title"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_title" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a title node.</p>
+<p>Generates heading() function call with level parameter.
+Child text nodes will be wrapped in text() automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">title</span></code></span>) – The title node</p>
@@ -810,6 +814,7 @@ corresponding Typst markup.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_title">
 <span class="sig-name descname"><span class="pre">depart_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_title"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_title" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a title node.</p>
+<p>Closes heading() function call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">title</span></code></span>) – The title node</p>
@@ -824,6 +829,8 @@ corresponding Typst markup.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_subtitle">
 <span class="sig-name descname"><span class="pre">visit_subtitle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_subtitle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_subtitle" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a subtitle node.</p>
+<p>Generates emph() function for subtitle (no # prefix in code mode).
+Child text nodes will be wrapped in text() automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">subtitle</span></code></span>) – The subtitle node</p>
@@ -838,6 +845,7 @@ corresponding Typst markup.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_subtitle">
 <span class="sig-name descname"><span class="pre">depart_subtitle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_subtitle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_subtitle" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a subtitle node.</p>
+<p>Closes emph() function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">subtitle</span></code></span>) – The subtitle node</p>
@@ -912,6 +920,10 @@ for captioned code blocks (Issue #20).</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_paragraph">
 <span class="sig-name descname"><span class="pre">visit_paragraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_paragraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_paragraph" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a paragraph node.</p>
+<p>Wraps paragraph content in par() function for unified code mode.
+Code mode doesn’t auto-recognize paragraph breaks from blank lines.</p>
+<p>Exception: Inside list items, paragraphs are not wrapped in par()
+to avoid syntax like “- par(text(…))” which is invalid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">paragraph</span></code></span>) – The paragraph node</p>
@@ -926,6 +938,7 @@ for captioned code blocks (Issue #20).</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_paragraph">
 <span class="sig-name descname"><span class="pre">depart_paragraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_paragraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_paragraph" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a paragraph node.</p>
+<p>Closes par() function and adds spacing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">paragraph</span></code></span>) – The paragraph node</p>
@@ -1013,6 +1026,10 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_Text">
 <span class="sig-name descname"><span class="pre">visit_Text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_Text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_Text" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a text node.</p>
+<p>Wraps text in text() function for unified code mode.
+Uses string escaping (not markup escaping).</p>
+<p>Exception: Inside literal blocks, text is output directly
+without text() wrapping to preserve code content.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Text</span></code></span>) – The text node</p>
@@ -1041,6 +1058,8 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_emphasis">
 <span class="sig-name descname"><span class="pre">visit_emphasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_emphasis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_emphasis" title="Link to this definition">¶</a></dt>
 <dd><p>Visit an emphasis (italic) node.</p>
+<p>Generates emph() function call. Child text nodes will be
+wrapped in text() automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">emphasis</span></code></span>) – The emphasis node</p>
@@ -1055,6 +1074,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_emphasis">
 <span class="sig-name descname"><span class="pre">depart_emphasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_emphasis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_emphasis" title="Link to this definition">¶</a></dt>
 <dd><p>Depart an emphasis (italic) node.</p>
+<p>Closes emph() function call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">emphasis</span></code></span>) – The emphasis node</p>
@@ -1069,6 +1089,8 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_strong">
 <span class="sig-name descname"><span class="pre">visit_strong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_strong"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_strong" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a strong (bold) node.</p>
+<p>Generates strong() function call. Child text nodes will be
+wrapped in text() automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">strong</span></code></span>) – The strong node</p>
@@ -1083,6 +1105,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_strong">
 <span class="sig-name descname"><span class="pre">depart_strong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_strong"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_strong" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a strong (bold) node.</p>
+<p>Closes strong() function call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">strong</span></code></span>) – The strong node</p>
@@ -1097,6 +1120,8 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_literal">
 <span class="sig-name descname"><span class="pre">visit_literal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_literal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_literal" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a literal (inline code) node.</p>
+<p>Generates raw() function call with backtick raw string.
+Uses backticks to avoid escaping issues.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">literal</span></code></span>) – The literal node</p>
@@ -1111,6 +1136,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_literal">
 <span class="sig-name descname"><span class="pre">depart_literal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_literal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_literal" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a literal (inline code) node.</p>
+<p>This is not called when SkipNode is raised in visit_literal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">literal</span></code></span>) – The literal node</p>
@@ -1125,6 +1151,8 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_subscript">
 <span class="sig-name descname"><span class="pre">visit_subscript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_subscript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_subscript" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a subscript node.</p>
+<p>Generates sub() function call. Child text nodes will be
+wrapped in text() automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">subscript</span></code></span>) – The subscript node</p>
@@ -1139,6 +1167,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_subscript">
 <span class="sig-name descname"><span class="pre">depart_subscript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_subscript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_subscript" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a subscript node.</p>
+<p>Closes sub() function call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">subscript</span></code></span>) – The subscript node</p>
@@ -1153,6 +1182,8 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_superscript">
 <span class="sig-name descname"><span class="pre">visit_superscript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_superscript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_superscript" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a superscript node.</p>
+<p>Generates super() function call. Child text nodes will be
+wrapped in text() automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">superscript</span></code></span>) – The superscript node</p>
@@ -1167,6 +1198,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_superscript">
 <span class="sig-name descname"><span class="pre">depart_superscript</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_superscript"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_superscript" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a superscript node.</p>
+<p>Closes super() function call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">superscript</span></code></span>) – The superscript node</p>
@@ -1181,6 +1213,8 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_bullet_list">
 <span class="sig-name descname"><span class="pre">visit_bullet_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_bullet_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_bullet_list" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a bullet list node.</p>
+<p>Collects all list items and generates list() function call
+in unified code mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bullet_list</span></code></span>) – The bullet list node</p>
@@ -1195,6 +1229,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_bullet_list">
 <span class="sig-name descname"><span class="pre">depart_bullet_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_bullet_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_bullet_list" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a bullet list node.</p>
+<p>Generates list() function with all collected items.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bullet_list</span></code></span>) – The bullet list node</p>
@@ -1209,6 +1244,8 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_enumerated_list">
 <span class="sig-name descname"><span class="pre">visit_enumerated_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_enumerated_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_enumerated_list" title="Link to this definition">¶</a></dt>
 <dd><p>Visit an enumerated (numbered) list node.</p>
+<p>Collects all list items and generates enum() function call
+in unified code mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">enumerated_list</span></code></span>) – The enumerated list node</p>
@@ -1223,6 +1260,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_enumerated_list">
 <span class="sig-name descname"><span class="pre">depart_enumerated_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_enumerated_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_enumerated_list" title="Link to this definition">¶</a></dt>
 <dd><p>Depart an enumerated (numbered) list node.</p>
+<p>Generates enum() function with all collected items.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">enumerated_list</span></code></span>) – The enumerated list node</p>
@@ -1237,6 +1275,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_list_item">
 <span class="sig-name descname"><span class="pre">visit_list_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_list_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_list_item" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a list item node.</p>
+<p>Starts buffering item content for later collection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list_item</span></code></span>) – The list item node</p>
@@ -1251,6 +1290,7 @@ for source-level documentation only.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_list_item">
 <span class="sig-name descname"><span class="pre">depart_list_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_list_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_list_item" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a list item node.</p>
+<p>Saves buffered content to the current list’s items.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list_item</span></code></span>) – The list item node</p>
@@ -1299,6 +1339,8 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_definition_list">
 <span class="sig-name descname"><span class="pre">visit_definition_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_definition_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_definition_list" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a definition list node.</p>
+<p>Collects all term-definition pairs and generates terms() function
+in unified code mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">definition_list</span></code></span>) – The definition list node</p>
@@ -1313,6 +1355,7 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_definition_list">
 <span class="sig-name descname"><span class="pre">depart_definition_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_definition_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_definition_list" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a definition list node.</p>
+<p>Generates terms() function with all collected term-definition pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">definition_list</span></code></span>) – The definition list node</p>
@@ -1355,6 +1398,7 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_term">
 <span class="sig-name descname"><span class="pre">visit_term</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_term"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_term" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a term (definition list term) node.</p>
+<p>Starts buffering term content.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">term</span></code></span>) – The term node</p>
@@ -1369,6 +1413,7 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_term">
 <span class="sig-name descname"><span class="pre">depart_term</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_term"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_term" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a term (definition list term) node.</p>
+<p>Saves buffered term content.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">term</span></code></span>) – The term node</p>
@@ -1383,6 +1428,7 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_definition">
 <span class="sig-name descname"><span class="pre">visit_definition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_definition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_definition" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a definition (definition list definition) node.</p>
+<p>Starts buffering definition content.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">definition</span></code></span>) – The definition node</p>
@@ -1397,6 +1443,7 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.depart_definition">
 <span class="sig-name descname"><span class="pre">depart_definition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.depart_definition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.depart_definition" title="Link to this definition">¶</a></dt>
 <dd><p>Depart a definition (definition list definition) node.</p>
+<p>Saves buffered definition content and pairs it with the term.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">definition</span></code></span>) – The definition node</p>
@@ -1411,6 +1458,7 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_figure">
 <span class="sig-name descname"><span class="pre">visit_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_figure" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a figure node.</p>
+<p>Generates figure() function call (no # prefix in code mode).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">figure</span></code></span>) – The figure node</p>
@@ -1664,6 +1712,7 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_block_quote">
 <span class="sig-name descname"><span class="pre">visit_block_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_block_quote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_block_quote" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a block quote node.</p>
+<p>Generates quote() function call (no # prefix in code mode).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">block_quote</span></code></span>) – The block quote node</p>
@@ -1720,6 +1769,7 @@ Issue #31: Support :lineno-start: and :dedent: options</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_image">
 <span class="sig-name descname"><span class="pre">visit_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_image" title="Link to this definition">¶</a></dt>
 <dd><p>Visit an image node.</p>
+<p>Generates image() function call (no # prefix in code mode).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">image</span></code></span>) – The image node</p>
@@ -1851,6 +1901,7 @@ generated Typst code and improves readability.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_reference">
 <span class="sig-name descname"><span class="pre">visit_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_reference" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a reference node (link).</p>
+<p>Generates link() function call (no # prefix in code mode).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">reference</span></code></span>) – The reference node</p>
@@ -2496,7 +2547,7 @@ Requirement 3.1: Cross-references and links</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_field_name">
 <span class="sig-name descname"><span class="pre">visit_field_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_field_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_field_name" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a field_name node (field name like ‘Parameters’, ‘Returns’).</p>
-<p>Field names are rendered in bold with a colon.</p>
+<p>Field names are rendered in bold with a colon (no # prefix in code mode).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -2583,7 +2634,7 @@ Requirement 3.1: Cross-references and links</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_title_reference">
 <span class="sig-name descname"><span class="pre">visit_title_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_title_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_title_reference" title="Link to this definition">¶</a></dt>
 <dd><p>Visit a title_reference node (reference to a title).</p>
-<p>Title references are rendered in emphasis.</p>
+<p>Title references are rendered in emphasis (no # prefix in code mode).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -2751,7 +2802,7 @@ Requirement 3.1: Cross-references and links</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_literal_strong">
 <span class="sig-name descname"><span class="pre">visit_literal_strong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_literal_strong"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_literal_strong" title="Link to this definition">¶</a></dt>
-<dd><p>Visit a literal_strong node (bold literal text in field lists).</p>
+<dd><p>Visit a literal_strong node (bold literal text in field lists - no # prefix in code mode).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -2779,7 +2830,7 @@ Requirement 3.1: Cross-references and links</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_literal_emphasis">
 <span class="sig-name descname"><span class="pre">visit_literal_emphasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_literal_emphasis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_literal_emphasis" title="Link to this definition">¶</a></dt>
-<dd><p>Visit a literal_emphasis node (emphasized literal text in field lists).</p>
+<dd><p>Visit a literal_emphasis node (emphasized literal text in field lists - no # prefix in code mode).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
