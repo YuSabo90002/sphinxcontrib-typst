@@ -231,8 +231,9 @@ Inside the code mode block:
 1. **Inline Code**: `` `code` `` → Convert to `raw("code")` (codly compatible)
 2. **Code Blocks**: ` ```lang ... ``` ` → Convert to `raw(block: true, lang: "...", ...)` (codly uses `raw.line`)
 3. **Definition Lists**: `/ term: definition` → Convert to `terms.item(term, description)` (function syntax exists!)
-4. **Math (mitex)**: `` #mi(`LaTeX`) `` → Convert to `` mi(`LaTeX`) `` (remove `#` prefix, keep backticks for raw string)
-5. **Math (Typst native)**: `$ typst $` → Keep as-is (Typst standard, works in code mode)
+4. **Inline Math (mitex)**: `` #mi(`LaTeX`) `` → Convert to `` mi(`LaTeX`) `` (remove `#` prefix, keep backticks for raw string)
+5. **Block Math (mitex)**: `` #mitex(`LaTeX`) `` → Convert to `` mitex(`LaTeX`) `` (remove `#` prefix, keep backticks for raw string)
+6. **Math (Typst native)**: `$ typst $` → Keep as-is (Typst standard, works in code mode)
 
 **Rationale for `raw()` conversion**:
 - **Codly compatibility**: codly uses `show raw.where(block: true)` and `raw.line` internally
@@ -255,10 +256,13 @@ Inside the code mode block:
   // Inline code
   raw("code")
 
-  // Math (mitex with LaTeX)
+  // Inline math (mitex with LaTeX)
   mi(`\frac{a}{b}`)  // Backticks for raw string (no escaping)
 
-  // Math (Typst native)
+  // Block math (mitex with LaTeX)
+  mitex(`\int_0^1 f(x) dx`)  // Backticks for raw string
+
+  // Math (Typst native - both inline and block)
   $x + y$  // Works in code mode
 ]
 ```
@@ -346,7 +350,8 @@ Inside the code mode block:
   - `#table(...)` → `table(...)`
   - `#link(...)` → `link(...)`
   - Admonitions: `#info[...]`, `#warning[...]`, `#tip[...]` → `info[...]`, `warning[...]`, `tip[...]`
-  - Math: `` #mi(`...`) ``, `#mitex(...)` → `` mi(`...`) ``, `mitex(...)` (keep backticks for raw strings)
+  - Inline Math: `` #mi(`...`) `` → `` mi(`...`) `` (keep backticks for raw strings)
+  - Block Math: `` #mitex(`...`) `` → `` mitex(`...`) `` (keep backticks for raw strings)
 
 ### Phase 2: Text Node and Paragraph Wrapping
 - Update `visit_Text()` to wrap text in `text("...")` function

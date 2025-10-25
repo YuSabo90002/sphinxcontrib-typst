@@ -453,7 +453,7 @@ THEN the output MUST be `info[...]`, `warning[...]`, `tip[...]`
 AND NOT `#info[...]`, `#warning[...]`, `#tip[...]`
 ```
 
-#### Scenario: Math (mitex) の変換
+#### Scenario: Inline Math (mitex) の変換
 
 ```gherkin
 GIVEN inline math using mitex with LaTeX content "\frac{a}{b}"
@@ -464,12 +464,22 @@ AND MUST use backticks for raw string (no escaping backslashes)
 AND NOT `mi("\\frac{a}{b}")` (string escaping would require double backslashes)
 ```
 
+#### Scenario: Block Math (mitex) の変換
+
+```gherkin
+GIVEN block math using mitex with LaTeX content "\int_0^1 f(x) dx"
+WHEN the translator processes the math_block node inside code mode
+THEN the output MUST be `mitex(\`\int_0^1 f(x) dx\`)`
+AND NOT `#mitex(\`\int_0^1 f(x) dx\`)` (no # prefix)
+AND MUST use backticks for raw string (no escaping backslashes)
+```
+
 #### Scenario: Math (Typst native) の変換
 
 ```gherkin
-GIVEN inline math using Typst native syntax "x + y"
+GIVEN inline or block math using Typst native syntax "x + y"
 WHEN the translator processes the math node inside code mode
-THEN the output MUST be `$x + y$`
+THEN the output MUST be `$x + y$` for inline or `$ x + y $` for block
 AND sugar syntax MUST be kept as-is (works in code mode)
 ```
 
@@ -818,26 +828,48 @@ Convert math to use backtick raw strings (avoid escaping backslashes):
 ```python
 # Current (with # prefix)
 def visit_math(self, node):
+    """Inline math"""
     math_content = node.astext()
     use_mitex = getattr(self.builder.config, "typst_use_mitex", True)
 
     if use_mitex:
-        self.add_text(f"#mi(`{math_content}`)")  # WITH #
+        self.add_text(f"#mi(`{math_content}`)")  # WITH # - inline
     else:
         self.add_text(f"${math_content}$")
 
-# Target (without # prefix)
-def visit_math(self, node):
+def visit_math_block(self, node):
+    """Block math"""
     math_content = node.astext()
     use_mitex = getattr(self.builder.config, "typst_use_mitex", True)
 
     if use_mitex:
-        self.add_text(f"mi(`{math_content}`)")  # NO # prefix
+        self.add_text(f"#mitex(`{math_content}`)")  # WITH # - block
+    else:
+        self.add_text(f"$ {math_content} $")
+
+# Target (without # prefix)
+def visit_math(self, node):
+    """Inline math"""
+    math_content = node.astext()
+    use_mitex = getattr(self.builder.config, "typst_use_mitex", True)
+
+    if use_mitex:
+        self.add_text(f"mi(`{math_content}`)")  # NO # prefix - inline
     else:
         self.add_text(f"${math_content}$")  # $ syntax works in code mode
+
+def visit_math_block(self, node):
+    """Block math"""
+    math_content = node.astext()
+    use_mitex = getattr(self.builder.config, "typst_use_mitex", True)
+
+    if use_mitex:
+        self.add_text(f"mitex(`{math_content}`)")  # NO # prefix - block
+    else:
+        self.add_text(f"$ {math_content} $")  # $ syntax works in code mode
 ```
 
-**Why backticks for `mi()`?**
+**Why backticks for `mi()` and `mitex()`?**
 - LaTeX math contains many backslashes: `\frac`, `\sum`, `\int`, etc.
 - Backtick raw strings: `` mi(`\frac{a}{b}`) `` (no escaping needed)
 - String escaping: `mi("\\frac{a}{b}")` (all backslashes must be doubled)
@@ -845,11 +877,15 @@ def visit_math(self, node):
 
 **Example comparison**:
 ```python
-# With backticks (recommended)
+# Inline math with backticks (recommended)
 mi(`\frac{d}{dx} \sum_{i=1}^{n} x_i^2`)
 
-# With string escaping (verbose)
+# Block math with backticks (recommended)
+mitex(`\int_0^1 f(x) dx`)
+
+# With string escaping (verbose - NOT recommended)
 mi("\\frac{d}{dx} \\sum_{i=1}^{n} x_i^2")
+mitex("\\int_0^1 f(x) dx")
 ```
 
 **Note**: Typst native math `$...$` works directly in code mode without any changes.
