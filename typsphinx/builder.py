@@ -5,6 +5,7 @@ This module implements the TypstBuilder class, which is responsible for
 building Typst output from Sphinx documentation.
 """
 
+import shutil
 from collections.abc import Iterator
 from os import path
 from typing import Optional, Set
@@ -39,7 +40,10 @@ class TypstBuilder(Builder):
 
         This method is called once at the beginning of the build process.
         """
-        pass
+        # Initialize images dictionary to track images used in documents
+        # Key: image URI relative to source directory
+        # Value: destination path (empty string for now, compatible with parent class)
+        self.images: dict[str, str] = {}
 
     def get_outdated_docs(self) -> Iterator[str]:
         """
@@ -132,6 +136,29 @@ class TypstBuilder(Builder):
 
             logger.info(" done")
 
+    def post_process_images(self, doctree: nodes.document) -> None:
+        """
+        Post-process images in the document tree.
+
+        Collects all image nodes from the document tree and tracks them
+        in self.images dictionary for later copying to the output directory.
+
+        Args:
+            doctree: Document tree to process
+        """
+        from docutils.nodes import image
+
+        for node in doctree.findall(image):
+            # Get image URI
+            imguri = node.get("uri", "")
+            if not imguri:
+                continue
+
+            # Track this image
+            # Store empty string as value to be compatible with parent class type
+            if imguri not in self.images:
+                self.images[imguri] = ""
+
     def write_doc(self, docname: str, doctree: nodes.document) -> None:
         """
         Write a document.
@@ -157,6 +184,9 @@ class TypstBuilder(Builder):
 
         # Set current docname for template application logic
         self.current_docname = docname
+
+        # Post-process images to track them for copying
+        self.post_process_images(doctree)
 
         # Set the document on the writer
         self.writer.document = doctree
@@ -212,13 +242,50 @@ class TypstBuilder(Builder):
 
         logger.info(f"Template written to {template_file_path}")
 
+    def copy_image_files(self) -> None:
+        """
+        Copy image files to the output directory.
+
+        Iterates through all tracked images and copies them from the
+        source directory to the output directory, preserving relative paths.
+        """
+        if not self.images:
+            return
+
+        logger.info(f"Copying {len(self.images)} image file(s)...")
+
+        for imguri in self.images:
+            # Resolve source path
+            # Image URIs are relative to source directory
+            src = path.join(self.srcdir, imguri)
+
+            # Resolve destination path
+            dest = path.join(self.outdir, imguri)
+
+            # Check if source file exists
+            if not path.exists(src):
+                logger.warning(f"Image file not found: {src}")
+                continue
+
+            # Ensure destination directory exists
+            dest_dir = path.dirname(dest)
+            ensuredir(dest_dir)
+
+            # Copy the file
+            try:
+                shutil.copy2(src, dest)
+                logger.debug(f"Copied image: {imguri}")
+            except Exception as e:
+                logger.warning(f"Failed to copy image {imguri}: {e}")
+
     def finish(self) -> None:
         """
         Finish the build process.
 
         This method is called once after all documents have been written.
+        Copies image files to the output directory.
         """
-        pass
+        self.copy_image_files()
 
 
 class TypstPDFBuilder(TypstBuilder):
@@ -280,7 +347,8 @@ class TypstPDFBuilder(TypstBuilder):
         Requirement 9.2: Execute Typst compilation within Python
         Requirement 9.4: Generate PDF from Typst markup
         """
-        # First, call parent finish() to complete .typ generation
+        # First, call parent finish() to copy image files
+        # This ensures images are available before PDF compilation
         super().finish()
 
         # Get master documents from typst_documents config
