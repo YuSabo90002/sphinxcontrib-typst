@@ -5,6 +5,8 @@
 
 import os
 import sys
+import tomllib
+from pathlib import Path
 
 # Add typsphinx to path for autodoc
 sys.path.insert(0, os.path.abspath("../.."))
@@ -12,10 +14,16 @@ sys.path.insert(0, os.path.abspath("../.."))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+# Read version from pyproject.toml
+pyproject_path = Path(__file__).parent.parent.parent / "pyproject.toml"
+with open(pyproject_path, "rb") as f:
+    pyproject_data = tomllib.load(f)
+    version = pyproject_data["project"]["version"]
+
 project = "typsphinx"
 copyright = "2025, typsphinx contributors"
 author = "typsphinx contributors"
-release = "0.3.0"
+release = version
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
