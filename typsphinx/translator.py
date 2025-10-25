@@ -1644,3 +1644,249 @@ class TypstTranslator(SphinxTranslator):
         Depart an inline node.
         """
         pass
+
+    # API description nodes (Issue #55)
+    # Requirement: API説明ノードの処理
+
+    def visit_index(self, node: addnodes.index) -> None:
+        """
+        Visit an index node.
+
+        Index entries are skipped in Typst/PDF output as we don't generate indices.
+        """
+        raise nodes.SkipNode
+
+    def depart_index(self, node: addnodes.index) -> None:
+        """Depart an index node."""
+        pass
+
+    def visit_desc(self, node: addnodes.desc) -> None:
+        """
+        Visit a desc node (API description container).
+
+        Desc nodes contain API descriptions (classes, functions, methods, etc.).
+        """
+        pass
+
+    def depart_desc(self, node: addnodes.desc) -> None:
+        """
+        Depart a desc node.
+
+        Add spacing after API description blocks.
+        """
+        self.body.append("\n\n")
+
+    def visit_desc_signature(self, node: addnodes.desc_signature) -> None:
+        """
+        Visit a desc_signature node (API element signature).
+
+        Signatures are rendered in bold.
+        """
+        self.body.append("#strong[")
+
+    def depart_desc_signature(self, node: addnodes.desc_signature) -> None:
+        """Depart a desc_signature node."""
+        self.body.append("]\n\n")
+
+    def visit_desc_content(self, node: addnodes.desc_content) -> None:
+        """
+        Visit a desc_content node (API description content).
+        """
+        pass
+
+    def depart_desc_content(self, node: addnodes.desc_content) -> None:
+        """Depart a desc_content node."""
+        pass
+
+    def visit_desc_annotation(self, node: addnodes.desc_annotation) -> None:
+        """
+        Visit a desc_annotation node (type annotations like 'class', 'async', etc.).
+        """
+        pass
+
+    def depart_desc_annotation(self, node: addnodes.desc_annotation) -> None:
+        """
+        Depart a desc_annotation node.
+
+        Add space after annotation keywords.
+        """
+        self.body.append(" ")
+
+    def visit_desc_addname(self, node: addnodes.desc_addname) -> None:
+        """
+        Visit a desc_addname node (module name prefix).
+        """
+        pass
+
+    def depart_desc_addname(self, node: addnodes.desc_addname) -> None:
+        """Depart a desc_addname node."""
+        pass
+
+    def visit_desc_name(self, node: addnodes.desc_name) -> None:
+        """
+        Visit a desc_name node (function/class name).
+        """
+        pass
+
+    def depart_desc_name(self, node: addnodes.desc_name) -> None:
+        """Depart a desc_name node."""
+        pass
+
+    def visit_desc_parameterlist(self, node: addnodes.desc_parameterlist) -> None:
+        """
+        Visit a desc_parameterlist node (parameter list container).
+        """
+        self.body.append("(")
+
+    def depart_desc_parameterlist(self, node: addnodes.desc_parameterlist) -> None:
+        """Depart a desc_parameterlist node."""
+        self.body.append(")")
+
+    def visit_desc_parameter(self, node: addnodes.desc_parameter) -> None:
+        """
+        Visit a desc_parameter node (individual parameter).
+        """
+        pass
+
+    def depart_desc_parameter(self, node: addnodes.desc_parameter) -> None:
+        """
+        Depart a desc_parameter node.
+
+        Add comma and space between parameters, except for the last one.
+        """
+        if node.next_node(descend=False, siblings=True):
+            self.body.append(", ")
+
+    def visit_field_list(self, node: nodes.field_list) -> None:
+        """
+        Visit a field_list node (structured fields like Parameters, Returns).
+        """
+        pass
+
+    def depart_field_list(self, node: nodes.field_list) -> None:
+        """
+        Depart a field_list node.
+
+        Add spacing after field lists.
+        """
+        self.body.append("\n")
+
+    def visit_field(self, node: nodes.field) -> None:
+        """
+        Visit a field node (individual field in a field list).
+        """
+        pass
+
+    def depart_field(self, node: nodes.field) -> None:
+        """Depart a field node."""
+        pass
+
+    def visit_field_name(self, node: nodes.field_name) -> None:
+        """
+        Visit a field_name node (field name like 'Parameters', 'Returns').
+
+        Field names are rendered in bold with a colon.
+        """
+        self.body.append("*")
+
+    def depart_field_name(self, node: nodes.field_name) -> None:
+        """Depart a field_name node."""
+        self.body.append(":*\n")
+
+    def visit_field_body(self, node: nodes.field_body) -> None:
+        """
+        Visit a field_body node (field content).
+        """
+        pass
+
+    def depart_field_body(self, node: nodes.field_body) -> None:
+        """
+        Depart a field_body node.
+
+        Add newline after field body.
+        """
+        self.body.append("\n")
+
+    def visit_rubric(self, node: nodes.rubric) -> None:
+        """
+        Visit a rubric node (section subheading).
+
+        Rubrics are rendered as subsection headings.
+        """
+        self.body.append("\n#strong[")
+
+    def depart_rubric(self, node: nodes.rubric) -> None:
+        """Depart a rubric node."""
+        self.body.append("]\n\n")
+
+    def visit_title_reference(self, node: nodes.title_reference) -> None:
+        """
+        Visit a title_reference node (reference to a title).
+
+        Title references are rendered in emphasis.
+        """
+        self.body.append("#emph[")
+
+    def depart_title_reference(self, node: nodes.title_reference) -> None:
+        """Depart a title_reference node."""
+        self.body.append("]")
+
+    # Additional signature nodes (desc_sig_* family)
+
+    def visit_desc_sig_keyword(self, node: addnodes.desc_sig_keyword) -> None:
+        """Visit a desc_sig_keyword node (keywords in signatures like 'class', 'def')."""
+        pass
+
+    def depart_desc_sig_keyword(self, node: addnodes.desc_sig_keyword) -> None:
+        """Depart a desc_sig_keyword node."""
+        pass
+
+    def visit_desc_sig_space(self, node: addnodes.desc_sig_space) -> None:
+        """Visit a desc_sig_space node (whitespace in signatures)."""
+        pass
+
+    def depart_desc_sig_space(self, node: addnodes.desc_sig_space) -> None:
+        """Depart a desc_sig_space node."""
+        pass
+
+    def visit_desc_sig_name(self, node: addnodes.desc_sig_name) -> None:
+        """Visit a desc_sig_name node (names in signatures)."""
+        pass
+
+    def depart_desc_sig_name(self, node: addnodes.desc_sig_name) -> None:
+        """Depart a desc_sig_name node."""
+        pass
+
+    def visit_desc_sig_punctuation(self, node: addnodes.desc_sig_punctuation) -> None:
+        """Visit a desc_sig_punctuation node (punctuation in signatures like ':', '=')."""
+        pass
+
+    def depart_desc_sig_punctuation(self, node: addnodes.desc_sig_punctuation) -> None:
+        """Depart a desc_sig_punctuation node."""
+        pass
+
+    def visit_desc_sig_operator(self, node: addnodes.desc_sig_operator) -> None:
+        """Visit a desc_sig_operator node (operators in signatures)."""
+        pass
+
+    def depart_desc_sig_operator(self, node: addnodes.desc_sig_operator) -> None:
+        """Depart a desc_sig_operator node."""
+        pass
+
+    # Literal nodes for API documentation
+
+    def visit_literal_strong(self, node: nodes.inline) -> None:
+        """Visit a literal_strong node (bold literal text in field lists)."""
+        self.body.append("#strong[")
+
+    def depart_literal_strong(self, node: nodes.inline) -> None:
+        """Depart a literal_strong node."""
+        self.body.append("]")
+
+    def visit_literal_emphasis(self, node: nodes.inline) -> None:
+        """Visit a literal_emphasis node (emphasized literal text in field lists)."""
+        self.body.append("#emph[")
+
+    def depart_literal_emphasis(self, node: nodes.inline) -> None:
+        """Depart a literal_emphasis node."""
+        self.body.append("]")
