@@ -90,8 +90,8 @@ class TestNestedToctreeIntegration:
         """
         Test that chapter1/index.typ uses relative paths for same-directory files.
 
-        Expected: #include("section1.typ") and #include("section2.typ")
-        NOT: #include("chapter1/section1.typ")
+        Expected: include("section1.typ") and include("section2.typ")
+        NOT: include("chapter1/section1.typ")
 
         Requirements: 3.1
         """
@@ -117,18 +117,18 @@ class TestNestedToctreeIntegration:
 
         # Verify relative paths (same directory - no "chapter1/" prefix)
         assert (
-            '#include("section1.typ")' in content
-        ), 'Expected relative path #include("section1.typ") not found'
+            'include("section1.typ")' in content
+        ), 'Expected relative path include("section1.typ") not found'
         assert (
-            '#include("section2.typ")' in content
-        ), 'Expected relative path #include("section2.typ") not found'
+            'include("section2.typ")' in content
+        ), 'Expected relative path include("section2.typ") not found'
 
         # Ensure absolute paths are NOT used
         assert (
-            '#include("chapter1/section1.typ")' not in content
+            'include("chapter1/section1.typ")' not in content
         ), "Unexpected absolute path found (should be relative)"
         assert (
-            '#include("chapter1/section2.typ")' not in content
+            'include("chapter1/section2.typ")' not in content
         ), "Unexpected absolute path found (should be relative)"
 
     def test_root_index_has_correct_include(self, nested_toctree_dir, temp_build_dir):
@@ -159,8 +159,8 @@ class TestNestedToctreeIntegration:
 
         # Root directory should use subdirectory path
         assert (
-            '#include("chapter1/index.typ")' in content
-        ), 'Expected #include("chapter1/index.typ") not found in root index'
+            'include("chapter1/index.typ")' in content
+        ), 'Expected include("chapter1/index.typ") not found in root index'
 
 
 class TestMultiLevelNestedToctree:
@@ -223,11 +223,11 @@ class TestMultiLevelNestedToctree:
 
         # Verify relative paths (same directory)
         assert (
-            '#include("section1.typ")' in content
-        ), 'Expected relative path #include("section1.typ") not found'
+            'include("section1.typ")' in content
+        ), 'Expected relative path include("section1.typ") not found'
         assert (
-            '#include("section2.typ")' in content
-        ), 'Expected relative path #include("section2.typ") not found'
+            'include("section2.typ")' in content
+        ), 'Expected relative path include("section2.typ") not found'
 
 
 class TestSiblingDirectoryReferences:
@@ -290,8 +290,8 @@ class TestSiblingDirectoryReferences:
 
         # Verify cross-directory relative path
         assert (
-            '#include("../chapter2/doc2.typ")' in content
-        ), 'Expected relative path #include("../chapter2/doc2.typ") not found'
+            'include("../chapter2/doc2.typ")' in content
+        ), 'Expected relative path include("../chapter2/doc2.typ") not found'
 
 
 @pytest.mark.skipif(not TYPST_AVAILABLE, reason="typst-py not installed")
@@ -416,10 +416,10 @@ class TestE2ETypstCompilation:
         self, nested_toctree_dir, temp_build_dir
     ):
         """
-        Test that typst compilation correctly resolves #include() paths.
+        Test that typst compilation correctly resolves include() paths.
 
         This ensures that the root directory is set correctly for typst.compile(),
-        allowing #include() directives to find nested files.
+        allowing include() directives to find nested files.
 
         Requirements: 5.3
         """

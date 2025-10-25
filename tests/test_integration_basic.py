@@ -203,8 +203,8 @@ class TestBasicSphinxProjectBuild:
         typ_file = temp_build_dir / "index.typ"
         content = typ_file.read_text()
         # Should contain emphasis and strong formatting
-        assert "_emphasis_" in content or "#emph[emphasis]" in content
-        assert "*strong*" in content or "#strong[strong]" in content
+        assert "_emphasis_" in content or "emph(" in content
+        assert "*strong*" in content or "strong(" in content
 
     def test_generated_typ_has_inline_code(self, basic_project_dir, temp_build_dir):
         """Test that the generated .typ file contains inline code."""
@@ -225,7 +225,7 @@ class TestBasicSphinxProjectBuild:
         typ_file = temp_build_dir / "index.typ"
         content = typ_file.read_text()
         # Should contain inline code
-        assert "`inline code`" in content or "#raw" in content
+        assert "`inline code`" in content or "raw(" in content
 
     def test_build_is_incremental(self, basic_project_dir, temp_build_dir):
         """Test that incremental builds work correctly."""

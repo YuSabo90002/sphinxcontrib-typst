@@ -51,11 +51,11 @@ def test_fallback_inline_math_basic(simple_document, mock_builder_no_mitex):
     translator.depart_math(math_node)
 
     output = translator.astext()
-    # Should generate $x^2 + y^2$ instead of #mi(`...`)
+    # Should generate $x^2 + y^2$ instead of mi(`...`)
     assert (
         "$x^2 + y^2$" in output
     ), "Should use Typst native format when mitex is disabled"
-    assert "#mi(" not in output, "Should not use mitex when typst_use_mitex=False"
+    assert "mi(" not in output, "Should not use mitex when typst_use_mitex=False"
 
 
 def test_fallback_block_math_basic(simple_document, mock_builder_no_mitex):
@@ -78,11 +78,11 @@ def test_fallback_block_math_basic(simple_document, mock_builder_no_mitex):
     translator.depart_math_block(math_block)
 
     output = translator.astext()
-    # Should generate $ a + b = c $ instead of #mitex(`...`)
+    # Should generate $ a + b = c $ instead of mitex(`...`)
     assert (
         "$ a + b = c $" in output
     ), "Should use Typst native format when mitex is disabled"
-    assert "#mitex(" not in output, "Should not use mitex when typst_use_mitex=False"
+    assert "mitex(" not in output, "Should not use mitex when typst_use_mitex=False"
 
 
 def test_fallback_converts_greek_letters(simple_document, mock_builder_no_mitex):
@@ -188,7 +188,7 @@ def test_fallback_with_label(simple_document, mock_builder_no_mitex):
         "$ E = m c^2 $" in output or "$E = m c^2$" in output
     ), "Should use Typst native syntax"
     assert "<einstein>" in output, "Should include label"
-    assert "#mitex(" not in output, "Should not use mitex"
+    assert "mitex(" not in output, "Should not use mitex"
 
 
 def test_mitex_enabled_by_default(simple_document, mock_builder):
@@ -211,7 +211,7 @@ def test_mitex_enabled_by_default(simple_document, mock_builder):
 
     output = translator.astext()
     # Should use mitex by default
-    assert "#mi(" in output, "Should use mitex by default"
+    assert "mi(" in output, "Should use mitex by default"
     assert r"\alpha" in output, "Should preserve LaTeX syntax with mitex"
 
 

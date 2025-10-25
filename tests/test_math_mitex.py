@@ -44,8 +44,8 @@ def test_inline_math_conversion(simple_document, mock_builder):
     translator.depart_math(math_node)
 
     output = translator.astext()
-    # Should generate #mi(`\frac{a}{b}`)
-    assert "#mi(" in output, "Should use #mi() for inline math"
+    # Should generate mi(`\frac{a}{b}`)
+    assert "mi(" in output, "Should use mi() for inline math"
     assert r"\frac{a}{b}" in output, "Should preserve LaTeX content"
     assert "`" in output, "Should use backticks for raw string"
 
@@ -70,8 +70,8 @@ def test_block_math_conversion(simple_document, mock_builder):
     translator.depart_math_block(math_block)
 
     output = translator.astext()
-    # Should generate #mitex(`\sum_{i=1}^{n} x_i`)
-    assert "#mitex(" in output, "Should use #mitex() for block math"
+    # Should generate mitex(`\sum_{i=1}^{n} x_i`)
+    assert "mitex(" in output, "Should use mitex() for block math"
     assert r"\sum_{i=1}^{n} x_i" in output, "Should preserve LaTeX content"
     assert "`" in output, "Should use backticks for raw string"
 
@@ -156,8 +156,8 @@ def test_multiple_math_nodes(simple_document, mock_builder):
     translator.depart_math(math2)
 
     output = translator.astext()
-    # Should have two separate #mi() calls
-    assert output.count("#mi(") == 2, "Should have two inline math conversions"
+    # Should have two separate mi() calls
+    assert output.count("mi(") == 2, "Should have two inline math conversions"
     assert "x^2" in output and "y^2" in output, "Should preserve both math contents"
 
 
@@ -183,8 +183,8 @@ def test_math_block_with_label(simple_document, mock_builder):
     translator.depart_math_block(math_block)
 
     output = translator.astext()
-    # Should generate #mitex(`E = mc^2`) <einstein-energy>
-    assert "#mitex(" in output, "Should use #mitex() for block math"
+    # Should generate mitex(`E = mc^2`) <einstein-energy>
+    assert "mitex(" in output, "Should use mitex() for block math"
     assert r"E = mc^2" in output, "Should preserve LaTeX content"
     assert "<einstein-energy>" in output, "Should add Typst label format"
 
@@ -209,8 +209,8 @@ def test_math_block_with_number(simple_document, mock_builder):
     translator.depart_math_block(math_block)
 
     output = translator.astext()
-    # Should generate #mitex(`\int_0^1 x^2 dx`)
-    assert "#mitex(" in output, "Should use #mitex() for numbered math"
+    # Should generate mitex(`\int_0^1 x^2 dx`)
+    assert "mitex(" in output, "Should use mitex() for numbered math"
     assert r"\int_0^1 x^2 dx" in output, "Should preserve LaTeX content"
 
 
@@ -263,7 +263,7 @@ def test_inline_math_with_label(simple_document, mock_builder):
     translator.depart_math(math_node)
 
     output = translator.astext()
-    # Should generate #mi(`\alpha`) <alpha-symbol>
-    assert "#mi(" in output, "Should use #mi() for inline math"
+    # Should generate mi(`\alpha`) <alpha-symbol>
+    assert "mi(" in output, "Should use mi() for inline math"
     assert r"\alpha" in output, "Should preserve LaTeX content"
     assert "<alpha-symbol>" in output, "Should add Typst label format"

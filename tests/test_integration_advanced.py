@@ -71,7 +71,7 @@ class TestMathAndFiguresIntegration:
         content = typ_file.read_text()
 
         # Should contain math content
-        assert "E = mc^2" in content or "#mi" in content
+        assert "E = mc^2" in content or "mi(" in content
 
     def test_generated_has_block_math(self, math_figures_project_dir, temp_build_dir):
         """Test that generated output contains block math."""
@@ -93,7 +93,7 @@ class TestMathAndFiguresIntegration:
         content = typ_file.read_text()
 
         # Should contain integral formula
-        assert "\\int" in content or "integral" in content or "#mitex" in content
+        assert "\\int" in content or "integral" in content or "mitex(" in content
 
     def test_generated_has_table(self, math_figures_project_dir, temp_build_dir):
         """Test that generated output contains table."""
@@ -284,7 +284,7 @@ class TestCustomTemplateIntegration:
         # Template should set up document with proper structure
         # Default template doesn't have special markers, but content should be formatted
         assert len(content) > 0
-        assert "=" in content  # Should have headings
+        assert "heading(" in content  # Should have headings in unified code mode
 
     def test_template_has_codly_import(self, basic_project_dir, temp_build_dir):
         """Test that template includes codly import (if using default template)."""
