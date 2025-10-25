@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Image File Copying Support** ([#38](https://github.com/YuSabo90002/typsphinx/issues/38))
+  - Image files referenced in documents are now automatically copied to the output directory
+  - Preserves directory structure when copying images
+  - Enables successful PDF builds for documents containing images
+  - Implemented `post_process_images()` and `copy_image_files()` methods in TypstBuilder
+  - Images are copied before PDF compilation in TypstPDFBuilder
+  - Added 9 comprehensive test cases covering various scenarios
+  - No configuration required - images are copied automatically
+
 - **Table Header Wrapping Support** ([#40](https://github.com/YuSabo90002/typsphinx/issues/40))
   - Table headers now wrapped in `table.header()` for proper Typst rendering
   - Enables automatic header repetition on multi-page tables
