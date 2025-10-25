@@ -267,7 +267,7 @@ class TestTypstUniversePackages:
         )
 
         # This should be used in render() method
-        assert engine.typst_template_function == "ieee"
+        assert engine.typst_template_function_name == "ieee"
 
     def test_package_version_parsing(self):
         """Test parsing package name and version"""
@@ -572,3 +572,162 @@ class TestTemplateRendering:
 
         assert "#show: project.with(" in result
         # Empty body should still be valid
+
+
+class TestTypstTemplateFunctionDictFormat:
+    """Test typst_template_function dictionary format support (Issue #13)"""
+
+    def test_typst_template_function_string_format(self):
+        """Test backward compatibility: string format for template function"""
+        engine = TemplateEngine(typst_template_function="project")
+
+        params = {"title": "Test", "authors": ()}
+        body = "Content"
+
+        result = engine.render(params, body)
+
+        # Should use string format function name
+        assert "#show: project.with(" in result
+
+    def test_typst_template_function_dict_format_basic(self):
+        """Test dictionary format: basic case with name only"""
+        engine = TemplateEngine(typst_template_function={"name": "ieee"})
+
+        params = {"title": "Test", "authors": ()}
+        body = "Content"
+
+        result = engine.render(params, body)
+
+        # Should use function name from dictionary
+        assert "#show: ieee.with(" in result
+
+    def test_typst_template_function_dict_format_with_params(self):
+        """Test dictionary format: with additional template parameters"""
+        engine = TemplateEngine(
+            typst_template_function={
+                "name": "ieee",
+                "params": {
+                    "abstract": "This paper presents novel approaches.",
+                    "index-terms": ["AI", "Machine Learning"],
+                    "paper-size": "a4",
+                },
+            }
+        )
+
+        params = {"title": "Test", "authors": ()}
+        body = "Content"
+
+        result = engine.render(params, body)
+
+        # Should use function name from dictionary
+        assert "#show: ieee.with(" in result
+
+        # Should include template-specific parameters
+        assert 'abstract: "This paper presents novel approaches."' in result
+        assert 'index-terms: ("AI", "Machine Learning",)' in result
+        assert 'paper-size: "a4"' in result
+
+    def test_template_params_python_variable_reference(self):
+        """Test that Python variables can be referenced in params (no special syntax needed)"""
+        # Simulate conf.py variables
+        ieee_abstract = "This is the abstract text."
+        ieee_keywords = ["Keyword1", "Keyword2"]
+
+        # User would write this in conf.py
+        engine = TemplateEngine(
+            typst_template_function={
+                "name": "ieee",
+                "params": {
+                    "abstract": ieee_abstract,  # Direct Python variable reference
+                    "index-terms": ieee_keywords,
+                },
+            }
+        )
+
+        params = {"title": "Test", "authors": ()}
+        body = "Content"
+
+        result = engine.render(params, body)
+
+        # Should contain the referenced values
+        assert 'abstract: "This is the abstract text."' in result
+        assert 'index-terms: ("Keyword1", "Keyword2",)' in result
+
+
+class TestTypstAuthorsConfig:
+    """Test typst_authors configuration for detailed author information (Issue #13)"""
+
+    def test_author_config_backward_compatibility(self):
+        """Test backward compatibility: traditional author string format"""
+        engine = TemplateEngine()
+
+        # Traditional Sphinx author configuration
+        authors = ("John Doe", "Jane Smith")
+        formatted = engine._format_typst_value(authors)
+
+        # Should produce string tuple format
+        assert formatted == '("John Doe", "Jane Smith",)'
+
+    def test_typst_authors_single_author_with_details(self):
+        """Test typst_authors with single author and detailed information"""
+        engine = TemplateEngine(
+            typst_authors={
+                "John Doe": {
+                    "department": "Computer Science",
+                    "organization": "MIT",
+                    "email": "john@mit.edu",
+                }
+            }
+        )
+
+        # Should format as dictionary with name and details
+        formatted_authors = engine._format_authors_with_details()
+
+        # Should produce dict tuple format
+        assert 'name: "John Doe"' in formatted_authors
+        assert 'department: "Computer Science"' in formatted_authors
+        assert 'organization: "MIT"' in formatted_authors
+        assert 'email: "john@mit.edu"' in formatted_authors
+
+    def test_typst_authors_multiple_authors_with_details(self):
+        """Test typst_authors with multiple authors"""
+        engine = TemplateEngine(
+            typst_authors={
+                "John Doe": {
+                    "department": "Computer Science",
+                    "organization": "MIT",
+                    "email": "john@mit.edu",
+                },
+                "Jane Smith": {
+                    "department": "Electrical Engineering",
+                    "organization": "Stanford",
+                    "email": "jane@stanford.edu",
+                },
+            }
+        )
+
+        formatted_authors = engine._format_authors_with_details()
+
+        # Should contain both authors in dict format
+        assert 'name: "John Doe"' in formatted_authors
+        assert 'name: "Jane Smith"' in formatted_authors
+        assert 'department: "Computer Science"' in formatted_authors
+        assert 'department: "Electrical Engineering"' in formatted_authors
+
+    def test_typst_author_params_backward_compatibility(self):
+        """Test backward compatibility with typst_author_params"""
+        engine = TemplateEngine(
+            typst_author_params={
+                "John Doe": {
+                    "department": "CS",
+                    "email": "john@mit.edu",
+                }
+            }
+        )
+
+        # Should also work with author_params (legacy support)
+        formatted_authors = engine._format_authors_with_details(authors=("John Doe",))
+
+        assert 'name: "John Doe"' in formatted_authors
+        assert 'department: "CS"' in formatted_authors
+        assert 'email: "john@mit.edu"' in formatted_authors

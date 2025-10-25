@@ -46,7 +46,12 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     # Task 13.4: Other configuration options (Requirement 8.6)
     app.add_config_value("typst_package", None, "html", [str, type(None)])
     app.add_config_value("typst_package_imports", None, "html", [list, type(None)])
-    app.add_config_value("typst_template_function", None, "html", [str, type(None)])
+    app.add_config_value(
+        "typst_template_function", None, "html", [str, dict, type(None)]
+    )
+    # Issue #13: Author details configuration
+    app.add_config_value("typst_authors", None, "html", [dict, type(None)])
+    app.add_config_value("typst_author_params", None, "html", [dict, type(None)])
     # Task 13.4: Output directory and debug mode
     app.add_config_value("typst_output_dir", "_build/typst", "html", [str])
     app.add_config_value("typst_debug", False, "html", [bool])

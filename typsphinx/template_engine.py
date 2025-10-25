@@ -45,8 +45,10 @@ class TemplateEngine:
         search_paths: Optional[List[str]] = None,
         parameter_mapping: Optional[Dict[str, str]] = None,
         typst_package: Optional[str] = None,
-        typst_template_function: Optional[str] = None,
+        typst_template_function: Optional[Any] = None,
         typst_package_imports: Optional[List[str]] = None,
+        typst_authors: Optional[Dict[str, Dict[str, Any]]] = None,
+        typst_author_params: Optional[Dict[str, Dict[str, Any]]] = None,
     ):
         """
         Initialize TemplateEngine.
@@ -59,8 +61,10 @@ class TemplateEngine:
                              (Requirement 8.4: different parameter names)
             typst_package: Typst Universe package specification (e.g., "@preview/charged-ieee:0.1.0")
                           (Requirement 8.6: external template packages)
-            typst_template_function: Template function name from package
+            typst_template_function: Template function name (str) or dict with {"name": str, "params": dict}
             typst_package_imports: Specific items to import from package
+            typst_authors: Author details as dict with author name as key (recommended)
+            typst_author_params: Legacy author params (for backward compatibility)
         """
         self.template_path = template_path
         self.template_name = template_name or "base.typ"
@@ -69,8 +73,22 @@ class TemplateEngine:
             parameter_mapping or self.DEFAULT_PARAMETER_MAPPING.copy()
         )
         self.typst_package = typst_package
-        self.typst_template_function = typst_template_function
         self.typst_package_imports = typst_package_imports or []
+        self.typst_authors = typst_authors or {}
+        self.typst_author_params = typst_author_params or {}
+
+        # Parse typst_template_function: support both string and dict formats
+        if isinstance(typst_template_function, dict):
+            self.typst_template_function_name = typst_template_function.get(
+                "name", "project"
+            )
+            self.typst_template_params = typst_template_function.get("params", {})
+        elif isinstance(typst_template_function, str):
+            self.typst_template_function_name = typst_template_function
+            self.typst_template_params = {}
+        else:
+            self.typst_template_function_name = None
+            self.typst_template_params = {}
 
     def get_default_template_path(self) -> str:
         """
@@ -191,9 +209,11 @@ class TemplateEngine:
             # Import specific items: #import "@package:version": item1, item2
             items = ", ".join(self.typst_package_imports)
             return f'#import "{self.typst_package}": {items}'
-        elif self.typst_template_function:
+        elif self.typst_template_function_name:
             # Import template function: #import "@package:version": template_func
-            return f'#import "{self.typst_package}": {self.typst_template_function}'
+            return (
+                f'#import "{self.typst_package}": {self.typst_template_function_name}'
+            )
         else:
             # Import entire module: #import "@package:version"
             return f'#import "{self.typst_package}"'
@@ -297,7 +317,7 @@ class TemplateEngine:
             output_parts.append("")  # Blank line
 
             # Import template from separate file
-            template_func = self.typst_template_function or "project"
+            template_func = self.typst_template_function_name or "project"
             output_parts.append(f'#import "{template_file}": {template_func}')
             output_parts.append("")  # Blank line
         else:
@@ -309,11 +329,16 @@ class TemplateEngine:
                 output_parts.append("")  # Blank line
 
         # Generate #show statement with template function call
-        template_func = self.typst_template_function or "project"
+        template_func = self.typst_template_function_name or "project"
         output_parts.append(f"#show: {template_func}.with(")
 
+        # Merge template-specific params with standard params
+        all_params = {}
+        all_params.update(self.typst_template_params)  # Template-specific params first
+        all_params.update(params)  # Standard params (can override if needed)
+
         # Format parameters
-        for key, value in params.items():
+        for key, value in all_params.items():
             formatted_value = self._format_typst_value(value)
             output_parts.append(f"  {key}: {formatted_value},")
 
@@ -394,3 +419,48 @@ class TemplateEngine:
                 return f.read()
         except (FileNotFoundError, OSError):
             return None
+
+    def _format_authors_with_details(self, authors: Optional[tuple] = None) -> str:
+        """
+        Format authors with detailed information as Typst dict tuple.
+
+        Args:
+            authors: Optional tuple of author names (for backward compatibility with typst_author_params)
+
+        Returns:
+            Typst-formatted author dict tuple string
+
+        Priority:
+        1. typst_authors (recommended) - author name as key, details as dict value
+        2. typst_author_params (legacy) - requires authors parameter
+        """
+        author_dicts = []
+
+        # Use typst_authors if available (recommended approach)
+        if self.typst_authors:
+            for author_name, details in self.typst_authors.items():
+                author_dict = {"name": author_name}
+                author_dict.update(details)
+                author_dicts.append(author_dict)
+        # Fall back to typst_author_params (legacy support)
+        elif self.typst_author_params and authors:
+            for author_name in authors:
+                author_dict = {"name": author_name}
+                if author_name in self.typst_author_params:
+                    author_dict.update(self.typst_author_params[author_name])
+                author_dicts.append(author_dict)
+        else:
+            # No detailed author information available
+            return ""
+
+        # Format as Typst dict tuple
+        result_parts = ["("]
+        for author_dict in author_dicts:
+            result_parts.append("  (")
+            for key, value in author_dict.items():
+                formatted_value = self._format_typst_value(value)
+                result_parts.append(f"    {key}: {formatted_value},")
+            result_parts.append("  ),")
+        result_parts.append(")")
+
+        return "\n".join(result_parts)

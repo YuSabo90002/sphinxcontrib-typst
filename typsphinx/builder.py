@@ -230,6 +230,8 @@ class TypstBuilder(Builder):
             typst_package=typst_package,
             typst_template_function=getattr(config, "typst_template_function", None),
             typst_package_imports=getattr(config, "typst_package_imports", None),
+            typst_authors=getattr(config, "typst_authors", None),
+            typst_author_params=getattr(config, "typst_author_params", None),
         )
 
         # Get template content
