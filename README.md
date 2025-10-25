@@ -228,10 +228,13 @@ uv run pytest --cov=typsphinx --cov-report=html
 # Run tests across multiple Python versions
 uv run tox
 
-# Run linters
-uv run black .
-uv run ruff check .
-uv run mypy sphinxcontrib/
+# Run specific tox environments
+uv run tox -e lint          # Run linters (black, ruff)
+uv run tox -e type          # Run type checking (mypy)
+uv run tox -e py311         # Run tests on Python 3.11
+uv run tox -e docs-html     # Build HTML documentation
+uv run tox -e docs-pdf      # Build PDF documentation
+uv run tox -e docs          # Build both HTML and PDF docs
 ```
 
 ### Testing Strategy

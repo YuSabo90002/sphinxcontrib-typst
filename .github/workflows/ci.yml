@@ -31,8 +31,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev
 
-      - name: Run tests
-        run: uv run pytest tests/ -v
+      - name: Run tests with tox
+        run: uv run tox -e py${{ matrix.python-version }}
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -61,11 +61,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev
 
-      - name: Run black
-        run: uv run black --check .
-
-      - name: Run ruff
-        run: uv run ruff check .
+      - name: Run lint with tox
+        run: uv run tox -e lint
 
   type-check:
     name: Type Check
@@ -85,8 +82,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev
 
-      - name: Run mypy
-        run: uv run mypy typsphinx/
+      - name: Run type check with tox
+        run: uv run tox -e type
 
   coverage:
     name: Code Coverage
@@ -106,8 +103,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev
 
-      - name: Run coverage
-        run: uv run pytest --cov=typsphinx --cov-report=term-missing --cov-report=xml --cov-report=html tests/
+      - name: Run coverage with tox
+        run: uv run tox -e cov -- --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
