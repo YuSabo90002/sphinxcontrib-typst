@@ -47,7 +47,7 @@ list(
 
 This approach matches the existing toctree implementation pattern at [translator.py:1230](https://github.com/YuSabo90002/typsphinx/blob/main/typsphinx/translator.py#L1230).
 
-## Problem Statement
+## Why
 
 ### Current State: Inconsistent Syntax Mixing
 
@@ -325,6 +325,38 @@ Inside the code mode block:
   $x + y$  // Works in code mode
 }
 ```
+
+## What Changes
+
+### Implementation Changes
+
+1. **Document Structure**
+   - Wrap entire document in `#{...}` code block
+   - Remove all `#` prefixes from function calls inside code block
+
+2. **Text Handling**
+   - Wrap all text nodes in `text()` function
+   - Implement string escaping (`\\`, `\"`, `\n`, `\r`, `\t`)
+
+3. **Element Conversion**
+   - Paragraphs: Use `par()` function with `+` operator
+   - Inline formatting: `emph()`, `strong()`, `sub()`, `super()`
+   - Headings: `heading(level: N, text("..."))`
+   - Lists: `list()`, `enum()`, `terms()` functions
+   - Code: `raw()` with string escaping for inline
+   - Math: `mi()`, `mitex()` with backtick raw strings
+   - Toctree: `{...}` scope blocks
+
+4. **Removed Sugar Syntax**
+   - No more `=` for headings
+   - No more `*` for bold, `_` for italic
+   - No more `- ` for lists
+   - No more `` ` `` for inline code (in favor of `raw()`)
+
+### Files Modified
+- `typsphinx/translator.py`: Core implementation (500+ lines changed)
+- All test files: Updated assertions for new syntax
+- `CHANGELOG.md`: Breaking change documentation
 
 ## Impact Analysis
 
