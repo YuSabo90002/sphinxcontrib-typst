@@ -624,6 +624,63 @@ def test_mixed_nested_lists(simple_document, mock_builder):
     assert 'enum(text("Numbered item"))' in output  # Nested with different type
 
 
+def test_list_item_with_multiple_elements(simple_document, mock_builder):
+    """Test list item with multiple inline elements (text + bold + emphasis)."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a bullet list with complex items
+    bullet_list = nodes.bullet_list()
+    translator.visit_bullet_list(bullet_list)
+
+    # Item with text + bold
+    item1 = nodes.list_item()
+    translator.visit_list_item(item1)
+    translator.visit_Text(nodes.Text("Item with "))
+    translator.depart_Text(nodes.Text("Item with "))
+    translator.visit_strong(nodes.strong())
+    translator.visit_Text(nodes.Text("bold"))
+    translator.depart_Text(nodes.Text("bold"))
+    translator.depart_strong(nodes.strong())
+    translator.depart_list_item(item1)
+
+    # Item with text + emphasis + text
+    item2 = nodes.list_item()
+    translator.visit_list_item(item2)
+    translator.visit_Text(nodes.Text("Item with "))
+    translator.depart_Text(nodes.Text("Item with "))
+    translator.visit_emphasis(nodes.emphasis())
+    translator.visit_Text(nodes.Text("emphasis"))
+    translator.depart_Text(nodes.Text("emphasis"))
+    translator.depart_emphasis(nodes.emphasis())
+    translator.visit_Text(nodes.Text(" text"))
+    translator.depart_Text(nodes.Text(" text"))
+    translator.depart_list_item(item2)
+
+    # Item with literal (inline code)
+    item3 = nodes.list_item()
+    translator.visit_list_item(item3)
+    translator.visit_Text(nodes.Text("Code: "))
+    translator.depart_Text(nodes.Text("Code: "))
+    # literal raises SkipNode, so we don't manually visit children
+    literal_node = nodes.literal(text="print()")
+    try:
+        translator.visit_literal(literal_node)
+    except nodes.SkipNode:
+        pass  # Expected behavior
+    translator.depart_list_item(item3)
+
+    translator.depart_bullet_list(bullet_list)
+
+    output = translator.astext()
+
+    # Verify separator logic
+    assert 'text("Item with ") + strong(text("bold"))' in output
+    assert 'text("Item with ") + emph(text("emphasis")) + text(" text")' in output
+    assert 'text("Code: ") + raw("print()")' in output
+
+
 def test_literal_block_without_language(simple_document, mock_builder):
     """Test that literal blocks without language are converted correctly."""
     from typsphinx.translator import TypstTranslator
