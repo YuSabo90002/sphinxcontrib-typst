@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="Contributing" href="contributing.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Changelog - typsphinx 0.3.0</title>
+        <title>Changelog - typsphinx 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">typsphinx 0.3.0</div></a>
+      <a href="index.html"><div class="brand">typsphinx 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">typsphinx 0.3.0</span>
+  <span class="sidebar-brand-text">typsphinx 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -270,8 +270,25 @@
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/">Semantic Versioning</a>.</p>
 <p>For the complete changelog, see <a class="reference external" href="https://github.com/YuSabo90002/typsphinx/blob/main/CHANGELOG.md">CHANGELOG.md</a> in the repository.</p>
-<section id="version-0-3-0-current">
-<h2>Version 0.3.0 (Current)<a class="headerlink" href="#version-0-3-0-current" title="Link to this heading">¶</a></h2>
+<section id="version-0-4-0-current">
+<h2>Version 0.4.0 (Current)<a class="headerlink" href="#version-0-4-0-current" title="Link to this heading">¶</a></h2>
+<p><strong>Fixed</strong></p>
+<ul class="simple">
+<li><p>Document wrapper (<code class="docutils literal notranslate"><span class="pre">#{...}</span></code>) preservation in nested structures (#61)</p></li>
+<li><p>Nested lists generating invalid Typst syntax (#62)</p></li>
+<li><p>Unified code mode syntax compliance</p></li>
+</ul>
+<p><strong>Changed</strong></p>
+<ul class="simple">
+<li><p>Implemented stream-based rendering architecture</p></li>
+<li><p>Changed <code class="docutils literal notranslate"><span class="pre">strong()</span></code> and <code class="docutils literal notranslate"><span class="pre">emph()</span></code> to use content blocks: <code class="docutils literal notranslate"><span class="pre">strong({...})</span></code>, <code class="docutils literal notranslate"><span class="pre">emph({...})</span></code></p></li>
+<li><p>Updated <code class="docutils literal notranslate"><span class="pre">link()</span></code> format from <code class="docutils literal notranslate"><span class="pre">link(url)[content]</span></code> to <code class="docutils literal notranslate"><span class="pre">link(url,</span> <span class="pre">content)</span></code></p></li>
+<li><p>List items now use content blocks with newline separators</p></li>
+<li><p>API signatures properly formatted with <code class="docutils literal notranslate"><span class="pre">+</span></code> operator concatenation</p></li>
+</ul>
+</section>
+<section id="version-0-3-0">
+<h2>Version 0.3.0<a class="headerlink" href="#version-0-3-0" title="Link to this heading">¶</a></h2>
 <p><strong>Added</strong></p>
 <ul class="simple">
 <li><p>Documentation site with GitHub Pages deployment</p></li>
@@ -478,7 +495,8 @@ for planned features.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#version-0-3-0-current">Version 0.3.0 (Current)</a></li>
+<li><a class="reference internal" href="#version-0-4-0-current">Version 0.4.0 (Current)</a></li>
+<li><a class="reference internal" href="#version-0-3-0">Version 0.3.0</a></li>
 <li><a class="reference internal" href="#version-0-2-2">Version 0.2.2</a></li>
 <li><a class="reference internal" href="#version-0-2-1">Version 0.2.1</a></li>
 <li><a class="reference internal" href="#version-0-2-0">Version 0.2.0</a></li>
@@ -505,7 +523,7 @@ for planned features.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=e259d695"></script>
+</div><script src="_static/documentation_options.js?v=6c02275b"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
