@@ -681,6 +681,36 @@ def test_list_item_with_multiple_elements(simple_document, mock_builder):
     assert 'text("Code: ") + raw("print()")' in output
 
 
+def test_list_item_with_reference(simple_document, mock_builder):
+    """Test list item with text + reference (link)."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a bullet list with link
+    bullet_list = nodes.bullet_list()
+    translator.visit_bullet_list(bullet_list)
+
+    # Item with text + link
+    item1 = nodes.list_item()
+    translator.visit_list_item(item1)
+    translator.visit_Text(nodes.Text("GitHub: "))
+    translator.depart_Text(nodes.Text("GitHub: "))
+    ref_node = nodes.reference(refuri="https://github.com/example")
+    translator.visit_reference(ref_node)
+    translator.visit_Text(nodes.Text("https://github.com/example"))
+    translator.depart_Text(nodes.Text("https://github.com/example"))
+    translator.depart_reference(ref_node)
+    translator.depart_list_item(item1)
+
+    translator.depart_bullet_list(bullet_list)
+
+    output = translator.astext()
+
+    # Verify separator logic for reference
+    assert 'text("GitHub: ") + link("https://github.com/example")[text("https://github.com/example")]' in output
+
+
 def test_literal_block_without_language(simple_document, mock_builder):
     """Test that literal blocks without language are converted correctly."""
     from typsphinx.translator import TypstTranslator

@@ -820,6 +820,10 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The literal block node
         """
+        # Add + separator if in list item and not first element
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text(" + ")
+
         # Mark that we're in a literal block (disable text() wrapping)
         self.in_literal_block = True
 
@@ -898,6 +902,10 @@ class TypstTranslator(SphinxTranslator):
         else:
             # Normal code block - just add spacing
             self.add_text("\n")
+
+        # Mark that next element in list item needs separator
+        if self.in_list_item:
+            self.list_item_needs_separator = True
 
     def visit_definition_list(self, node: nodes.definition_list) -> None:
         """
@@ -1664,6 +1672,17 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The reference node
         """
+        # Add separator if in paragraph and not first node
+        self._add_paragraph_separator()
+
+        # Add + separator if in list item and not first element
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text(" + ")
+
+        # Save and reset list item separator for children (they're inside this element)
+        was_list_item_needs_separator = self.list_item_needs_separator
+        self.list_item_needs_separator = False
+
         # Get the reference URI
         refuri = node.get("refuri", "")
 
@@ -1678,6 +1697,9 @@ class TypstTranslator(SphinxTranslator):
             # No # prefix in code mode
             self.add_text(f'link("{refuri}")[')
 
+        # Store state to restore in depart
+        self._reference_was_list_item_needs_separator = was_list_item_needs_separator
+
     def depart_reference(self, node: nodes.reference) -> None:
         """
         Depart a reference node.
@@ -1687,6 +1709,12 @@ class TypstTranslator(SphinxTranslator):
         """
         # Close the link
         self.add_text("]")
+
+        # Restore and mark that next element needs separator
+        if hasattr(self, "_reference_was_list_item_needs_separator"):
+            if self.in_list_item:
+                self.list_item_needs_separator = True
+            delattr(self, "_reference_was_list_item_needs_separator")
 
     def unknown_visit(self, node: nodes.Node) -> None:
         """
