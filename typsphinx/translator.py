@@ -74,8 +74,12 @@ class TypstTranslator(SphinxTranslator):
             False  # Track if inside desc_parameter to avoid newlines between text nodes
         )
         self._in_link = False  # Track if inside link() function for + concatenation
-        self._desc_parameter_has_content: bool = False  # Track if desc_parameter has content for + separator
-        self._link_has_content: bool = False  # Track if link has content for + separator
+        self._desc_parameter_has_content: bool = (
+            False  # Track if desc_parameter has content for + separator
+        )
+        self._link_has_content: bool = (
+            False  # Track if link has content for + separator
+        )
 
         # Definition list state
         self.in_definition_list = False
