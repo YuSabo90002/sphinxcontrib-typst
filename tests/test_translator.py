@@ -152,8 +152,8 @@ def test_table_conversion(simple_document, mock_builder):
             f"DEBUG: Table cells: {translator.table_cells if hasattr(translator, 'table_cells') else 'N/A'}"
         )
 
-    # Check that Typst #table() syntax is generated
-    assert "#table(" in output
+    # Check that Typst table() syntax is generated (no # in unified code mode)
+    assert "table(" in output
     assert "columns: 2" in output or "columns: (1fr, 1fr)" in output
     assert "Header 1" in output
     assert "Header 2" in output
@@ -463,8 +463,9 @@ def test_bullet_list_conversion(simple_document, mock_builder):
     translator.depart_bullet_list(bullet_list)
 
     output = translator.astext()
-    assert 'list(text("First item")' in output
-    assert 'text("Second item"))' in output
+    assert 'list({' in output
+    assert 'text("First item")' in output
+    assert 'text("Second item")' in output
 
 
 def test_enumerated_list_conversion(simple_document, mock_builder):
@@ -494,8 +495,9 @@ def test_enumerated_list_conversion(simple_document, mock_builder):
     translator.depart_enumerated_list(enum_list)
 
     output = translator.astext()
-    assert 'enum(text("First item")' in output
-    assert 'text("Second item"))' in output
+    assert 'enum({' in output
+    assert 'text("First item")' in output
+    assert 'text("Second item")' in output
 
 
 def test_nested_bullet_list(simple_document, mock_builder):
@@ -538,9 +540,9 @@ def test_nested_bullet_list(simple_document, mock_builder):
     translator.depart_bullet_list(outer_list)
 
     output = translator.astext()
-    assert 'list(text("Outer item 1")' in output
+    assert 'text("Outer item 1")' in output
     assert 'text("Outer item 2")' in output
-    assert 'list(text("Inner item 1"))' in output  # Nested
+    assert 'text("Inner item 1")' in output  # Nested list item
 
 
 def test_nested_enumerated_list(simple_document, mock_builder):
@@ -583,9 +585,9 @@ def test_nested_enumerated_list(simple_document, mock_builder):
     translator.depart_enumerated_list(outer_list)
 
     output = translator.astext()
-    assert 'enum(text("Outer item 1")' in output
+    assert 'text("Outer item 1")' in output
     assert 'text("Outer item 2")' in output
-    assert 'enum(text("Inner item 1"))' in output  # Nested
+    assert 'text("Inner item 1")' in output  # Nested list item
 
 
 def test_mixed_nested_lists(simple_document, mock_builder):
@@ -621,7 +623,7 @@ def test_mixed_nested_lists(simple_document, mock_builder):
 
     output = translator.astext()
     assert 'text("Bullet item")' in output
-    assert 'enum(text("Numbered item"))' in output  # Nested with different type
+    assert 'text("Numbered item")' in output  # Nested with different type
 
 
 def test_list_item_with_multiple_elements(simple_document, mock_builder):
@@ -675,10 +677,10 @@ def test_list_item_with_multiple_elements(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Verify separator logic
-    assert 'text("Item with ") + strong(text("bold"))' in output
-    assert 'text("Item with ") + emph(text("emphasis")) + text(" text")' in output
-    assert 'text("Code: ") + raw("print()")' in output
+    # Verify { } block structure with newline separators
+    assert 'text("Item with ")\nstrong(text("bold"))' in output
+    assert 'text("Item with ")\nemph(text("emphasis"))\ntext(" text")' in output
+    assert 'text("Code: ")\nraw("print()")' in output
 
 
 def test_list_item_with_reference(simple_document, mock_builder):
@@ -707,8 +709,8 @@ def test_list_item_with_reference(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Verify separator logic for reference
-    assert 'text("GitHub: ") + link("https://github.com/example")[text("https://github.com/example")]' in output
+    # Verify { } block structure with newline separator for reference
+    assert 'text("GitHub: ")\nlink("https://github.com/example")[text("https://github.com/example")]' in output
 
 
 def test_literal_block_without_language(simple_document, mock_builder):
@@ -1458,8 +1460,8 @@ def test_target_label_generation(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Check that Typst label is generated
-    assert "<my-label>" in output
+    # Check that Typst label is generated (using label() function in unified code mode)
+    assert 'label("my-label")' in output
 
 
 def test_reference_to_target(simple_document, mock_builder):
@@ -1649,20 +1651,20 @@ CellA     CellB
         document.walkabout(translator)
         output = translator.astext()
 
-        # Check that #table( appears in output
-        assert "#table(" in output, f"{table_type}: #table() not found in output"
+        # Check that table( appears in output (no # in unified code mode)
+        assert "table(" in output, f"{table_type}: table() not found in output"
 
-        # Find the position of #table( in the output
+        # Find the position of table( in the output
         lines = output.strip().split("\n")
-        table_idx = next((i for i, line in enumerate(lines) if "#table(" in line), None)
+        table_idx = next((i for i, line in enumerate(lines) if "table(" in line), None)
 
-        assert table_idx is not None, f"{table_type}: Could not find #table() in output"
+        assert table_idx is not None, f"{table_type}: Could not find table() in output"
 
-        # Get content before #table()
+        # Get content before table()
         before_table = "\n".join(lines[:table_idx])
 
-        # Check that cell content keywords do NOT appear before #table()
-        # These keywords should only appear inside #table()
+        # Check that cell content keywords do NOT appear before table()
+        # These keywords should only appear inside table()
         keywords = ["Header1", "Header2", "CellA", "CellB"]
 
         for keyword in keywords:
@@ -2274,8 +2276,8 @@ def test_table_without_header(simple_document, mock_builder):
 
     # Check that table.header() is NOT generated
     assert "table.header(" not in output
-    # But table() should still be generated
-    assert "#table(" in output
+    # But table() should still be generated (no # in unified code mode)
+    assert "table(" in output
     assert "Cell 1" in output
     assert "Cell 2" in output
     assert "Cell 3" in output

@@ -107,7 +107,7 @@ class TypstTranslator(SphinxTranslator):
         This method adds ' + ' before each node except the first one.
         """
         if self.in_paragraph and self.paragraph_has_content:
-            self.add_text(" + ")
+            self.add_text("\n")
         if self.in_paragraph:
             self.paragraph_has_content = True
 
@@ -415,9 +415,10 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
-        # Add + separator if in list item and not first element
+        # Add newline separator if in list item and not first element
+        # List items are wrapped in { } blocks, so use newlines instead of +
         if self.in_list_item and self.list_item_needs_separator:
-            self.add_text(" + ")
+            self.add_text("\n")
 
         # Wrap in text() function (no # prefix in code mode)
         self.add_text(f'text("{text_content}")')
@@ -449,9 +450,9 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
-        # Add + separator if in list item and not first element
+        # Add newline separator if in list item and not first element
         if self.in_list_item and self.list_item_needs_separator:
-            self.add_text(" + ")
+            self.add_text("\n")
 
         # Temporarily disable paragraph state for children
         was_in_paragraph = self.in_paragraph
@@ -505,9 +506,9 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
-        # Add + separator if in list item and not first element
+        # Add newline separator if in list item and not first element
         if self.in_list_item and self.list_item_needs_separator:
-            self.add_text(" + ")
+            self.add_text("\n")
 
         # Temporarily disable paragraph state for children
         was_in_paragraph = self.in_paragraph
@@ -561,9 +562,9 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
-        # Add + separator if in list item and not first element
+        # Add newline separator if in list item and not first element
         if self.in_list_item and self.list_item_needs_separator:
-            self.add_text(" + ")
+            self.add_text("\n")
 
         # Get code content directly
         code_content = node.astext()
@@ -685,7 +686,7 @@ class TypstTranslator(SphinxTranslator):
         """
         # Add + separator if nested in a list item
         if self.in_list_item and self.list_item_needs_separator:
-            self.add_text(" + ")
+            self.add_text("\n")
 
         self.list_stack.append("bullet")
         self.add_text("list(")
@@ -736,7 +737,7 @@ class TypstTranslator(SphinxTranslator):
         """
         # Add + separator if nested in a list item
         if self.in_list_item and self.list_item_needs_separator:
-            self.add_text(" + ")
+            self.add_text("\n")
 
         self.list_stack.append("enumerated")
         self.add_text("enum(")
@@ -793,6 +794,10 @@ class TypstTranslator(SphinxTranslator):
             self.add_text(", ")
         self.is_first_list_item = False
 
+        # Wrap list item content in { } block
+        # This allows multiple statements without + operator
+        self.add_text("{\n")
+
         # Reset separator flag for item content
         self.list_item_needs_separator = False
 
@@ -800,11 +805,14 @@ class TypstTranslator(SphinxTranslator):
         """
         Depart a list item node.
 
-        Simply marks that we're no longer in a list item.
+        Close the { } block wrapper and mark that we're no longer in a list item.
 
         Args:
             node: The list item node
         """
+        # Close the { } block
+        self.add_text("\n}")
+
         self.in_list_item = False
 
     def visit_literal_block(self, node: nodes.literal_block) -> None:
@@ -820,9 +828,9 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The literal block node
         """
-        # Add + separator if in list item and not first element
+        # Add newline separator if in list item and not first element
         if self.in_list_item and self.list_item_needs_separator:
-            self.add_text(" + ")
+            self.add_text("\n")
 
         # Mark that we're in a literal block (disable text() wrapping)
         self.in_literal_block = True
@@ -836,6 +844,10 @@ class TypstTranslator(SphinxTranslator):
             # Start figure with caption (will add closing bracket in depart)
             # No # prefix in code mode
             self.add_text(f"figure(caption: [{escaped_caption}])[\n")
+
+        # If in list item, wrap codly() calls and code block in { } to make it an expression
+        if self.in_list_item:
+            self.add_text("{\n")
 
         # Check for :linenos: option (Issue #20)
         # If linenos is not set or False, disable line numbers in codly
@@ -886,6 +898,10 @@ class TypstTranslator(SphinxTranslator):
 
         # Close code block
         self.add_text("\n```\n")
+
+        # Close the { } wrapper if we're in a list item
+        if self.in_list_item:
+            self.add_text("}")
 
         # Issue #20: Close figure wrapper if we're in a captioned code block
         if self.in_captioned_code_block and self.code_block_caption:
@@ -1154,10 +1170,10 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The table node
         """
-        # Generate Typst #table() syntax
+        # Generate Typst table() syntax (no # prefix in unified code mode)
         if self.table_colcount > 0:
             # Use self.body.append directly to avoid routing to table_cell_content
-            self.body.append(f"#table(\n  columns: {self.table_colcount},\n")
+            self.body.append(f"table(\n  columns: {self.table_colcount},\n")
 
             # Separate header cells from body cells
             header_cells = [cell for cell in self.table_cells if cell.get("is_header")]
@@ -1426,10 +1442,20 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The target node
         """
+        # Add newline separator if in list item and not first element
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text("\n")
+
         # Generate Typst label if target has ids
+        # In unified code mode, use label() function instead of <label> syntax
         if node.get("ids"):
-            label = node["ids"][0]
-            self.add_text(f"<{label}> ")
+            label_id = node["ids"][0]
+            self.add_text(f'label("{label_id}")')
+
+        # Mark that next element in list item needs separator
+        if self.in_list_item:
+            self.list_item_needs_separator = True
+
         # Skip processing children as target is typically empty
         raise nodes.SkipNode
 
@@ -1675,9 +1701,9 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
-        # Add + separator if in list item and not first element
+        # Add newline separator if in list item and not first element
         if self.in_list_item and self.list_item_needs_separator:
-            self.add_text(" + ")
+            self.add_text("\n")
 
         # Save and reset list item separator for children (they're inside this element)
         was_list_item_needs_separator = self.list_item_needs_separator
@@ -1981,6 +2007,10 @@ class TypstTranslator(SphinxTranslator):
             clue_type: The gentle-clues function name (e.g., 'info', 'warning', 'tip')
             custom_title: Optional custom title for the admonition
         """
+        # Add newline separator if in list item and not first element
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text("\n")
+
         # Check if there's a title element in the node
         title = None
         for child in node.children:
@@ -1989,18 +2019,23 @@ class TypstTranslator(SphinxTranslator):
                 break
 
         # Use custom title if provided, otherwise check for title element
+        # No # prefix in unified code mode
         if title:
-            self.add_text(f'#{clue_type}(title: "{title}")[')
+            self.add_text(f'{clue_type}(title: "{title}")[')
         elif custom_title:
-            self.add_text(f'#{clue_type}(title: "{custom_title}")[')
+            self.add_text(f'{clue_type}(title: "{custom_title}")[')
         else:
-            self.add_text(f"#{clue_type}[")
+            self.add_text(f"{clue_type}[")
 
     def _depart_admonition(self) -> None:
         """
         Helper method to depart any admonition node.
         """
         self.add_text("]\n\n")
+
+        # Mark that next element in list item needs separator
+        if self.in_list_item:
+            self.list_item_needs_separator = True
 
     def visit_note(self, node: nodes.note) -> None:
         """Visit a note admonition (converts to #info[])."""
