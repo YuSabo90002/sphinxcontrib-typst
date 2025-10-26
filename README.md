@@ -219,7 +219,7 @@ This project uses uv for fast package management and follows TDD (Test-Driven De
 # Install with development dependencies
 uv sync --extra dev
 
-# Run tests (286 tests, 93% coverage)
+# Run tests (375 tests, 93% coverage)
 uv run pytest
 
 # Run tests with coverage report
@@ -239,7 +239,7 @@ uv run tox -e docs          # Build both HTML and PDF docs
 
 ### Testing Strategy
 
-- **Unit tests**: 286 tests covering all major components
+- **Unit tests**: 375 tests covering all major components
 - **Integration tests**: Full build process validation
 - **Example projects**: `examples/basic/` and `examples/advanced/`
 - **Code coverage**: 93% overall
@@ -248,7 +248,7 @@ uv run tox -e docs          # Build both HTML and PDF docs
 
 ```
 typsphinx/
-├── sphinxcontrib/typst/    # Main package
+├── typsphinx/              # Main package
 │   ├── builder.py          # Typst builder
 │   ├── writer.py           # Doctree writer
 │   ├── translator.py       # Node translator
@@ -261,7 +261,7 @@ typsphinx/
 └── pyproject.toml          # Project configuration
 ```
 
-## Known Limitations (v0.2.0)
+## Known Limitations
 
 - **Bibliography**: BibTeX integration not yet supported
 - **Glossary**: Glossary generation not yet supported
@@ -319,5 +319,5 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
 ---
 
-**Status**: Stable (v0.2.2) - Production ready
+**Status**: Stable (v0.4.0) - Production ready
 **Python**: 3.9+ | **Sphinx**: 5.0+ | **Typst**: 0.11.1+
