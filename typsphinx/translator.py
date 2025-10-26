@@ -59,13 +59,10 @@ class TypstTranslator(SphinxTranslator):
         self.in_list_item = False  # Track if currently in a list item
         self.in_literal_block = False  # Track if currently in a code block
 
-        # List collection state for unified code mode
-        self.list_items_stack = []  # Stack of lists: [(type, [items]), ...]
-        self.current_list_item_buffer: Optional[List[str]] = (
-            None  # Buffer for current list item content
-        )
-        self.saved_body: Optional[List[str]] = (
-            None  # Saved body when buffering list items
+        # Stream-based list rendering state (Issue #61)
+        self.is_first_list_item = True  # Track if current item is first in list
+        self.list_item_needs_separator = (
+            False  # Track if + is needed before next element
         )
 
         # Definition list state
@@ -73,6 +70,9 @@ class TypstTranslator(SphinxTranslator):
         self.current_term_buffer: Union[str, List[str], None] = None
         self.current_definition_buffer: Optional[List[str]] = None
         self.definition_list_items = []  # List of (term, definition) tuples
+        self.saved_body: Optional[List[Any]] = (
+            None  # Used by definition lists for body swapping
+        )
 
     def astext(self) -> str:
         """
@@ -415,8 +415,16 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
+        # Add + separator if in list item and not first element
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text(" + ")
+
         # Wrap in text() function (no # prefix in code mode)
         self.add_text(f'text("{text_content}")')
+
+        # Mark that next element in list item needs separator
+        if self.in_list_item:
+            self.list_item_needs_separator = True
 
     def depart_Text(self, node: nodes.Text) -> None:
         """
@@ -441,15 +449,24 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
+        # Add + separator if in list item and not first element
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text(" + ")
+
         # Temporarily disable paragraph state for children
         was_in_paragraph = self.in_paragraph
         self.in_paragraph = False
+
+        # Save and reset list item separator for children (they're inside this element)
+        was_list_item_needs_separator = self.list_item_needs_separator
+        self.list_item_needs_separator = False
 
         # Use emph() function (no # prefix in code mode)
         self.add_text("emph(")
 
         # Store state to restore in depart
         self._emph_was_in_paragraph = was_in_paragraph
+        self._emph_was_list_item_needs_separator = was_list_item_needs_separator
 
     def depart_emphasis(self, node: nodes.emphasis) -> None:
         """
@@ -468,6 +485,13 @@ class TypstTranslator(SphinxTranslator):
             self.in_paragraph = self._emph_was_in_paragraph
             delattr(self, "_emph_was_in_paragraph")
 
+        # Restore and mark that next element needs separator
+        if hasattr(self, "_emph_was_list_item_needs_separator"):
+            # Restore previous state, then mark next element needs separator
+            if self.in_list_item:
+                self.list_item_needs_separator = True
+            delattr(self, "_emph_was_list_item_needs_separator")
+
     def visit_strong(self, node: nodes.strong) -> None:
         """
         Visit a strong (bold) node.
@@ -481,15 +505,24 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
+        # Add + separator if in list item and not first element
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text(" + ")
+
         # Temporarily disable paragraph state for children
         was_in_paragraph = self.in_paragraph
         self.in_paragraph = False
+
+        # Save and reset list item separator for children (they're inside this element)
+        was_list_item_needs_separator = self.list_item_needs_separator
+        self.list_item_needs_separator = False
 
         # Use strong() function (no # prefix in code mode)
         self.add_text("strong(")
 
         # Store state to restore in depart
         self._strong_was_in_paragraph = was_in_paragraph
+        self._strong_was_list_item_needs_separator = was_list_item_needs_separator
 
     def depart_strong(self, node: nodes.strong) -> None:
         """
@@ -508,6 +541,13 @@ class TypstTranslator(SphinxTranslator):
             self.in_paragraph = self._strong_was_in_paragraph
             delattr(self, "_strong_was_in_paragraph")
 
+        # Restore and mark that next element needs separator
+        if hasattr(self, "_strong_was_list_item_needs_separator"):
+            # Restore previous state, then mark next element needs separator
+            if self.in_list_item:
+                self.list_item_needs_separator = True
+            delattr(self, "_strong_was_list_item_needs_separator")
+
     def visit_literal(self, node: nodes.literal) -> None:
         """
         Visit a literal (inline code) node.
@@ -521,6 +561,10 @@ class TypstTranslator(SphinxTranslator):
         # Add separator if in paragraph and not first node
         self._add_paragraph_separator()
 
+        # Add + separator if in list item and not first element
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text(" + ")
+
         # Get code content directly
         code_content = node.astext()
 
@@ -531,6 +575,10 @@ class TypstTranslator(SphinxTranslator):
         # Generate raw() function with string parameter (no # prefix in code mode)
         # Using string instead of backtick raw literal for compatibility with + operator
         self.add_text(f'raw("{escaped_code}")')
+
+        # Mark that next element in list item needs separator
+        if self.in_list_item:
+            self.list_item_needs_separator = True
 
         # Skip processing child text nodes (we already got the content)
         raise nodes.SkipNode
@@ -630,77 +678,109 @@ class TypstTranslator(SphinxTranslator):
         """
         Visit a bullet list node.
 
-        Collects all list items and generates list() function call
-        in unified code mode.
+        Outputs list( and prepares for stream-based item rendering.
 
         Args:
             node: The bullet list node
         """
+        # Add + separator if nested in a list item
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text(" + ")
+
         self.list_stack.append("bullet")
-        # Start collecting items for this list
-        self.list_items_stack.append(("bullet", []))
+        self.add_text("list(")
+
+        # Save parent list state and start fresh for nested list
+        if len(self.list_stack) > 1:  # Nested list
+            self._saved_is_first_list_item = self.is_first_list_item
+            self._saved_list_item_needs_separator = self.list_item_needs_separator
+
+        self.is_first_list_item = True
+
+        # Mark that next element in parent list item needs separator
+        if self.in_list_item:
+            self.list_item_needs_separator = True
 
     def depart_bullet_list(self, node: nodes.bullet_list) -> None:
         """
         Depart a bullet list node.
 
-        Generates list() function with all collected items.
+        Closes the list() function.
 
         Args:
             node: The bullet list node
         """
         self.list_stack.pop()
+        self.add_text(")")
 
-        # Get collected items for this list
-        list_type, items = self.list_items_stack.pop()
+        # Restore parent list state if nested
+        if hasattr(self, "_saved_is_first_list_item"):
+            self.is_first_list_item = self._saved_is_first_list_item
+            delattr(self, "_saved_is_first_list_item")
+        if hasattr(self, "_saved_list_item_needs_separator"):
+            self.list_item_needs_separator = self._saved_list_item_needs_separator
+            delattr(self, "_saved_list_item_needs_separator")
 
-        # Generate list() function with all items (no # prefix in code mode)
-        if items:
-            items_str = ", ".join(items)
-            self.add_text(f"list({items_str})\n\n")
-        else:
-            self.add_text("list()\n\n")
+        # Add newlines only if this is a top-level list
+        if not self.list_stack:
+            self.add_text("\n\n")
 
     def visit_enumerated_list(self, node: nodes.enumerated_list) -> None:
         """
         Visit an enumerated (numbered) list node.
 
-        Collects all list items and generates enum() function call
-        in unified code mode.
+        Outputs enum( and prepares for stream-based item rendering.
 
         Args:
             node: The enumerated list node
         """
+        # Add + separator if nested in a list item
+        if self.in_list_item and self.list_item_needs_separator:
+            self.add_text(" + ")
+
         self.list_stack.append("enumerated")
-        # Start collecting items for this list
-        self.list_items_stack.append(("enumerated", []))
+        self.add_text("enum(")
+
+        # Save parent list state and start fresh for nested list
+        if len(self.list_stack) > 1:  # Nested list
+            self._saved_is_first_list_item = self.is_first_list_item
+            self._saved_list_item_needs_separator = self.list_item_needs_separator
+
+        self.is_first_list_item = True
+
+        # Mark that next element in parent list item needs separator
+        if self.in_list_item:
+            self.list_item_needs_separator = True
 
     def depart_enumerated_list(self, node: nodes.enumerated_list) -> None:
         """
         Depart an enumerated (numbered) list node.
 
-        Generates enum() function with all collected items.
+        Closes the enum() function.
 
         Args:
             node: The enumerated list node
         """
         self.list_stack.pop()
+        self.add_text(")")
 
-        # Get collected items for this list
-        list_type, items = self.list_items_stack.pop()
+        # Restore parent list state if nested
+        if hasattr(self, "_saved_is_first_list_item"):
+            self.is_first_list_item = self._saved_is_first_list_item
+            delattr(self, "_saved_is_first_list_item")
+        if hasattr(self, "_saved_list_item_needs_separator"):
+            self.list_item_needs_separator = self._saved_list_item_needs_separator
+            delattr(self, "_saved_list_item_needs_separator")
 
-        # Generate enum() function with all items (no # prefix in code mode)
-        if items:
-            items_str = ", ".join(items)
-            self.add_text(f"enum({items_str})\n\n")
-        else:
-            self.add_text("enum()\n\n")
+        # Add newlines only if this is a top-level list
+        if not self.list_stack:
+            self.add_text("\n\n")
 
     def visit_list_item(self, node: nodes.list_item) -> None:
         """
         Visit a list item node.
 
-        Starts buffering item content for later collection.
+        Adds comma separator if not first item, then prepares for item content.
 
         Args:
             node: The list item node
@@ -708,37 +788,24 @@ class TypstTranslator(SphinxTranslator):
         # Mark that we're in a list item (disable par() wrapping)
         self.in_list_item = True
 
-        # Start buffering this item's content
-        self.saved_body = self.body
-        self.current_list_item_buffer = []
-        self.body = self.current_list_item_buffer
+        # Add comma before 2nd+ items
+        if not self.is_first_list_item:
+            self.add_text(", ")
+        self.is_first_list_item = False
+
+        # Reset separator flag for item content
+        self.list_item_needs_separator = False
 
     def depart_list_item(self, node: nodes.list_item) -> None:
         """
         Depart a list item node.
 
-        Saves buffered content to the current list's items.
+        Simply marks that we're no longer in a list item.
 
         Args:
             node: The list item node
         """
         self.in_list_item = False
-
-        # Get buffered content
-        item_content = "".join(self.current_list_item_buffer or []).strip()
-
-        # Restore original body
-        if self.saved_body is not None:
-            self.body = self.saved_body
-        self.saved_body = None
-        self.current_list_item_buffer = None
-
-        # Add item to current list
-        if self.list_items_stack:
-            list_type, items = self.list_items_stack[-1]
-            items.append(item_content)
-            # Update the stack with the new items list
-            self.list_items_stack[-1] = (list_type, items)
 
     def visit_literal_block(self, node: nodes.literal_block) -> None:
         """
