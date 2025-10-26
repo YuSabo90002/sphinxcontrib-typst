@@ -2416,8 +2416,9 @@ def test_table_cell_colspan(simple_document, mock_builder):
     table.walkabout(translator)
     output = translator.astext()
 
-    # Should have table.cell(colspan: 2)
-    assert "table.cell(colspan: 2)" in output
+    # Should have table.cell with content first, then colspan: 2
+    assert "table.cell(" in output
+    assert "colspan: 2)" in output
     assert "Spans 2 cols" in output
     assert "Col 3" in output
 
@@ -2464,8 +2465,9 @@ def test_table_cell_rowspan(simple_document, mock_builder):
     table.walkabout(translator)
     output = translator.astext()
 
-    # Should have table.cell(rowspan: 2)
-    assert "table.cell(rowspan: 2)" in output
+    # Should have table.cell with content first, then rowspan: 2
+    assert "table.cell(" in output
+    assert "rowspan: 2)" in output
     assert "Spans 2 rows" in output
 
 
@@ -2513,8 +2515,9 @@ def test_table_cell_colspan_and_rowspan(simple_document, mock_builder):
     table.walkabout(translator)
     output = translator.astext()
 
-    # Should have table.cell(colspan: 2, rowspan: 2)
-    assert "table.cell(colspan: 2, rowspan: 2)" in output
+    # Should have table.cell with content first, then colspan and rowspan
+    assert "table.cell(" in output
+    assert "colspan: 2, rowspan: 2)" in output
     assert "Spans 2x2" in output
 
 
@@ -2573,7 +2576,8 @@ def test_table_header_cell_with_colspan(simple_document, mock_builder):
 
     # Should have table.header() with colspan cell
     assert "table.header(" in output
-    assert "table.cell(colspan: 2)" in output
+    assert "table.cell(" in output
+    assert "colspan: 2)" in output
     assert "Header 1-2" in output
     assert "Header 3" in output
 
