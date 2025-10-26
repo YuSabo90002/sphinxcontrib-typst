@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2025-10-26
+
+### Fixed
+
+- **Table Cell Unified Code Mode Compliance** ([#65](https://github.com/YuSabo90002/typsphinx/pull/65))
+  - Fixed `table.cell()` argument order to match Typst signature (content as first positional argument)
+  - Removed unnecessary markup mode `[...]` wrapping from table cells
+  - Table cells now pass content type directly: `table.cell(content, colspan: 2)`
+  - Improved consistency with Unified Code Mode guideline across all table elements
+
 ## [0.4.0] - 2025-10-26
 
 ### Fixed
