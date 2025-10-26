@@ -1215,7 +1215,7 @@ class TypstTranslator(SphinxTranslator):
 
         # Normal cell (no spanning)
         if colspan == 1 and rowspan == 1:
-            return f"{indent}[{content}],\n"
+            return f"{indent}{content},\n"
 
         # Cell with spanning - use table.cell()
         params = []
@@ -1225,7 +1225,7 @@ class TypstTranslator(SphinxTranslator):
             params.append(f"rowspan: {rowspan}")
 
         params_str = ", ".join(params)
-        return f"{indent}table.cell({params_str})[{content}],\n"
+        return f"{indent}table.cell({content}, {params_str}),\n"
 
     def depart_table(self, node: nodes.table) -> None:
         """
