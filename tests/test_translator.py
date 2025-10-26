@@ -303,8 +303,8 @@ def test_emphasis_conversion(simple_document, mock_builder):
     translator.depart_emphasis(emphasis)
 
     output = translator.astext()
-    # Emphasis should be rendered as emph(text("..."))
-    assert 'emph(text("italic text"))' in output
+    # Emphasis should be rendered as emph({text("...")})
+    assert 'emph({text("italic text")})' in output
 
 
 def test_strong_conversion(simple_document, mock_builder):
@@ -321,8 +321,8 @@ def test_strong_conversion(simple_document, mock_builder):
     translator.depart_strong(strong)
 
     output = translator.astext()
-    # Strong should be rendered as strong(text("..."))
-    assert 'strong(text("bold text"))' in output
+    # Strong should be rendered as strong({text("...")})
+    assert 'strong({text("bold text")})' in output
 
 
 def test_literal_conversion(simple_document, mock_builder):
@@ -431,8 +431,8 @@ def test_mixed_inline_elements(simple_document, mock_builder):
 
     output = translator.astext()
     assert "This is " in output
-    assert 'strong(text("bold"))' in output
-    assert 'emph(text("italic"))' in output
+    assert 'strong({text("bold")})' in output
+    assert 'emph({text("italic")})' in output
     assert 'raw("code")' in output
 
 
@@ -463,7 +463,7 @@ def test_bullet_list_conversion(simple_document, mock_builder):
     translator.depart_bullet_list(bullet_list)
 
     output = translator.astext()
-    assert 'list({' in output
+    assert "list({" in output
     assert 'text("First item")' in output
     assert 'text("Second item")' in output
 
@@ -495,7 +495,7 @@ def test_enumerated_list_conversion(simple_document, mock_builder):
     translator.depart_enumerated_list(enum_list)
 
     output = translator.astext()
-    assert 'enum({' in output
+    assert "enum({" in output
     assert 'text("First item")' in output
     assert 'text("Second item")' in output
 
@@ -678,8 +678,8 @@ def test_list_item_with_multiple_elements(simple_document, mock_builder):
     output = translator.astext()
 
     # Verify { } block structure with newline separators
-    assert 'text("Item with ")\nstrong(text("bold"))' in output
-    assert 'text("Item with ")\nemph(text("emphasis"))\ntext(" text")' in output
+    assert 'text("Item with ")\nstrong({text("bold")})' in output
+    assert 'text("Item with ")\nemph({text("emphasis")})\ntext(" text")' in output
     assert 'text("Code: ")\nraw("print()")' in output
 
 
@@ -710,7 +710,10 @@ def test_list_item_with_reference(simple_document, mock_builder):
     output = translator.astext()
 
     # Verify { } block structure with newline separator for reference
-    assert 'text("GitHub: ")\nlink("https://github.com/example")[text("https://github.com/example")]' in output
+    assert (
+        'text("GitHub: ")\nlink("https://github.com/example", text("https://github.com/example"))'
+        in output
+    )
 
 
 def test_literal_block_without_language(simple_document, mock_builder):
@@ -1499,9 +1502,8 @@ def test_external_reference(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Check that Typst external link is generated
-    assert 'link("https://example.com")' in output
-    assert "External Link" in output
+    # Check that Typst external link is generated with new format: link(url, content)
+    assert 'link("https://example.com", text("External Link"))' in output
 
 
 def test_pending_xref_doc_reference(simple_document, mock_builder):
@@ -2656,7 +2658,7 @@ def test_desc_signature_rendering(simple_document, mock_builder):
     desc.walkabout(translator)
     output = translator.astext()
 
-    assert "TypstBuilder" in output and "strong[" in output
+    assert "TypstBuilder" in output and "strong({" in output
 
 
 def test_desc_with_annotation_and_name(simple_document, mock_builder):
@@ -2684,7 +2686,7 @@ def test_desc_with_annotation_and_name(simple_document, mock_builder):
     desc.walkabout(translator)
     output = translator.astext()
 
-    assert 'strong[text("class")' in output and 'text("TypstBuilder")' in output
+    assert 'strong({text("class")' in output and 'text("TypstBuilder")' in output
 
 
 def test_desc_parameterlist(simple_document, mock_builder):
@@ -2722,7 +2724,7 @@ def test_desc_parameterlist(simple_document, mock_builder):
     desc.walkabout(translator)
     output = translator.astext()
 
-    assert 'strong[text("function")' in output and "arg1" in output
+    assert 'strong({text("function")' in output and "arg1" in output
 
 
 def test_field_list_rendering(simple_document, mock_builder):
@@ -2766,7 +2768,7 @@ def test_rubric_rendering(simple_document, mock_builder):
     rubric.walkabout(translator)
     output = translator.astext()
 
-    assert 'strong[text("Methods")]' in output or "Methods" in output
+    assert 'strong({text("Methods")]' in output or "Methods" in output
 
 
 def test_title_reference_rendering(simple_document, mock_builder):
@@ -2781,10 +2783,7 @@ def test_title_reference_rendering(simple_document, mock_builder):
     title_ref.walkabout(translator)
     output = translator.astext()
 
-    assert (
-        'emph[text("Example Title")]' in output
-        or 'emph(text("Example Title"))' in output
-    )
+    assert 'emph({text("Example Title")})' in output
 
 
 def test_full_api_description_structure(simple_document, mock_builder):
@@ -2851,7 +2850,7 @@ def test_full_api_description_structure(simple_document, mock_builder):
     output = translator.astext()
 
     # Check all parts are present
-    assert 'strong[text("class")' in output and "TypstBuilder" in output
+    assert 'strong({text("class")' in output and "TypstBuilder" in output
     assert "Builder class for Typst output." in output
     assert 'strong(text("Parameters")' in output or "Parameters" in output
     assert "app - Sphinx application" in output
