@@ -285,8 +285,8 @@ def test_multiple_paragraphs_conversion(simple_document, mock_builder):
     assert "First paragraph." in output
     assert "Second paragraph." in output
     # Paragraphs should be separated by double newline
-    assert 'par(text("First paragraph."))' in output
-    assert 'par(text("Second paragraph."))' in output
+    assert 'par({text("First paragraph.")})' in output
+    assert 'par({text("Second paragraph.")})' in output
 
 
 def test_emphasis_conversion(simple_document, mock_builder):

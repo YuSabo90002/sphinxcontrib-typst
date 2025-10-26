@@ -297,16 +297,16 @@ class TypstTranslator(SphinxTranslator):
             self.in_paragraph = False
             return
 
-        # Start par() function (no # prefix in code mode)
+        # Start par() with {} content block (no # prefix in code mode)
         self.in_paragraph = True
         self.paragraph_has_content = False
-        self.add_text("par(")
+        self.add_text("par({")
 
     def depart_paragraph(self, node: nodes.paragraph) -> None:
         """
         Depart a paragraph node.
 
-        Closes par() function and adds spacing.
+        Closes par({}) function and adds spacing.
 
         Args:
             node: The paragraph node
@@ -315,10 +315,10 @@ class TypstTranslator(SphinxTranslator):
         if self.in_list_item:
             return
 
-        # Close par() function and add spacing
+        # Close par({}) content block and add spacing
         self.in_paragraph = False
         self.paragraph_has_content = False
-        self.add_text(")\n\n")
+        self.add_text("})\n\n")
 
     def visit_comment(self, node: nodes.comment) -> None:
         """
