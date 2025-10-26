@@ -219,7 +219,7 @@ This project uses uv for fast package management and follows TDD (Test-Driven De
 # Install with development dependencies
 uv sync --extra dev
 
-# Run tests (375 tests, 93% coverage)
+# Run tests (375 tests, 91% coverage)
 uv run pytest
 
 # Run tests with coverage report
