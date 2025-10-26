@@ -11,7 +11,7 @@ sources using Sphinx, which can then be compiled to PDF using the Typst compiler
 :license: MIT, see LICENSE for details.
 """
 
-__version__ = "0.3.0"
+__version__ = "0.4.1"
 __author__ = "Sphinx Typst Contributors"
 
 from typing import Any, Dict
