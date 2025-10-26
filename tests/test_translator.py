@@ -152,8 +152,8 @@ def test_table_conversion(simple_document, mock_builder):
             f"DEBUG: Table cells: {translator.table_cells if hasattr(translator, 'table_cells') else 'N/A'}"
         )
 
-    # Check that Typst #table() syntax is generated
-    assert "#table(" in output
+    # Check that Typst table() syntax is generated (no # in unified code mode)
+    assert "table(" in output
     assert "columns: 2" in output or "columns: (1fr, 1fr)" in output
     assert "Header 1" in output
     assert "Header 2" in output
@@ -285,8 +285,8 @@ def test_multiple_paragraphs_conversion(simple_document, mock_builder):
     assert "First paragraph." in output
     assert "Second paragraph." in output
     # Paragraphs should be separated by double newline
-    assert 'par(text("First paragraph."))' in output
-    assert 'par(text("Second paragraph."))' in output
+    assert 'par({text("First paragraph.")})' in output
+    assert 'par({text("Second paragraph.")})' in output
 
 
 def test_emphasis_conversion(simple_document, mock_builder):
@@ -303,8 +303,8 @@ def test_emphasis_conversion(simple_document, mock_builder):
     translator.depart_emphasis(emphasis)
 
     output = translator.astext()
-    # Emphasis should be rendered as emph(text("..."))
-    assert 'emph(text("italic text"))' in output
+    # Emphasis should be rendered as emph({text("...")})
+    assert 'emph({text("italic text")})' in output
 
 
 def test_strong_conversion(simple_document, mock_builder):
@@ -321,8 +321,8 @@ def test_strong_conversion(simple_document, mock_builder):
     translator.depart_strong(strong)
 
     output = translator.astext()
-    # Strong should be rendered as strong(text("..."))
-    assert 'strong(text("bold text"))' in output
+    # Strong should be rendered as strong({text("...")})
+    assert 'strong({text("bold text")})' in output
 
 
 def test_literal_conversion(simple_document, mock_builder):
@@ -431,8 +431,8 @@ def test_mixed_inline_elements(simple_document, mock_builder):
 
     output = translator.astext()
     assert "This is " in output
-    assert 'strong(text("bold"))' in output
-    assert 'emph(text("italic"))' in output
+    assert 'strong({text("bold")})' in output
+    assert 'emph({text("italic")})' in output
     assert 'raw("code")' in output
 
 
@@ -463,8 +463,9 @@ def test_bullet_list_conversion(simple_document, mock_builder):
     translator.depart_bullet_list(bullet_list)
 
     output = translator.astext()
-    assert 'list(text("First item")' in output
-    assert 'text("Second item"))' in output
+    assert "list({" in output
+    assert 'text("First item")' in output
+    assert 'text("Second item")' in output
 
 
 def test_enumerated_list_conversion(simple_document, mock_builder):
@@ -494,8 +495,9 @@ def test_enumerated_list_conversion(simple_document, mock_builder):
     translator.depart_enumerated_list(enum_list)
 
     output = translator.astext()
-    assert 'enum(text("First item")' in output
-    assert 'text("Second item"))' in output
+    assert "enum({" in output
+    assert 'text("First item")' in output
+    assert 'text("Second item")' in output
 
 
 def test_nested_bullet_list(simple_document, mock_builder):
@@ -538,9 +540,9 @@ def test_nested_bullet_list(simple_document, mock_builder):
     translator.depart_bullet_list(outer_list)
 
     output = translator.astext()
-    assert 'list(text("Outer item 1")' in output
+    assert 'text("Outer item 1")' in output
     assert 'text("Outer item 2")' in output
-    assert 'list(text("Inner item 1"))' in output  # Nested
+    assert 'text("Inner item 1")' in output  # Nested list item
 
 
 def test_nested_enumerated_list(simple_document, mock_builder):
@@ -583,9 +585,9 @@ def test_nested_enumerated_list(simple_document, mock_builder):
     translator.depart_enumerated_list(outer_list)
 
     output = translator.astext()
-    assert 'enum(text("Outer item 1")' in output
+    assert 'text("Outer item 1")' in output
     assert 'text("Outer item 2")' in output
-    assert 'enum(text("Inner item 1"))' in output  # Nested
+    assert 'text("Inner item 1")' in output  # Nested list item
 
 
 def test_mixed_nested_lists(simple_document, mock_builder):
@@ -621,7 +623,97 @@ def test_mixed_nested_lists(simple_document, mock_builder):
 
     output = translator.astext()
     assert 'text("Bullet item")' in output
-    assert 'enum(text("Numbered item"))' in output  # Nested with different type
+    assert 'text("Numbered item")' in output  # Nested with different type
+
+
+def test_list_item_with_multiple_elements(simple_document, mock_builder):
+    """Test list item with multiple inline elements (text + bold + emphasis)."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a bullet list with complex items
+    bullet_list = nodes.bullet_list()
+    translator.visit_bullet_list(bullet_list)
+
+    # Item with text + bold
+    item1 = nodes.list_item()
+    translator.visit_list_item(item1)
+    translator.visit_Text(nodes.Text("Item with "))
+    translator.depart_Text(nodes.Text("Item with "))
+    translator.visit_strong(nodes.strong())
+    translator.visit_Text(nodes.Text("bold"))
+    translator.depart_Text(nodes.Text("bold"))
+    translator.depart_strong(nodes.strong())
+    translator.depart_list_item(item1)
+
+    # Item with text + emphasis + text
+    item2 = nodes.list_item()
+    translator.visit_list_item(item2)
+    translator.visit_Text(nodes.Text("Item with "))
+    translator.depart_Text(nodes.Text("Item with "))
+    translator.visit_emphasis(nodes.emphasis())
+    translator.visit_Text(nodes.Text("emphasis"))
+    translator.depart_Text(nodes.Text("emphasis"))
+    translator.depart_emphasis(nodes.emphasis())
+    translator.visit_Text(nodes.Text(" text"))
+    translator.depart_Text(nodes.Text(" text"))
+    translator.depart_list_item(item2)
+
+    # Item with literal (inline code)
+    item3 = nodes.list_item()
+    translator.visit_list_item(item3)
+    translator.visit_Text(nodes.Text("Code: "))
+    translator.depart_Text(nodes.Text("Code: "))
+    # literal raises SkipNode, so we don't manually visit children
+    literal_node = nodes.literal(text="print()")
+    try:
+        translator.visit_literal(literal_node)
+    except nodes.SkipNode:
+        pass  # Expected behavior
+    translator.depart_list_item(item3)
+
+    translator.depart_bullet_list(bullet_list)
+
+    output = translator.astext()
+
+    # Verify { } block structure with newline separators
+    assert 'text("Item with ")\nstrong({text("bold")})' in output
+    assert 'text("Item with ")\nemph({text("emphasis")})\ntext(" text")' in output
+    assert 'text("Code: ")\nraw("print()")' in output
+
+
+def test_list_item_with_reference(simple_document, mock_builder):
+    """Test list item with text + reference (link)."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create a bullet list with link
+    bullet_list = nodes.bullet_list()
+    translator.visit_bullet_list(bullet_list)
+
+    # Item with text + link
+    item1 = nodes.list_item()
+    translator.visit_list_item(item1)
+    translator.visit_Text(nodes.Text("GitHub: "))
+    translator.depart_Text(nodes.Text("GitHub: "))
+    ref_node = nodes.reference(refuri="https://github.com/example")
+    translator.visit_reference(ref_node)
+    translator.visit_Text(nodes.Text("https://github.com/example"))
+    translator.depart_Text(nodes.Text("https://github.com/example"))
+    translator.depart_reference(ref_node)
+    translator.depart_list_item(item1)
+
+    translator.depart_bullet_list(bullet_list)
+
+    output = translator.astext()
+
+    # Verify { } block structure with newline separator for reference
+    assert (
+        'text("GitHub: ")\nlink("https://github.com/example", text("https://github.com/example"))'
+        in output
+    )
 
 
 def test_literal_block_without_language(simple_document, mock_builder):
@@ -1371,8 +1463,8 @@ def test_target_label_generation(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Check that Typst label is generated
-    assert "<my-label>" in output
+    # Check that Typst label is generated (using label() function in unified code mode)
+    assert 'label("my-label")' in output
 
 
 def test_reference_to_target(simple_document, mock_builder):
@@ -1410,9 +1502,8 @@ def test_external_reference(simple_document, mock_builder):
 
     output = translator.astext()
 
-    # Check that Typst external link is generated
-    assert 'link("https://example.com")' in output
-    assert "External Link" in output
+    # Check that Typst external link is generated with new format: link(url, content)
+    assert 'link("https://example.com", text("External Link"))' in output
 
 
 def test_pending_xref_doc_reference(simple_document, mock_builder):
@@ -1562,20 +1653,20 @@ CellA     CellB
         document.walkabout(translator)
         output = translator.astext()
 
-        # Check that #table( appears in output
-        assert "#table(" in output, f"{table_type}: #table() not found in output"
+        # Check that table( appears in output (no # in unified code mode)
+        assert "table(" in output, f"{table_type}: table() not found in output"
 
-        # Find the position of #table( in the output
+        # Find the position of table( in the output
         lines = output.strip().split("\n")
-        table_idx = next((i for i, line in enumerate(lines) if "#table(" in line), None)
+        table_idx = next((i for i, line in enumerate(lines) if "table(" in line), None)
 
-        assert table_idx is not None, f"{table_type}: Could not find #table() in output"
+        assert table_idx is not None, f"{table_type}: Could not find table() in output"
 
-        # Get content before #table()
+        # Get content before table()
         before_table = "\n".join(lines[:table_idx])
 
-        # Check that cell content keywords do NOT appear before #table()
-        # These keywords should only appear inside #table()
+        # Check that cell content keywords do NOT appear before table()
+        # These keywords should only appear inside table()
         keywords = ["Header1", "Header2", "CellA", "CellB"]
 
         for keyword in keywords:
@@ -2187,8 +2278,8 @@ def test_table_without_header(simple_document, mock_builder):
 
     # Check that table.header() is NOT generated
     assert "table.header(" not in output
-    # But table() should still be generated
-    assert "#table(" in output
+    # But table() should still be generated (no # in unified code mode)
+    assert "table(" in output
     assert "Cell 1" in output
     assert "Cell 2" in output
     assert "Cell 3" in output
@@ -2567,7 +2658,7 @@ def test_desc_signature_rendering(simple_document, mock_builder):
     desc.walkabout(translator)
     output = translator.astext()
 
-    assert "TypstBuilder" in output and "strong[" in output
+    assert "TypstBuilder" in output and "strong({" in output
 
 
 def test_desc_with_annotation_and_name(simple_document, mock_builder):
@@ -2595,7 +2686,7 @@ def test_desc_with_annotation_and_name(simple_document, mock_builder):
     desc.walkabout(translator)
     output = translator.astext()
 
-    assert 'strong[text("class")' in output and 'text("TypstBuilder")' in output
+    assert 'strong({text("class")' in output and 'text("TypstBuilder")' in output
 
 
 def test_desc_parameterlist(simple_document, mock_builder):
@@ -2633,7 +2724,7 @@ def test_desc_parameterlist(simple_document, mock_builder):
     desc.walkabout(translator)
     output = translator.astext()
 
-    assert 'strong[text("function")' in output and "arg1" in output
+    assert 'strong({text("function")' in output and "arg1" in output
 
 
 def test_field_list_rendering(simple_document, mock_builder):
@@ -2677,7 +2768,7 @@ def test_rubric_rendering(simple_document, mock_builder):
     rubric.walkabout(translator)
     output = translator.astext()
 
-    assert 'strong[text("Methods")]' in output or "Methods" in output
+    assert 'strong({text("Methods")]' in output or "Methods" in output
 
 
 def test_title_reference_rendering(simple_document, mock_builder):
@@ -2692,10 +2783,7 @@ def test_title_reference_rendering(simple_document, mock_builder):
     title_ref.walkabout(translator)
     output = translator.astext()
 
-    assert (
-        'emph[text("Example Title")]' in output
-        or 'emph(text("Example Title"))' in output
-    )
+    assert 'emph({text("Example Title")})' in output
 
 
 def test_full_api_description_structure(simple_document, mock_builder):
@@ -2762,7 +2850,7 @@ def test_full_api_description_structure(simple_document, mock_builder):
     output = translator.astext()
 
     # Check all parts are present
-    assert 'strong[text("class")' in output and "TypstBuilder" in output
+    assert 'strong({text("class")' in output and "TypstBuilder" in output
     assert "Builder class for Typst output." in output
     assert 'strong(text("Parameters")' in output or "Parameters" in output
     assert "app - Sphinx application" in output
