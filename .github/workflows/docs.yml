@@ -37,6 +37,11 @@ jobs:
       - name: Build PDF documentation with tox
         run: uv run tox -e docs-pdf
 
+      - name: Copy PDF to HTML directory for GitHub Pages
+        run: |
+          mkdir -p docs/_build/html
+          cp docs/_build/pdf/*.pdf docs/_build/html/
+
       - name: Upload HTML artifact
         uses: actions/upload-artifact@v4
         with:

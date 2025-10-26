@@ -7,7 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-10-26
+
+### Fixed
+
+- **Document Wrapper Preservation** ([#61](https://github.com/YuSabo90002/typsphinx/issues/61))
+  - Fixed `#{...}` wrapper being lost in nested toctree structures
+  - Implemented stream-based rendering to replace body swapping anti-pattern
+  - Document wrapper now preserved throughout nested structures
+
+- **Nested Lists Syntax** ([#62](https://github.com/YuSabo90002/typsphinx/issues/62))
+  - Fixed nested lists generating invalid Typst syntax (`strong(...)list(...)`)
+  - List items now use content blocks with newline separators
+  - Proper separation between elements in list items
+
 ### Changed
+
+- **Stream-Based Rendering Architecture**
+  - Replaced body swapping with direct appending to `self.body`
+  - State management using flags instead of buffer manipulation
+  - Improved maintainability and predictability
+
+- **Content Block Architecture**
+  - Changed `strong()` and `emph()` to use content blocks: `strong({...})`, `emph({...})`
+  - List items wrapped in `{...}` blocks with newline separators
+  - Enables proper nesting: `strong({text("bold")})\nlist({...})`
+
+- **Unified Code Mode Compliance**
+  - Updated `link()` format from `link(url)[content]` to `link(url, content)`
+  - Removed `#` prefixes from functions in code mode (table, admonitions)
+  - Added `#` prefixes inside markup mode blocks `[...]` for label attachment
+  - API signatures properly formatted: `text("(") + text("param") + text(")")`
+
+### Changed (from v0.3.0)
 
 - **BREAKING: Unified Code Mode Architecture** ([#4](https://github.com/YuSabo90002/typsphinx/issues/4))
   - Entire document now wrapped in `#{...}` code block for consistent function syntax
