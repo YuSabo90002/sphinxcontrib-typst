@@ -8,8 +8,25 @@ and this project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 For the complete changelog, see `CHANGELOG.md <https://github.com/YuSabo90002/typsphinx/blob/main/CHANGELOG.md>`_ in the repository.
 
-Version 0.3.0 (Current)
+Version 0.4.0 (Current)
 -----------------------
+
+**Fixed**
+
+- Document wrapper (``#{...}``) preservation in nested structures (#61)
+- Nested lists generating invalid Typst syntax (#62)
+- Unified code mode syntax compliance
+
+**Changed**
+
+- Implemented stream-based rendering architecture
+- Changed ``strong()`` and ``emph()`` to use content blocks: ``strong({...})``, ``emph({...})``
+- Updated ``link()`` format from ``link(url)[content]`` to ``link(url, content)``
+- List items now use content blocks with newline separators
+- API signatures properly formatted with ``+`` operator concatenation
+
+Version 0.3.0
+-------------
 
 **Added**
 
