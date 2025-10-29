@@ -3073,3 +3073,148 @@ def test_full_api_description_structure(simple_document, mock_builder):
     assert "Builder class for Typst output." in output
     assert 'strong(text("Parameters")' in output or "Parameters" in output
     assert "app - Sphinx application" in output
+
+
+# Image path adjustment tests (Issue #69)
+
+
+def test_image_path_adjustment_root(simple_document, mock_builder):
+    """Test that root document image paths are not adjusted.
+
+    Related to Issue #69: Image paths in root documents should remain unchanged.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Set current_docname to root document
+    mock_builder.current_docname = "index"
+
+    # Create image node
+    image = nodes.image(uri="images/logo.png")
+    image["width"] = "200px"
+
+    image.walkabout(translator)
+    output = translator.astext()
+
+    # Root document: path should NOT be adjusted
+    assert 'image("images/logo.png"' in output
+    assert "../images" not in output
+    assert "width: 200px" in output
+
+
+def test_image_path_adjustment_nested(simple_document, mock_builder):
+    """Test that nested document image paths are adjusted with ../ prefix.
+
+    Related to Issue #69: Nested documents need relative path adjustment.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Set current_docname to nested document
+    mock_builder.current_docname = "chapter1/section1"
+
+    # Create image node with source-root-relative path
+    image = nodes.image(uri="images/logo.png")
+    image["width"] = "200px"
+
+    image.walkabout(translator)
+    output = translator.astext()
+
+    # Nested document: path should be adjusted
+    assert 'image("../images/logo.png"' in output
+    assert "width: 200px" in output
+
+
+def test_image_path_adjustment_deep_nested(simple_document, mock_builder):
+    """Test that deeply nested documents get correct number of ../ prefixes.
+
+    Related to Issue #69: Deep nesting requires multiple ../ levels.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Set current_docname to deeply nested document
+    mock_builder.current_docname = "part1/chapter1/section1"
+
+    # Create image node
+    image = nodes.image(uri="images/logo.png")
+
+    image.walkabout(translator)
+    output = translator.astext()
+
+    # Deeply nested: should have ../../ prefix
+    assert 'image("../../images/logo.png"' in output
+
+
+def test_image_path_adjustment_cross_directory(simple_document, mock_builder):
+    """Test that cross-directory image references are correctly adjusted.
+
+    Related to Issue #69: References from chapter1/ to chapter2/ images.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Set current document in chapter1
+    mock_builder.current_docname = "chapter1/section1"
+
+    # Reference image in chapter2
+    image = nodes.image(uri="chapter2/images/diagram.png")
+
+    image.walkabout(translator)
+    output = translator.astext()
+
+    # Cross-directory: ../chapter2/images/diagram.png
+    assert 'image("../chapter2/images/diagram.png"' in output
+
+
+def test_image_path_adjustment_same_directory(simple_document, mock_builder):
+    """Test that same-directory images use simple relative paths.
+
+    Related to Issue #69: Images in the same directory as the document.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Both in chapter1/
+    mock_builder.current_docname = "chapter1/section1"
+
+    # Image also in chapter1/
+    image = nodes.image(uri="chapter1/local-image.png")
+
+    image.walkabout(translator)
+    output = translator.astext()
+
+    # Same directory: just the filename
+    assert 'image("local-image.png"' in output
+    assert "../" not in output
+
+
+def test_image_path_adjustment_subdirectory(simple_document, mock_builder):
+    """Test that subdirectory images use relative paths to child folders.
+
+    Related to Issue #69: Images in subdirectories relative to the document.
+    Example: chapter1/section1.rst references chapter1/img/diagram.jpeg
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Document in chapter1/
+    mock_builder.current_docname = "chapter1/section1"
+
+    # Image in chapter1/img/ (subdirectory of same directory)
+    image = nodes.image(uri="chapter1/img/diagram.jpeg")
+    image["width"] = "250px"
+
+    image.walkabout(translator)
+    output = translator.astext()
+
+    # Subdirectory: img/diagram.jpeg (relative to current directory)
+    assert 'image("img/diagram.jpeg"' in output
+    assert "width: 250px" in output
+    assert "../" not in output  # No need to go up
