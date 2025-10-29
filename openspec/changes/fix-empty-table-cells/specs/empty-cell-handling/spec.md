@@ -43,18 +43,44 @@
 
 **Rationale**: Typst公式の`table.cell(body, colspan: 1, rowspan: 1)`シグネチャに従う。body は content 型。
 
-#### Scenario: 空白spanningセルのcontent型出力
+#### Scenario: 空白colspanセルのcontent型出力
 
-- **GIVEN** `morecols=1`を持つ空白セル
+- **GIVEN** `morecols=1`を持つ空白セル（2列に跨る）
 - **AND** セル内容が空文字列
 - **WHEN** Typst形式に変換する
 - **THEN** 出力は`table.cell({}, colspan: 2),`を含む
 - **AND** 空のcontent block `{}` が第1引数として渡される
 - **AND** Typst コンパイルが成功する
 
-**Change**: New scenario for empty spanning cells.
+**Change**: New scenario for empty colspan cells.
 
-**Rationale**: 結合セルでも空白の場合は `{}` を出力する必要がある。
+**Rationale**: 水平結合セルでも空白の場合は `{}` を出力する必要がある。
+
+#### Scenario: 空白rowspanセルのcontent型出力
+
+- **GIVEN** `morerows=1`を持つ空白セル（2行に跨る）
+- **AND** セル内容が空文字列
+- **WHEN** Typst形式に変換する
+- **THEN** 出力は`table.cell({}, rowspan: 2),`を含む
+- **AND** 空のcontent block `{}` が第1引数として渡される
+- **AND** Typst コンパイルが成功する
+
+**Change**: New scenario for empty rowspan cells.
+
+**Rationale**: 垂直結合セルでも空白の場合は `{}` を出力する必要がある。
+
+#### Scenario: 空白colspan+rowspanセルのcontent型出力
+
+- **GIVEN** `morecols=1`と`morerows=1`を持つ空白セル（2列×2行に跨る）
+- **AND** セル内容が空文字列
+- **WHEN** Typst形式に変換する
+- **THEN** 出力は`table.cell({}, colspan: 2, rowspan: 2),`を含む
+- **AND** 空のcontent block `{}` が第1引数として渡される
+- **AND** Typst コンパイルが成功する
+
+**Change**: New scenario for empty cells with both colspan and rowspan.
+
+**Rationale**: 複合結合セル（水平＋垂直）でも空白の場合は `{}` を出力する必要がある。これは最も複雑なケースで、すべての結合パターンをカバーする。
 
 #### Scenario: ヘッダーセルのcontent型ブロック出力
 

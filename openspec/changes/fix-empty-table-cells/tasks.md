@@ -139,20 +139,20 @@ def test_table_mixed_empty_and_content(simple_document, mock_builder):
 
 ---
 
-### 4. Add unit test for empty spanning cells
+### 4. Add unit test for empty colspan cells
 **File**: `tests/test_translator.py`
 
-**Test**: `test_table_empty_spanning_cells()`
+**Test**: `test_table_empty_colspan_cells()`
 
 **Implementation**:
 ```python
-def test_table_empty_spanning_cells(simple_document, mock_builder):
-    """Test that empty cells with colspan/rowspan use table.cell with empty content."""
+def test_table_empty_colspan_cells(simple_document, mock_builder):
+    """Test that empty cells with colspan use table.cell with empty content."""
     from typsphinx.translator import TypstTranslator
 
     translator = TypstTranslator(simple_document, mock_builder)
 
-    # Create table with empty spanning cell
+    # Create table with empty colspan cell
     table = nodes.table()
     tgroup = nodes.tgroup(cols=2)
     tgroup += nodes.colspec(colwidth=1)
@@ -179,14 +179,125 @@ def test_table_empty_spanning_cells(simple_document, mock_builder):
 ```
 
 **Validation**:
-- Run: `uv run pytest tests/test_translator.py::test_table_empty_spanning_cells -v`
+- Run: `uv run pytest tests/test_translator.py::test_table_empty_colspan_cells -v`
 - Expected: PASS
 
 **Dependencies**: Task 1
 
 ---
 
-### 5. Run existing table tests (regression check)
+### 5. Add unit test for empty rowspan cells
+**File**: `tests/test_translator.py`
+
+**Test**: `test_table_empty_rowspan_cells()`
+
+**Implementation**:
+```python
+def test_table_empty_rowspan_cells(simple_document, mock_builder):
+    """Test that empty cells with rowspan use table.cell with empty content."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create table with empty rowspan cell
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+    tgroup += nodes.colspec(colwidth=1)
+    tgroup += nodes.colspec(colwidth=1)
+
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+
+    # Empty cell with rowspan=2
+    entry1 = nodes.entry(morerows=1)  # Empty, spans 2 rows
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="B")
+    row1 += entry1
+    row1 += entry2
+    tbody += row1
+
+    # Row 2
+    row2 = nodes.row()
+    entry3 = nodes.entry()
+    entry3 += nodes.paragraph(text="C")
+    row2 += entry3
+    tbody += row2
+
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should use table.cell with empty content
+    assert "table.cell({}" in output
+    assert "rowspan: 2" in output
+    # Should NOT contain bare commas or missing content
+    assert "table.cell(," not in output
+```
+
+**Validation**:
+- Run: `uv run pytest tests/test_translator.py::test_table_empty_rowspan_cells -v`
+- Expected: PASS
+
+**Dependencies**: Task 1
+
+---
+
+### 6. Add unit test for empty colspan+rowspan cells
+**File**: `tests/test_translator.py`
+
+**Test**: `test_table_empty_colspan_rowspan_cells()`
+
+**Implementation**:
+```python
+def test_table_empty_colspan_rowspan_cells(simple_document, mock_builder):
+    """Test that empty cells with both colspan and rowspan use table.cell with empty content."""
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create table with empty colspan+rowspan cell
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+    tgroup += nodes.colspec(colwidth=1)
+    tgroup += nodes.colspec(colwidth=1)
+
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+
+    # Empty cell with colspan=2, rowspan=2
+    entry1 = nodes.entry(morecols=1, morerows=1)  # Empty, spans 2x2
+    row1 += entry1
+    tbody += row1
+
+    # Row 2 (no cells needed due to spanning)
+    row2 = nodes.row()
+    tbody += row2
+
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should use table.cell with empty content
+    assert "table.cell({}" in output
+    assert "colspan: 2" in output
+    assert "rowspan: 2" in output
+    # Should NOT contain bare commas or missing content
+    assert "table.cell(," not in output
+```
+
+**Validation**:
+- Run: `uv run pytest tests/test_translator.py::test_table_empty_colspan_rowspan_cells -v`
+- Expected: PASS
+
+**Dependencies**: Task 1
+
+---
+
+### 7. Run existing table tests (regression check)
 **Files**: All test files with table tests
 
 **Tests to verify**:
@@ -206,11 +317,11 @@ def test_table_empty_spanning_cells(simple_document, mock_builder):
 - Expected: All existing tests PASS
 - No regressions
 
-**Dependencies**: Tasks 1-4
+**Dependencies**: Tasks 1-6
 
 ---
 
-### 6. Integration test with Typst compilation
+### 8. Integration test with Typst compilation
 **File**: Create temporary test in `/tmp`
 
 **Test Script**:
@@ -226,11 +337,11 @@ def test_table_empty_spanning_cells(simple_document, mock_builder):
 - Compile generated `.typ` with `typst compile`
 - Expected: Compilation SUCCESS (no "unexpected comma" errors)
 
-**Dependencies**: Tasks 1-5
+**Dependencies**: Tasks 1-7
 
 ---
 
-### 7. Update test documentation
+### 9. Update test documentation
 **File**: `tests/test_translator.py`
 
 **Changes**:
@@ -241,11 +352,11 @@ def test_table_empty_spanning_cells(simple_document, mock_builder):
 - Review docstrings for clarity
 - Ensure test names are descriptive
 
-**Dependencies**: Tasks 2-4
+**Dependencies**: Tasks 2-6
 
 ---
 
-### 8. Run full test suite
+### 10. Run full test suite
 **Command**: `uv run pytest`
 
 **Validation**:
@@ -257,7 +368,7 @@ def test_table_empty_spanning_cells(simple_document, mock_builder):
 
 ---
 
-### 9. Format and lint code
+### 11. Format and lint code
 **Commands**:
 ```bash
 uv run black typsphinx/translator.py tests/test_translator.py
@@ -269,11 +380,11 @@ uv run ruff check typsphinx/translator.py tests/test_translator.py
 - No lint errors
 - Code style compliant
 
-**Dependencies**: Tasks 1-8
+**Dependencies**: Tasks 1-10
 
 ---
 
-### 10. Create verification report
+### 12. Create verification report
 **File**: Manual verification checklist
 
 **Checklist**:
@@ -291,9 +402,9 @@ uv run ruff check typsphinx/translator.py tests/test_translator.py
 
 ## Parallel Work Opportunities
 
-- Tasks 2, 3, 4 can be written in parallel (independent test cases)
-- Task 7 can be done alongside tasks 2-4
-- Tasks 9 and 10 can run concurrently
+- Tasks 2, 3, 4, 5, 6 can be written in parallel (independent test cases)
+- Task 9 can be done alongside tasks 2-6
+- Tasks 11 and 12 can run concurrently
 
 ## Success Criteria
 

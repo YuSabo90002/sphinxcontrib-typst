@@ -79,8 +79,11 @@ This ensures:
    - Spanning cells continue to work
 
 2. **Test Coverage**:
-   - Unit test: `test_table_empty_cells()`
-   - Unit test: `test_table_mixed_empty_and_content()`
+   - Unit test: `test_table_empty_cells()` - All empty cells
+   - Unit test: `test_table_mixed_empty_and_content()` - Mixed empty/non-empty
+   - Unit test: `test_table_empty_colspan_cells()` - Empty cells with colspan
+   - Unit test: `test_table_empty_rowspan_cells()` - Empty cells with rowspan
+   - Unit test: `test_table_empty_colspan_rowspan_cells()` - Empty cells with both
    - Integration test: Build and compile tables with empty cells
 
 3. **No Regressions**:
