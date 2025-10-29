@@ -1,6 +1,6 @@
 # Document Conversion Spec (Modified)
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: 画像パスの相対パス調整
 
