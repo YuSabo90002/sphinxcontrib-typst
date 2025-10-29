@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.2] - 2025-10-29
+
+### Fixed
+
+- **Empty Table Cells Rendering** ([#68](https://github.com/YuSabo90002/typsphinx/issues/68), [#70](https://github.com/YuSabo90002/typsphinx/pull/70))
+  - Fixed empty table cells causing Typst compilation errors
+  - All table cells (normal and spanning) now wrapped in content blocks `{}`
+  - Empty cells output as `{}` instead of bare commas
+  - Prevents "unexpected comma" syntax errors in Typst
+  - Added 5 comprehensive test cases for empty cell scenarios
+
+- **Image Relative Paths in Nested Documents** ([#69](https://github.com/YuSabo90002/typsphinx/issues/69), [#72](https://github.com/YuSabo90002/typsphinx/pull/72))
+  - Fixed image paths in nested documents failing to resolve during Typst compilation
+  - Implemented `_compute_relative_image_path()` method (mirrors Issue #5 toctree fix)
+  - Image URIs now adjusted based on output file location
+  - Supports all path patterns: root, nested, deep nested, same directory, subdirectory, cross-directory
+  - Added 6 comprehensive test cases for image path adjustment
+  - Backward compatible: root document images unchanged
+
 ## [0.4.1] - 2025-10-26
 
 ### Fixed
