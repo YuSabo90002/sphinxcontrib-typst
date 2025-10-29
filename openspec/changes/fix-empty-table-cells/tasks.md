@@ -398,19 +398,21 @@ def test_table_empty_colspan_rowspan_cells(simple_document, mock_builder):
 
 ---
 
-### 11. Format and lint code
+### 11. Format, lint, and type check code
 
-- [ ] Format and lint the modified code
+- [ ] Format, lint, and type check the modified code
 
 **Commands**:
 ```bash
 uv run black typsphinx/translator.py tests/test_translator.py
 uv run ruff check typsphinx/translator.py tests/test_translator.py
+uv run mypy typsphinx/translator.py tests/test_translator.py
 ```
 
 **Validation**:
 - No formatting changes needed (single-line change)
 - No lint errors
+- No type errors
 - Code style compliant
 
 **Dependencies**: Tasks 1-10
@@ -429,7 +431,7 @@ uv run ruff check typsphinx/translator.py tests/test_translator.py
 - All existing tests pass (Task 7)
 - Integration test with Typst succeeds (Task 8)
 - No regressions observed (Task 7)
-- Code formatted and linted (Task 11)
+- Code formatted, linted, and type checked (Task 11)
 - Issue #68 can be closed
 
 **Dependencies**: All previous tasks
