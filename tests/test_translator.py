@@ -2622,6 +2622,221 @@ def test_table_normal_cells_without_spanning(simple_document, mock_builder):
     assert "Cell 2" in output
 
 
+# Empty table cell tests (Issue #68)
+
+
+def test_table_empty_cells(simple_document, mock_builder):
+    """Test that empty table cells are wrapped in content blocks.
+
+    Related to Issue #68: Empty table cells cause Typst compilation errors.
+    Empty cells should be wrapped in {} to generate valid Typst syntax.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create table with all empty cells
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+    tgroup += nodes.colspec(colwidth=1)
+    tgroup += nodes.colspec(colwidth=1)
+
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+    entry1 = nodes.entry()  # Empty cell
+    entry2 = nodes.entry()  # Empty cell
+    row1 += entry1
+    row1 += entry2
+    tbody += row1
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should contain empty content blocks
+    assert "{}" in output
+    # Should NOT contain bare commas
+    assert ",," not in output
+    assert "  ,\n" not in output
+
+
+def test_table_mixed_empty_and_content(simple_document, mock_builder):
+    """Test table with both empty and non-empty cells.
+
+    Related to Issue #68: Empty table cells cause Typst compilation errors.
+    Tables with mixed empty and non-empty cells should generate valid Typst syntax.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create table: A | (empty) / (empty) | D
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+    tgroup += nodes.colspec(colwidth=1)
+    tgroup += nodes.colspec(colwidth=1)
+
+    tbody = nodes.tbody()
+
+    # Row 1: A | empty
+    row1 = nodes.row()
+    entry1 = nodes.entry()
+    entry1 += nodes.paragraph(text="A")
+    entry2 = nodes.entry()  # Empty
+    row1 += entry1
+    row1 += entry2
+    tbody += row1
+
+    # Row 2: empty | D
+    row2 = nodes.row()
+    entry3 = nodes.entry()  # Empty
+    entry4 = nodes.entry()
+    entry4 += nodes.paragraph(text="D")
+    row2 += entry3
+    row2 += entry4
+    tbody += row2
+
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should contain content for non-empty cells
+    assert "A" in output
+    assert "D" in output
+    # Should contain empty content blocks
+    assert "{}" in output
+    # Should NOT contain bare commas
+    assert ",," not in output
+
+
+def test_table_empty_colspan_cells(simple_document, mock_builder):
+    """Test that empty cells with colspan use table.cell with empty content.
+
+    Related to Issue #68: Empty table cells cause Typst compilation errors.
+    Empty cells with colspan should use table.cell({}, colspan: N) syntax.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create table with empty colspan cell
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+    tgroup += nodes.colspec(colwidth=1)
+    tgroup += nodes.colspec(colwidth=1)
+
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+
+    # Empty cell with colspan=2
+    entry1 = nodes.entry(morecols=1)  # Empty, spans 2 columns
+    row1 += entry1
+    tbody += row1
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should use table.cell with empty content
+    assert "table.cell({}" in output
+    assert "colspan: 2" in output
+    # Should NOT contain bare commas or missing content
+    assert "table.cell(," not in output
+
+
+def test_table_empty_rowspan_cells(simple_document, mock_builder):
+    """Test that empty cells with rowspan use table.cell with empty content.
+
+    Related to Issue #68: Empty table cells cause Typst compilation errors.
+    Empty cells with rowspan should use table.cell({}, rowspan: N) syntax.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create table with empty rowspan cell
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+    tgroup += nodes.colspec(colwidth=1)
+    tgroup += nodes.colspec(colwidth=1)
+
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+
+    # Empty cell with rowspan=2
+    entry1 = nodes.entry(morerows=1)  # Empty, spans 2 rows
+    entry2 = nodes.entry()
+    entry2 += nodes.paragraph(text="B")
+    row1 += entry1
+    row1 += entry2
+    tbody += row1
+
+    # Row 2
+    row2 = nodes.row()
+    entry3 = nodes.entry()
+    entry3 += nodes.paragraph(text="C")
+    row2 += entry3
+    tbody += row2
+
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should use table.cell with empty content
+    assert "table.cell({}" in output
+    assert "rowspan: 2" in output
+    # Should NOT contain bare commas or missing content
+    assert "table.cell(," not in output
+
+
+def test_table_empty_colspan_rowspan_cells(simple_document, mock_builder):
+    """Test that empty cells with both colspan and rowspan use table.cell with empty content.
+
+    Related to Issue #68: Empty table cells cause Typst compilation errors.
+    Empty cells with both colspan and rowspan should use table.cell({}, colspan: M, rowspan: N) syntax.
+    """
+    from typsphinx.translator import TypstTranslator
+
+    translator = TypstTranslator(simple_document, mock_builder)
+
+    # Create table with empty colspan+rowspan cell
+    table = nodes.table()
+    tgroup = nodes.tgroup(cols=2)
+    tgroup += nodes.colspec(colwidth=1)
+    tgroup += nodes.colspec(colwidth=1)
+
+    tbody = nodes.tbody()
+    row1 = nodes.row()
+
+    # Empty cell with colspan=2, rowspan=2
+    entry1 = nodes.entry(morecols=1, morerows=1)  # Empty, spans 2x2
+    row1 += entry1
+    tbody += row1
+
+    # Row 2 (no cells needed due to spanning)
+    row2 = nodes.row()
+    tbody += row2
+
+    tgroup += tbody
+    table += tgroup
+
+    table.walkabout(translator)
+    output = translator.astext()
+
+    # Should use table.cell with empty content
+    assert "table.cell({}" in output
+    assert "colspan: 2" in output
+    assert "rowspan: 2" in output
+    # Should NOT contain bare commas or missing content
+    assert "table.cell(," not in output
+
+
 # API description nodes tests (Issue #55)
 
 
