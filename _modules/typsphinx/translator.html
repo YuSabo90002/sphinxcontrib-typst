@@ -1938,18 +1938,25 @@
 <span class="sd">        Visit an image node.</span>
 
 <span class="sd">        Generates image() function call (no # prefix in code mode).</span>
+<span class="sd">        Adjusts image paths for nested documents (Issue #69).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            node: The image node</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">uri</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uri&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
+        <span class="c1"># Get current document name for path adjustment (Issue #69)</span>
+        <span class="n">current_docname</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="p">,</span> <span class="s2">&quot;current_docname&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Adjust path based on output file location (Issue #69)</span>
+        <span class="n">adjusted_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_relative_image_path</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">current_docname</span><span class="p">)</span>
+
         <span class="c1"># Add proper indentation if inside a figure</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_figure</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  image(&quot;</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  image(&quot;</span><span class="si">{</span><span class="n">adjusted_uri</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># No # prefix in code mode</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;image(&quot;</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;image(&quot;</span><span class="si">{</span><span class="n">adjusted_uri</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
 
         <span class="c1"># Add optional attributes</span>
         <span class="k">if</span> <span class="s2">&quot;width&quot;</span> <span class="ow">in</span> <span class="n">node</span><span class="p">:</span>
@@ -2177,6 +2184,111 @@
 
             <span class="c1"># Build path: from common parent to target</span>
             <span class="n">down_parts</span> <span class="o">=</span> <span class="n">target_parts</span><span class="p">[</span><span class="n">common_length</span><span class="p">:]</span>
+            <span class="n">down_path</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">down_parts</span><span class="p">)</span> <span class="k">if</span> <span class="n">down_parts</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+            <span class="n">relative_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">up_path</span> <span class="o">+</span> <span class="n">down_path</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cross-directory path calculation: up_count=</span><span class="si">{</span><span class="n">up_count</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;up_path=&#39;</span><span class="si">{</span><span class="n">up_path</span><span class="si">}</span><span class="s2">&#39;, down_path=&#39;</span><span class="si">{</span><span class="n">down_path</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;result: </span><span class="si">{</span><span class="n">relative_path</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">relative_path</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_relative_image_path</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">image_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">current_docname</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute relative path for image() function.</span>
+
+<span class="sd">        Adjusts image URIs from source-root-relative to output-file-relative.</span>
+<span class="sd">        This is similar to _compute_relative_include_path() but for images.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_uri: Image URI from Sphinx (source-root-relative)</span>
+<span class="sd">            current_docname: Current document name (e.g., &quot;chapter1/section1&quot;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Adjusted relative path for Typst image()</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; _compute_relative_image_path(&quot;images/logo.png&quot;, &quot;chapter1/section1&quot;)</span>
+<span class="sd">            &quot;../images/logo.png&quot;</span>
+<span class="sd">            &gt;&gt;&gt; _compute_relative_image_path(&quot;images/logo.png&quot;, &quot;index&quot;)</span>
+<span class="sd">            &quot;images/logo.png&quot;</span>
+<span class="sd">            &gt;&gt;&gt; _compute_relative_image_path(&quot;images/logo.png&quot;, None)</span>
+<span class="sd">            &quot;images/logo.png&quot;</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            This implements Issue #69 fix for nested document image paths.</span>
+<span class="sd">            Uses the same logic as _compute_relative_include_path() from Issue #5.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">PurePosixPath</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Computing relative image path: uri=</span><span class="si">{</span><span class="n">image_uri</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;current=</span><span class="si">{</span><span class="n">current_docname</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Fallback to absolute path if current_docname is None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">current_docname</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No current document, using absolute path: </span><span class="si">{</span><span class="n">image_uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">image_uri</span>
+
+        <span class="n">current_path</span> <span class="o">=</span> <span class="n">PurePosixPath</span><span class="p">(</span><span class="n">current_docname</span><span class="p">)</span>
+        <span class="n">image_path</span> <span class="o">=</span> <span class="n">PurePosixPath</span><span class="p">(</span><span class="n">image_uri</span><span class="p">)</span>
+        <span class="n">current_dir</span> <span class="o">=</span> <span class="n">current_path</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Path components: current_dir=</span><span class="si">{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2">, image_path=</span><span class="si">{</span><span class="n">image_path</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Root directory case: use absolute path (backward compatibility)</span>
+        <span class="k">if</span> <span class="n">current_dir</span> <span class="o">==</span> <span class="n">PurePosixPath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Current document is in root directory, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;using absolute path: </span><span class="si">{</span><span class="n">image_uri</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">image_uri</span>
+
+        <span class="c1"># Try to compute relative path</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rel_path</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">rel_path</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Same directory reference: </span><span class="si">{</span><span class="n">current_dir</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">image_path</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;result: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="c1"># Different directory trees - build path via common parent</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Cross-directory reference detected, calculating via common parent&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">current_parts</span> <span class="o">=</span> <span class="n">current_dir</span><span class="o">.</span><span class="n">parts</span>
+            <span class="n">image_parts</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">parts</span>
+
+            <span class="c1"># Find common parent by comparing path components</span>
+            <span class="n">common_length</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">current_parts</span><span class="p">,</span> <span class="n">image_parts</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">img</span><span class="p">:</span>
+                    <span class="n">common_length</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Common parent depth: </span><span class="si">{</span><span class="n">common_length</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;current_parts=</span><span class="si">{</span><span class="n">current_parts</span><span class="si">}</span><span class="s2">, image_parts=</span><span class="si">{</span><span class="n">image_parts</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Build path: &quot;../&quot; from current to common parent</span>
+            <span class="n">up_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_parts</span><span class="p">)</span> <span class="o">-</span> <span class="n">common_length</span>
+            <span class="n">up_path</span> <span class="o">=</span> <span class="s2">&quot;../&quot;</span> <span class="o">*</span> <span class="n">up_count</span> <span class="k">if</span> <span class="n">up_count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+            <span class="c1"># Build path: from common parent to image</span>
+            <span class="n">down_parts</span> <span class="o">=</span> <span class="n">image_parts</span><span class="p">[</span><span class="n">common_length</span><span class="p">:]</span>
             <span class="n">down_path</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">down_parts</span><span class="p">)</span> <span class="k">if</span> <span class="n">down_parts</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
             <span class="n">relative_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">up_path</span> <span class="o">+</span> <span class="n">down_path</span>

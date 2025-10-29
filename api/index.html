@@ -1767,7 +1767,8 @@ in unified code mode.</p>
 <dt class="sig sig-object py" id="typsphinx.translator.TypstTranslator.visit_image">
 <span class="sig-name descname"><span class="pre">visit_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/translator.html#TypstTranslator.visit_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.translator.TypstTranslator.visit_image" title="Link to this definition">¶</a></dt>
 <dd><p>Visit an image node.</p>
-<p>Generates image() function call (no # prefix in code mode).</p>
+<p>Generates image() function call (no # prefix in code mode).
+Adjusts image paths for nested documents (Issue #69).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">image</span></code></span>) – The image node</p>
