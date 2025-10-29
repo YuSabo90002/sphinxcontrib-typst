@@ -11,6 +11,9 @@ Implement the fix for Issue #68 - empty table cells causing Typst compilation er
 ## Task List
 
 ### 1. Update `_format_table_cell()` method
+
+- [ ] Modify `typsphinx/translator.py:1218` to wrap cells in content blocks
+
 **File**: `typsphinx/translator.py:1218`
 
 **Change**:
@@ -31,6 +34,9 @@ return f"{indent}{{{content}}},\n"
 ---
 
 ### 2. Add unit test for empty cells
+
+- [ ] Add `test_table_empty_cells()` to verify empty cells are wrapped in `{}`
+
 **File**: `tests/test_translator.py`
 
 **Test**: `test_table_empty_cells()`
@@ -78,6 +84,9 @@ def test_table_empty_cells(simple_document, mock_builder):
 ---
 
 ### 3. Add unit test for mixed cells
+
+- [ ] Add `test_table_mixed_empty_and_content()` for mixed empty/non-empty cells
+
 **File**: `tests/test_translator.py`
 
 **Test**: `test_table_mixed_empty_and_content()`
@@ -140,6 +149,9 @@ def test_table_mixed_empty_and_content(simple_document, mock_builder):
 ---
 
 ### 4. Add unit test for empty colspan cells
+
+- [ ] Add `test_table_empty_colspan_cells()` for empty cells with colspan
+
 **File**: `tests/test_translator.py`
 
 **Test**: `test_table_empty_colspan_cells()`
@@ -187,6 +199,9 @@ def test_table_empty_colspan_cells(simple_document, mock_builder):
 ---
 
 ### 5. Add unit test for empty rowspan cells
+
+- [ ] Add `test_table_empty_rowspan_cells()` for empty cells with rowspan
+
 **File**: `tests/test_translator.py`
 
 **Test**: `test_table_empty_rowspan_cells()`
@@ -245,6 +260,9 @@ def test_table_empty_rowspan_cells(simple_document, mock_builder):
 ---
 
 ### 6. Add unit test for empty colspan+rowspan cells
+
+- [ ] Add `test_table_empty_colspan_rowspan_cells()` for empty cells with both spans
+
 **File**: `tests/test_translator.py`
 
 **Test**: `test_table_empty_colspan_rowspan_cells()`
@@ -298,6 +316,9 @@ def test_table_empty_colspan_rowspan_cells(simple_document, mock_builder):
 ---
 
 ### 7. Run existing table tests (regression check)
+
+- [ ] Run all existing table tests to verify no regressions
+
 **Files**: All test files with table tests
 
 **Tests to verify**:
@@ -322,6 +343,9 @@ def test_table_empty_colspan_rowspan_cells(simple_document, mock_builder):
 ---
 
 ### 8. Integration test with Typst compilation
+
+- [ ] Create and run integration test with actual Typst compilation
+
 **File**: Create temporary test in `/tmp`
 
 **Test Script**:
@@ -342,6 +366,9 @@ def test_table_empty_colspan_rowspan_cells(simple_document, mock_builder):
 ---
 
 ### 9. Update test documentation
+
+- [ ] Add docstring references to Issue #68 in new test functions
+
 **File**: `tests/test_translator.py`
 
 **Changes**:
@@ -357,6 +384,9 @@ def test_table_empty_colspan_rowspan_cells(simple_document, mock_builder):
 ---
 
 ### 10. Run full test suite
+
+- [ ] Run complete test suite to verify all tests pass
+
 **Command**: `uv run pytest`
 
 **Validation**:
@@ -369,6 +399,9 @@ def test_table_empty_colspan_rowspan_cells(simple_document, mock_builder):
 ---
 
 ### 11. Format and lint code
+
+- [ ] Format and lint the modified code
+
 **Commands**:
 ```bash
 uv run black typsphinx/translator.py tests/test_translator.py
@@ -385,16 +418,19 @@ uv run ruff check typsphinx/translator.py tests/test_translator.py
 ---
 
 ### 12. Create verification report
+
+- [ ] Verify all implementation criteria are met and create final report
+
 **File**: Manual verification checklist
 
-**Checklist**:
-- [ ] Code change implemented
-- [ ] All new tests pass
-- [ ] All existing tests pass
-- [ ] Integration test with Typst succeeds
-- [ ] No regressions observed
-- [ ] Code formatted and linted
-- [ ] Issue #68 can be closed
+**Verification Criteria**:
+- Code change implemented (Task 1)
+- All new tests pass (Tasks 2-6)
+- All existing tests pass (Task 7)
+- Integration test with Typst succeeds (Task 8)
+- No regressions observed (Task 7)
+- Code formatted and linted (Task 11)
+- Issue #68 can be closed
 
 **Dependencies**: All previous tasks
 
