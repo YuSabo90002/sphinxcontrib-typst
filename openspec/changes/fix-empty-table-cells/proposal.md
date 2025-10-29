@@ -31,6 +31,20 @@ When `content` is empty, this produces `,` which is invalid Typst syntax.
 - Non-empty cells: `{par({text("data")})},`
 - Empty cells: `{},`
 
+## Why
+
+This fix is necessary because:
+
+1. **Blocks User Workflows**: Users cannot build documents with tables containing empty cells, which is a common use case in documentation (e.g., comparison tables, template tables, partially filled data tables).
+
+2. **Violates Typst Type System**: Typst's `table()` function requires all cells to be `content` type. Bare commas without content blocks violate this requirement and cause compilation failures.
+
+3. **Inconsistent with Typst Idioms**: The Unified Code Mode guideline already established that we use content types directly. All table cells should consistently use content blocks `{}`, whether empty or not.
+
+4. **High-Severity Bug**: This is a compilation blocker - documents with empty table cells cannot be built at all, making this a high-priority fix.
+
+5. **Simple Fix, High Impact**: The fix is a single-line change, but it unlocks the ability to use empty cells in all table types (list-table, grid table, simple table, csv-table) across all cell configurations (normal, colspan, rowspan, headers).
+
 ## Impact
 
 - **Severity**: High - Causes compilation failures for any table with empty cells
