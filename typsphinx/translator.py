@@ -1464,18 +1464,25 @@ class TypstTranslator(SphinxTranslator):
         Visit an image node.
 
         Generates image() function call (no # prefix in code mode).
+        Adjusts image paths for nested documents (Issue #69).
 
         Args:
             node: The image node
         """
         uri = node.get("uri", "")
 
+        # Get current document name for path adjustment (Issue #69)
+        current_docname = getattr(self.builder, "current_docname", None)
+
+        # Adjust path based on output file location (Issue #69)
+        adjusted_uri = self._compute_relative_image_path(uri, current_docname)
+
         # Add proper indentation if inside a figure
         if self.in_figure:
-            self.add_text(f'  image("{uri}"')
+            self.add_text(f'  image("{adjusted_uri}"')
         else:
             # No # prefix in code mode
-            self.add_text(f'image("{uri}"')
+            self.add_text(f'image("{adjusted_uri}"')
 
         # Add optional attributes
         if "width" in node:
@@ -1687,6 +1694,111 @@ class TypstTranslator(SphinxTranslator):
 
             # Build path: from common parent to target
             down_parts = target_parts[common_length:]
+            down_path = "/".join(down_parts) if down_parts else ""
+
+            relative_path: str = up_path + down_path
+
+            logger.debug(
+                f"Cross-directory path calculation: up_count={up_count}, "
+                f"up_path='{up_path}', down_path='{down_path}', "
+                f"result: {relative_path}"
+            )
+
+            return relative_path
+
+    def _compute_relative_image_path(
+        self, image_uri: str, current_docname: Optional[str]
+    ) -> str:
+        """
+        Compute relative path for image() function.
+
+        Adjusts image URIs from source-root-relative to output-file-relative.
+        This is similar to _compute_relative_include_path() but for images.
+
+        Args:
+            image_uri: Image URI from Sphinx (source-root-relative)
+            current_docname: Current document name (e.g., "chapter1/section1")
+
+        Returns:
+            Adjusted relative path for Typst image()
+
+        Examples:
+            >>> _compute_relative_image_path("images/logo.png", "chapter1/section1")
+            "../images/logo.png"
+            >>> _compute_relative_image_path("images/logo.png", "index")
+            "images/logo.png"
+            >>> _compute_relative_image_path("images/logo.png", None)
+            "images/logo.png"
+
+        Notes:
+            This implements Issue #69 fix for nested document image paths.
+            Uses the same logic as _compute_relative_include_path() from Issue #5.
+        """
+        from pathlib import PurePosixPath
+
+        logger.debug(
+            f"Computing relative image path: uri={image_uri}, "
+            f"current={current_docname}"
+        )
+
+        # Fallback to absolute path if current_docname is None
+        if not current_docname:
+            logger.debug(f"No current document, using absolute path: {image_uri}")
+            return image_uri
+
+        current_path = PurePosixPath(current_docname)
+        image_path = PurePosixPath(image_uri)
+        current_dir = current_path.parent
+
+        logger.debug(
+            f"Path components: current_dir={current_dir}, image_path={image_path}"
+        )
+
+        # Root directory case: use absolute path (backward compatibility)
+        if current_dir == PurePosixPath("."):
+            logger.debug(
+                f"Current document is in root directory, "
+                f"using absolute path: {image_uri}"
+            )
+            return image_uri
+
+        # Try to compute relative path
+        try:
+            rel_path = image_path.relative_to(current_dir)
+            result = str(rel_path)
+            logger.debug(
+                f"Same directory reference: {current_dir} -> {image_path}, "
+                f"result: {result}"
+            )
+            return result
+        except ValueError:
+            # Different directory trees - build path via common parent
+            logger.debug(
+                "Cross-directory reference detected, calculating via common parent"
+            )
+
+            current_parts = current_dir.parts
+            image_parts = image_path.parts
+
+            # Find common parent by comparing path components
+            common_length = 0
+            for i, (c, img) in enumerate(zip(current_parts, image_parts)):
+                if c == img:
+                    common_length = i + 1
+                else:
+                    break
+
+            logger.debug(
+                f"Common parent depth: {common_length}, "
+                f"current_parts={current_parts}, image_parts={image_parts}"
+            )
+
+            # Build path: "../" from current to common parent
+            up_count = len(current_parts) - common_length
+            up_path = "../" * up_count if up_count > 0 else ""
+
+            # Build path: from common parent to image
+            down_parts = image_parts[common_length:]
             down_path = "/".join(down_parts) if down_parts else ""
 
             relative_path: str = up_path + down_path
