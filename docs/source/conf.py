@@ -44,6 +44,9 @@ exclude_patterns = []
 # -- Internationalization (i18n) configuration -------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-locale_dirs
 
+# Language can be set via SPHINX_LANGUAGE environment variable
+language = os.getenv('SPHINX_LANGUAGE', 'en')
+
 locale_dirs = ["../locale/"]  # Path is relative to the conf.py file
 gettext_compact = False  # Generate separate .pot files for each document
 gettext_uuid = False  # Do not use UUIDs in .pot files
@@ -55,6 +58,32 @@ gettext_auto_build = True  # Automatically build gettext catalogs
 html_theme = "furo"
 html_static_path = ["_static"]
 html_title = f"{project} {release}"
+
+# Add custom CSS for language switcher
+html_css_files = [
+    "custom.css",
+]
+
+# Language switcher configuration
+html_context = {
+    'language': language,
+    'languages': [
+        ('en', 'English'),
+        ('ja', '日本語'),
+    ],
+}
+
+# Add language switcher to sidebar
+html_sidebars = {
+    "**": [
+        "sidebar/brand.html",
+        "sidebar/search.html",
+        "sidebar/scroll-start.html",
+        "language-switcher.html",
+        "sidebar/navigation.html",
+        "sidebar/scroll-end.html",
+    ]
+}
 
 # -- Options for typst/typstpdf output ---------------------------------------
 

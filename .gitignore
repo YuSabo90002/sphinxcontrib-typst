@@ -45,6 +45,9 @@ cover/
 docs/_build/
 _build/
 
+# i18n compiled message catalogs
+*.mo
+
 # Environments
 .env
 .venv
