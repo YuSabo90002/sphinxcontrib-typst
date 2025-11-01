@@ -452,11 +452,31 @@ source directory to the output directory, preserving relative paths.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="typsphinx.builder.TypstBuilder.copy_template_assets">
+<span class="sig-name descname"><span class="pre">copy_template_assets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/builder.html#TypstBuilder.copy_template_assets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.builder.TypstBuilder.copy_template_assets" title="Link to this definition">¶</a></dt>
+<dd><p>Copy template-associated assets to the output directory.</p>
+<p>When using custom Typst templates via typst_template configuration,
+this method copies assets (fonts, images, logos, etc.) referenced by
+the template to the output directory.</p>
+<p>Behavior:
+- If typst_template_assets is configured, copies only specified files/directories
+- If typst_template_assets is None (default), automatically copies entire template directory
+- If typst_template_assets is empty list, disables automatic copying
+- Skips .typ files to avoid duplicating template file (already handled by _write_template_file)</p>
+<p>This follows the same pattern as copy_image_files() from Issue #38.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="typsphinx.builder.TypstBuilder.finish">
 <span class="sig-name descname"><span class="pre">finish</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/typsphinx/builder.html#TypstBuilder.finish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typsphinx.builder.TypstBuilder.finish" title="Link to this definition">¶</a></dt>
 <dd><p>Finish the build process.</p>
 <p>This method is called once after all documents have been written.
-Copies image files to the output directory.</p>
+Copies image files and template assets to the output directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -3180,6 +3200,7 @@ Requirement 8.14: #outline() in template, not body</p>
 <li><a class="reference internal" href="#typsphinx.builder.TypstBuilder.post_process_images"><code class="docutils literal notranslate"><span class="pre">TypstBuilder.post_process_images()</span></code></a></li>
 <li><a class="reference internal" href="#typsphinx.builder.TypstBuilder.write_doc"><code class="docutils literal notranslate"><span class="pre">TypstBuilder.write_doc()</span></code></a></li>
 <li><a class="reference internal" href="#typsphinx.builder.TypstBuilder.copy_image_files"><code class="docutils literal notranslate"><span class="pre">TypstBuilder.copy_image_files()</span></code></a></li>
+<li><a class="reference internal" href="#typsphinx.builder.TypstBuilder.copy_template_assets"><code class="docutils literal notranslate"><span class="pre">TypstBuilder.copy_template_assets()</span></code></a></li>
 <li><a class="reference internal" href="#typsphinx.builder.TypstBuilder.finish"><code class="docutils literal notranslate"><span class="pre">TypstBuilder.finish()</span></code></a></li>
 </ul>
 </li>

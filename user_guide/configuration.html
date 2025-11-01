@@ -333,6 +333,39 @@ specified in <code class="docutils literal notranslate"><span class="pre">typst_
 </pre></div>
 </div>
 </section>
+<section id="template-assets">
+<h3>Template Assets<a class="headerlink" href="#template-assets" title="Link to this heading">¶</a></h3>
+<p>Control how template assets (fonts, images, logos) are copied:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: Automatic directory copy</span>
+<span class="n">typst_template</span> <span class="o">=</span> <span class="s2">&quot;_templates/custom.typ&quot;</span>
+<span class="c1"># All files in _templates/ are automatically copied</span>
+
+<span class="c1"># Explicit: Specify which assets to copy</span>
+<span class="n">typst_template_assets</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;_templates/logo.png&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_templates/fonts/&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_templates/icons/*.svg&quot;</span>  <span class="c1"># Glob patterns supported</span>
+<span class="p">]</span>
+
+<span class="c1"># Disable: Empty list prevents automatic copying</span>
+<span class="n">typst_template_assets</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+<p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code> (automatic directory copy)</p>
+<p><strong>Type</strong>: <code class="docutils literal notranslate"><span class="pre">list[str]</span> <span class="pre">|</span> <span class="pre">None</span></code></p>
+<p>When <code class="docutils literal notranslate"><span class="pre">typst_template_assets</span></code> is:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> (default): Automatically copy entire template directory</p></li>
+<li><p>List of paths: Copy only specified files/directories (supports glob patterns)</p></li>
+<li><p>Empty list <code class="docutils literal notranslate"><span class="pre">[]</span></code>: Disable automatic asset copying</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This setting only applies to local custom templates (<code class="docutils literal notranslate"><span class="pre">typst_template</span></code>).
+Typst Universe packages (<code class="docutils literal notranslate"><span class="pre">typst_package</span></code>) handle assets automatically.</p>
+</div>
+<p>See <a class="reference internal" href="templates.html"><span class="doc">Templates</span></a> for detailed examples.</p>
+</section>
 </section>
 <section id="math-rendering">
 <h2>Math Rendering<a class="headerlink" href="#math-rendering" title="Link to this heading">¶</a></h2>
@@ -515,6 +548,7 @@ When disabled, math is passed directly as Typst math syntax.</p>
 <li><a class="reference internal" href="#template-function">Template Function</a></li>
 <li><a class="reference internal" href="#custom-template-file">Custom Template File</a></li>
 <li><a class="reference internal" href="#typst-package">Typst Package</a></li>
+<li><a class="reference internal" href="#template-assets">Template Assets</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#math-rendering">Math Rendering</a><ul>

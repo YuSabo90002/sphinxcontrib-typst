@@ -320,6 +320,63 @@ There are three ways to customize templates:</p>
 <section id="custom-template-files">
 <h2>Custom Template Files<a class="headerlink" href="#custom-template-files" title="Link to this heading">¶</a></h2>
 <p>For full control, create a custom template file.</p>
+<section id="template-assets">
+<h3>Template Assets<a class="headerlink" href="#template-assets" title="Link to this heading">¶</a></h3>
+<p>When using custom templates, you often need additional assets like fonts, logos, or images. typsphinx automatically copies these assets to the output directory.</p>
+<p><strong>Automatic Asset Copying (Default)</strong></p>
+<p>By default, all files in your template directory are automatically copied (except <code class="docutils literal notranslate"><span class="pre">.typ</span></code> files):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># conf.py</span>
+<span class="n">typst_template</span> <span class="o">=</span> <span class="s2">&quot;_templates/custom.typ&quot;</span>
+<span class="c1"># All files in _templates/ are automatically copied</span>
+</pre></div>
+</div>
+<p>Directory structure:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>_templates/
+  ├── custom.typ          # Template file
+  ├── logo.png            # Automatically copied
+  ├── fonts/
+  │   └── custom.otf      # Automatically copied
+  └── icons/
+      └── icon.svg        # Automatically copied
+</pre></div>
+</div>
+<p>Reference assets in your template using relative paths:</p>
+<div class="highlight-typst notranslate"><div class="highlight"><pre><span></span><span class="c1">// _templates/custom.typ</span>
+<span class="nf">#image</span><span class="p">(</span><span class="s2">&quot;logo.png&quot;</span><span class="p">)</span>
+<span class="kd">#set</span><span class="w"> </span><span class="nf">text</span><span class="p">(</span><span class="nv">font</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fonts/custom.otf&quot;</span><span class="p">)</span>
+<span class="nf">#image</span><span class="p">(</span><span class="s2">&quot;icons/icon.svg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Explicit Asset Specification</strong></p>
+<p>For more control, explicitly specify which assets to copy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># conf.py</span>
+<span class="n">typst_template</span> <span class="o">=</span> <span class="s2">&quot;_templates/custom.typ&quot;</span>
+<span class="n">typst_template_assets</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;_templates/logo.png&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_templates/fonts/&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_templates/icons/*.svg&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Features:</p>
+<ul class="simple">
+<li><p>Individual files: <code class="docutils literal notranslate"><span class="pre">&quot;_templates/logo.png&quot;</span></code></p></li>
+<li><p>Directories: <code class="docutils literal notranslate"><span class="pre">&quot;_templates/fonts/&quot;</span></code></p></li>
+<li><p>Glob patterns: <code class="docutils literal notranslate"><span class="pre">&quot;_templates/icons/*.svg&quot;</span></code></p></li>
+</ul>
+<p><strong>Disabling Automatic Copying</strong></p>
+<p>To disable automatic asset copying (for performance):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># conf.py</span>
+<span class="n">typst_template</span> <span class="o">=</span> <span class="s2">&quot;_templates/custom.typ&quot;</span>
+<span class="n">typst_template_assets</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Empty list = no automatic copying</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Typst Universe packages (<code class="docutils literal notranslate"><span class="pre">typst_package</span></code>) handle assets automatically.
+Asset copying only applies to custom local templates (<code class="docutils literal notranslate"><span class="pre">typst_template</span></code>).</p>
+</div>
+</section>
 <section id="basic-structure">
 <h3>Basic Structure<a class="headerlink" href="#basic-structure" title="Link to this heading">¶</a></h3>
 <p>Create a file <code class="docutils literal notranslate"><span class="pre">_templates/custom.typ</span></code>:</p>
@@ -600,6 +657,7 @@ cat<span class="w"> </span>build/typst/index.typ
 <li><a class="reference internal" href="#default-template">Default Template</a></li>
 <li><a class="reference internal" href="#configuration-based-templates">Configuration-Based Templates</a></li>
 <li><a class="reference internal" href="#custom-template-files">Custom Template Files</a><ul>
+<li><a class="reference internal" href="#template-assets">Template Assets</a></li>
 <li><a class="reference internal" href="#basic-structure">Basic Structure</a></li>
 <li><a class="reference internal" href="#configuration">Configuration</a></li>
 </ul>
