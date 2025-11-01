@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Empty URL Link Handling for Typst 0.14.1+ Compatibility** ([#77](https://github.com/YuSabo90002/typsphinx/issues/77))
+  - Fixed empty URL references causing Typst 0.14.1 compilation errors
+  - References with empty `refuri` attributes now rendered as plain text instead of invalid `link("", ...)`
+  - Added warning messages for broken references to aid debugging
+  - Updated Typst dependency to `>=0.14.1` for stricter URL validation support
+  - Added comprehensive test coverage for empty URL handling scenarios
+  - Prevents "URL must not be empty" errors in CI/CD pipelines
+
 ## [0.4.2] - 2025-10-29
 
 ### Fixed

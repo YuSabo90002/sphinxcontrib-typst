@@ -5,8 +5,8 @@
 ### Task 1.1: Add empty URL validation in visit_reference()
 **Deliverable**: Empty URL detection and early return
 
-- [ ] Locate `visit_reference()` method in `typsphinx/translator.py` (line ~1891)
-- [ ] After line 1931 (`refuri = node.get("refuri", "")`), add empty check:
+- [x] Locate `visit_reference()` method in `typsphinx/translator.py` (line ~1891)
+- [x] After line 1931 (`refuri = node.get("refuri", "")`), add empty check:
   ```python
   if not refuri:
       logger.warning(
@@ -17,7 +17,7 @@
       self._skip_link_wrapper = True
       return
   ```
-- [ ] Import logger if not already imported:
+- [x] Import logger if not already imported:
   ```python
   from sphinx.util import logging
   logger = logging.getLogger(__name__)
@@ -35,8 +35,8 @@
 ### Task 1.2: Handle skipped link wrapper in depart_reference()
 **Deliverable**: Skip closing parenthesis for empty URL links
 
-- [ ] Locate `depart_reference()` method in `typsphinx/translator.py` (line ~1957)
-- [ ] At the start of the method, add skip check:
+- [x] Locate `depart_reference()` method in `typsphinx/translator.py` (line ~1957)
+- [x] At the start of the method, add skip check:
   ```python
   # Skip link wrapper closing if we skipped it in visit
   if getattr(self, "_skip_link_wrapper", False):
@@ -61,14 +61,14 @@
 ### Task 1.3: Test empty URL handling locally
 **Deliverable**: Verified fix works with test document
 
-- [ ] Create test RST document with empty URL:
+- [x] Create test RST document with empty URL:
   ```rst
   Test :ref:`nonexistent` reference.
   ```
-- [ ] Build with typsphinx
-- [ ] Verify warning appears in build output
-- [ ] Verify generated `.typ` file contains `[nonexistent]` not `#link("", ...)`
-- [ ] Verify Typst compilation succeeds
+- [x] Build with typsphinx
+- [x] Verify warning appears in build output
+- [x] Verify generated `.typ` file contains `[nonexistent]` not `#link("", ...)`
+- [x] Verify Typst compilation succeeds
 
 **Validation**:
 - Warning logged during build
@@ -84,15 +84,15 @@
 ### Task 2.1: Unit tests for empty URL handling
 **Deliverable**: Test coverage for new code paths
 
-- [ ] Create test file or add to `tests/test_translator.py`
-- [ ] Test cases:
+- [x] Create test file or add to `tests/test_translator.py`
+- [x] Test cases:
   - Empty `refuri` → no `link()` generated
   - Empty `refuri` → content rendered as text
   - Empty `refuri` → warning emitted
   - Valid `refuri` → existing behavior (regression test)
   - Multiple empty URLs → multiple warnings
-- [ ] Use pytest fixtures and mocks for node creation
-- [ ] Verify `_skip_link_wrapper` flag behavior
+- [x] Use pytest fixtures and mocks for node creation
+- [x] Verify `_skip_link_wrapper` flag behavior
 
 **Validation**:
 - All new tests pass
@@ -105,12 +105,12 @@
 ### Task 2.2: Integration test with broken references
 **Deliverable**: End-to-end validation
 
-- [ ] Create test fixture document with:
+- [x] Create test fixture document with:
   - Unresolved cross-reference
   - Broken external link
   - Valid links (for regression)
-- [ ] Build with typsphinx
-- [ ] Verify:
+- [x] Build with typsphinx
+- [x] Verify:
   - Warnings for broken references
   - No warnings for valid links
   - Generated Typst compiles
@@ -128,10 +128,10 @@
 ### Task 2.3: Regression testing
 **Deliverable**: Existing tests pass
 
-- [ ] Run full test suite: `uv run pytest`
-- [ ] Verify all 317 existing tests pass
-- [ ] Check no unexpected changes in test output
-- [ ] Verify coverage remains ≥94%
+- [x] Run full test suite: `uv run pytest`
+- [x] Verify all 317 existing tests pass
+- [x] Check no unexpected changes in test output
+- [x] Verify coverage remains ≥94%
 
 **Validation**:
 - Zero test failures
@@ -146,9 +146,9 @@
 ### Task 3.1: Update uv.lock to Typst 0.14.1
 **Deliverable**: Dependency upgraded
 
-- [ ] Run `uv lock --upgrade-package typst`
-- [ ] Verify `uv.lock` now specifies typst 0.14.1 or newer
-- [ ] Or manually edit `pyproject.toml`:
+- [x] Run `uv lock --upgrade-package typst`
+- [x] Verify `uv.lock` now specifies typst 0.14.1 or newer
+- [x] Or manually edit `pyproject.toml`:
   ```toml
   [project.dependencies]
   typst = ">=0.14.1"
@@ -166,9 +166,9 @@
 ### Task 3.2: Remove typst constraint from tox.ini (if present)
 **Deliverable**: Tox uses locked version
 
-- [ ] Check `tox.ini` for `typst>=0.11.1` in deps
-- [ ] If present, remove it (let tox use `uv.lock`)
-- [ ] If already removed, skip this task
+- [x] Check `tox.ini` for `typst>=0.11.1` in deps
+- [x] If present, remove it (let tox use `uv.lock`)
+- [x] If already removed, skip this task
 
 **Validation**:
 - `tox.ini` does not override typst version
@@ -181,10 +181,10 @@
 ### Task 3.3: Test with Typst 0.14.1
 **Deliverable**: Verified compatibility
 
-- [ ] Run `uv run tox -e docs-pdf`
-- [ ] Verify PDF builds successfully
-- [ ] Check no "URL must not be empty" errors
-- [ ] Verify warnings for broken references
+- [x] Run `uv run tox -e docs-pdf`
+- [x] Verify PDF builds successfully
+- [x] Check no "URL must not be empty" errors
+- [x] Verify warnings for broken references
 
 **Validation**:
 - PDF generated successfully
@@ -199,10 +199,10 @@
 ### Task 4.1: Update CHANGELOG
 **Deliverable**: Release notes entry
 
-- [ ] Add entry under "Unreleased" or next version
-- [ ] Describe fix: "Handle empty URLs in references gracefully"
-- [ ] Mention Typst 0.14.1 compatibility
-- [ ] Reference Issue #77
+- [x] Add entry under "Unreleased" or next version
+- [x] Describe fix: "Handle empty URLs in references gracefully"
+- [x] Mention Typst 0.14.1 compatibility
+- [x] Reference Issue #77
 
 **Validation**:
 - CHANGELOG follows project conventions
@@ -215,7 +215,7 @@
 ### Task 4.2: Add code comments
 **Deliverable**: Documented edge case
 
-- [ ] Add comment above empty URL check explaining:
+- [x] Add comment above empty URL check explaining:
   - Why this check is needed (Typst 0.14.1 validation)
   - What happens (skip link, render text, warn)
   - Example scenarios (unresolved refs, broken links)
@@ -231,10 +231,10 @@
 ### Task 4.3: Code quality checks
 **Deliverable**: Passes all linters and type checkers
 
-- [ ] Run `uv run black .` (format code)
-- [ ] Run `uv run ruff check .` (lint)
-- [ ] Run `uv run mypy typsphinx/` (type check)
-- [ ] Fix any issues
+- [x] Run `uv run black .` (format code)
+- [x] Run `uv run ruff check .` (lint)
+- [x] Run `uv run mypy typsphinx/` (type check)
+- [x] Fix any issues
 
 **Validation**:
 - All quality checks pass
