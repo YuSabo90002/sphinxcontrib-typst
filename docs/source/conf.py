@@ -41,6 +41,14 @@ extensions = [
 templates_path = ["_templates"]
 exclude_patterns = []
 
+# -- Internationalization (i18n) configuration -------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-locale_dirs
+
+locale_dirs = ["../locale/"]  # Path is relative to the conf.py file
+gettext_compact = False  # Generate separate .pot files for each document
+gettext_uuid = False  # Do not use UUIDs in .pot files
+gettext_auto_build = True  # Automatically build gettext catalogs
+
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
