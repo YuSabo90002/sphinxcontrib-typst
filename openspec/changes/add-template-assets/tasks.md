@@ -5,9 +5,9 @@
 ### Task 1.1: Add `typst_template_assets` configuration value
 **Deliverable**: New configuration registered in `__init__.py`
 
-- [ ] Add `typst_template_assets` to `setup()` function in `typsphinx/__init__.py`
-- [ ] Type: `list | None`, default: `None`, rebuild: `html`
-- [ ] Add inline documentation comment
+- [x] Add `typst_template_assets` to `setup()` function in `typsphinx/__init__.py`
+- [x] Type: `list | None`, default: `None`, rebuild: `html`
+- [x] Add inline documentation comment
 
 **Validation**:
 - Configuration value is accessible via `self.config.typst_template_assets`
@@ -21,10 +21,10 @@
 ### Task 1.2: Create `copy_template_assets()` method skeleton
 **Deliverable**: Empty method with docstring in `TypstBuilder`
 
-- [ ] Add `copy_template_assets()` method to `TypstBuilder` class in `builder.py`
-- [ ] Write comprehensive docstring (similar to `copy_image_files()`)
-- [ ] Add early return if `typst_template` is not configured
-- [ ] Add logging: `logger.info("Copying template assets...")`
+- [x] Add `copy_template_assets()` method to `TypstBuilder` class in `builder.py`
+- [x] Write comprehensive docstring (similar to `copy_image_files()`)
+- [x] Add early return if `typst_template` is not configured
+- [x] Add logging: `logger.info("Copying template assets...")`
 
 **Validation**:
 - Method exists and can be called
@@ -38,8 +38,8 @@
 ### Task 1.3: Integrate into build process
 **Deliverable**: `copy_template_assets()` called during build
 
-- [ ] Call `self.copy_template_assets()` in `finish()` method after `copy_image_files()`
-- [ ] Ensure it's called for both `TypstBuilder` and `TypstPDFBuilder`
+- [x] Call `self.copy_template_assets()` in `finish()` method after `copy_image_files()`
+- [x] Ensure it's called for both `TypstBuilder` and `TypstPDFBuilder`
 
 **Validation**:
 - Run test build and verify method is called (check logs)
@@ -54,13 +54,13 @@
 ### Task 2.1: Implement automatic template directory copy
 **Deliverable**: Copy entire template directory when `typst_template_assets` is None
 
-- [ ] Extract template directory path from `typst_template` configuration
-- [ ] Walk template directory recursively using `os.walk()`
-- [ ] Skip `.typ` files (already handled by `write_template_file()`)
-- [ ] Copy each file preserving relative path structure
-- [ ] Use `shutil.copy2()` to preserve metadata
-- [ ] Create destination directories with `ensuredir()`
-- [ ] Handle missing source directory gracefully (log warning, continue)
+- [x] Extract template directory path from `typst_template` configuration
+- [x] Walk template directory recursively using `os.walk()`
+- [x] Skip `.typ` files (already handled by `write_template_file()`)
+- [x] Copy each file preserving relative path structure
+- [x] Use `shutil.copy2()` to preserve metadata
+- [x] Create destination directories with `ensuredir()`
+- [x] Handle missing source directory gracefully (log warning, continue)
 
 **Validation**:
 - Create test project with template directory containing assets
@@ -75,10 +75,10 @@
 ### Task 2.2: Add error handling and logging
 **Deliverable**: Robust error handling for file operations
 
-- [ ] Wrap file copy in try-except block
-- [ ] Log warnings for individual copy failures (don't fail entire build)
-- [ ] Log debug message for each successfully copied file
-- [ ] Log info message with total count at the end
+- [x] Wrap file copy in try-except block
+- [x] Log warnings for individual copy failures (don't fail entire build)
+- [x] Log debug message for each successfully copied file
+- [x] Log info message with total count at the end
 
 **Validation**:
 - Manually create permission errors or missing files
@@ -94,9 +94,9 @@
 ### Task 3.1: Implement explicit asset list copying
 **Deliverable**: Support `typst_template_assets` configuration
 
-- [ ] Check if `typst_template_assets` is configured and non-empty
-- [ ] Iterate through asset list
-- [ ] For each asset path:
+- [x] Check if `typst_template_assets` is configured and non-empty
+- [x] Iterate through asset list
+- [x] For each asset path:
   - Resolve absolute path from source directory
   - Check if file or directory
   - Copy file or directory recursively
@@ -114,11 +114,11 @@
 ### Task 3.2: Add glob pattern support
 **Deliverable**: Support wildcards in asset paths
 
-- [ ] Import `glob` module
-- [ ] Detect patterns containing `*` or `?`
-- [ ] Use `glob.glob()` to expand patterns
-- [ ] Copy all matched files/directories
-- [ ] Handle no matches gracefully (log warning)
+- [x] Import `glob` module
+- [x] Detect patterns containing `*` or `?`
+- [x] Use `glob.glob()` to expand patterns
+- [x] Copy all matched files/directories
+- [x] Handle no matches gracefully (log warning)
 
 **Validation**:
 - Configure `typst_template_assets = ["_templates/assets/*.png"]`
@@ -133,9 +133,9 @@
 ### Task 3.3: Implement empty list behavior (opt-out)
 **Deliverable**: Empty list disables automatic copying
 
-- [ ] Check if `typst_template_assets == []` (empty list)
-- [ ] Return early without copying (similar to no template case)
-- [ ] Log debug message: "Template asset copying disabled"
+- [x] Check if `typst_template_assets == []` (empty list)
+- [x] Return early without copying (similar to no template case)
+- [x] Log debug message: "Template asset copying disabled"
 
 **Validation**:
 - Configure `typst_template_assets = []`
@@ -151,13 +151,13 @@
 ### Task 4.1: Unit tests for `copy_template_assets()`
 **Deliverable**: Test coverage for new method
 
-- [ ] Test with no template configured (early return)
-- [ ] Test automatic directory copy
-- [ ] Test explicit asset list
-- [ ] Test glob patterns
-- [ ] Test empty list (opt-out)
-- [ ] Test missing source files (warnings, no failure)
-- [ ] Test missing template directory (graceful handling)
+- [x] Test with no template configured (early return)
+- [x] Test automatic directory copy
+- [x] Test explicit asset list
+- [x] Test glob patterns
+- [x] Test empty list (opt-out)
+- [x] Test missing source files (warnings, no failure)
+- [x] Test missing template directory (graceful handling)
 
 **Validation**:
 - All tests pass
@@ -170,8 +170,8 @@
 ### Task 4.2: Integration tests with example projects
 **Deliverable**: End-to-end validation with real projects
 
-- [ ] Create test project with custom template and assets
-- [ ] Structure:
+- [x] Create test project with custom template and assets
+- [x] Structure:
   ```
   _templates/
     ├── template.typ
@@ -179,9 +179,9 @@
     └── fonts/
         └── custom.otf
   ```
-- [ ] Configure `typst_template = "_templates/template.typ"`
-- [ ] Run build and verify assets are copied
-- [ ] Verify template references work (build PDF successfully)
+- [x] Configure `typst_template = "_templates/template.typ"`
+- [x] Run build and verify assets are copied
+- [x] Verify template references work (build PDF successfully)
 
 **Validation**:
 - Build succeeds
@@ -195,10 +195,10 @@
 ### Task 4.3: Backward compatibility tests
 **Deliverable**: Ensure no regression in existing projects
 
-- [ ] Run full test suite (317 existing tests)
-- [ ] Verify all tests pass
-- [ ] Test projects without `typst_template` (no change)
-- [ ] Test projects with `typst_template` but no assets (no errors)
+- [x] Run full test suite (317 existing tests)
+- [x] Verify all tests pass
+- [x] Test projects without `typst_template` (no change)
+- [x] Test projects with `typst_template` but no assets (no errors)
 
 **Validation**:
 - All 317 existing tests pass
@@ -214,15 +214,15 @@
 ### Task 5.1: Update user guide
 **Deliverable**: Documentation for template assets feature
 
-- [ ] Add section "Using Custom Templates with Assets" to user guide
-- [ ] Document automatic directory copy (default behavior)
-- [ ] Document `typst_template_assets` configuration
-- [ ] Provide examples:
+- [x] Add section "Using Custom Templates with Assets" to user guide
+- [x] Document automatic directory copy (default behavior)
+- [x] Document `typst_template_assets` configuration
+- [x] Provide examples:
   - Simple case (automatic)
   - Explicit asset list
   - Glob patterns
   - Opt-out (empty list)
-- [ ] Explain difference between `typst_template` and `typst_package`
+- [x] Explain difference between `typst_template` and `typst_package`
 
 **Validation**:
 - Documentation builds without errors
@@ -235,11 +235,11 @@
 ### Task 5.2: Add example project
 **Deliverable**: Working example with template assets
 
-- [ ] Create `examples/template-with-assets/` directory
-- [ ] Include template file with logo and font references
-- [ ] Include actual asset files (logo.png, font file)
-- [ ] Include `conf.py` with minimal configuration
-- [ ] Include README explaining the example
+- [x] Create `examples/template-with-assets/` directory
+- [x] Include template file with logo and font references
+- [x] Include actual asset files (logo.png, font file)
+- [x] Include `conf.py` with minimal configuration
+- [x] Include README explaining the example
 
 **Validation**:
 - Example builds successfully
@@ -253,10 +253,10 @@
 ### Task 5.3: Update CHANGELOG
 **Deliverable**: Release notes entry
 
-- [ ] Add entry under "Unreleased" or next version
-- [ ] Describe new feature: "Template asset auto-copy"
-- [ ] Mention `typst_template_assets` configuration
-- [ ] Note backward compatibility
+- [x] Add entry under "Unreleased" or next version
+- [x] Describe new feature: "Template asset auto-copy"
+- [x] Mention `typst_template_assets` configuration
+- [x] Note backward compatibility
 
 **Validation**:
 - CHANGELOG follows project conventions
@@ -271,10 +271,10 @@
 ### Task 6.1: Code quality checks
 **Deliverable**: Pass all linters and type checkers
 
-- [ ] Run `uv run black .` (format code)
-- [ ] Run `uv run ruff check .` (lint)
-- [ ] Run `uv run mypy typsphinx/` (type check)
-- [ ] Fix any issues
+- [x] Run `uv run black .` (format code)
+- [x] Run `uv run ruff check .` (lint)
+- [x] Run `uv run mypy typsphinx/` (type check)
+- [x] Fix any issues
 
 **Validation**:
 - All quality checks pass
@@ -287,10 +287,10 @@
 ### Task 6.2: Final integration testing
 **Deliverable**: Comprehensive validation
 
-- [ ] Test on multiple operating systems (if possible)
-- [ ] Test with different template structures
-- [ ] Test with large asset directories
-- [ ] Test error cases (permissions, missing files)
+- [x] Test on multiple operating systems (if possible)
+- [x] Test with different template structures
+- [x] Test with large asset directories
+- [x] Test error cases (permissions, missing files)
 
 **Validation**:
 - All tests pass on all platforms
@@ -303,10 +303,10 @@
 ### Task 6.3: Update version and prepare release
 **Deliverable**: Ready for merge
 
-- [ ] Update version in `pyproject.toml` (if releasing)
-- [ ] Finalize CHANGELOG entry
-- [ ] Create pull request with clear description
-- [ ] Link to Issue #75
+- [x] Update version in `pyproject.toml` (if releasing)
+- [x] Finalize CHANGELOG entry
+- [x] Create pull request with clear description
+- [x] Link to Issue #75
 
 **Validation**:
 - PR description explains feature clearly

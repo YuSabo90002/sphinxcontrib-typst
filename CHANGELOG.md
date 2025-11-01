@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Template Asset Support** ([#75](https://github.com/YuSabo90002/typsphinx/issues/75))
+  - Automatic copying of template assets (fonts, images, logos) to output directory
+  - Three operation modes:
+    - Default: Automatically copy entire template directory
+    - Explicit: Specify assets with `typst_template_assets` list (supports glob patterns)
+    - Disabled: Empty list `[]` prevents automatic copying
+  - New configuration value: `typst_template_assets`
+  - Only applies to local templates (`typst_template`), not Typst Universe packages
+  - Added 8 comprehensive test cases for all scenarios
+  - Updated documentation with usage examples
+
 ### Fixed
 
 - **Empty URL Link Handling for Typst 0.14.1+ Compatibility** ([#77](https://github.com/YuSabo90002/typsphinx/issues/77))
