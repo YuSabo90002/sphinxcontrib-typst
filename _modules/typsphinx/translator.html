@@ -2428,6 +2428,19 @@
         <span class="c1"># Get the reference URI</span>
         <span class="n">refuri</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;refuri&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
+        <span class="c1"># Handle empty URLs (Typst 0.14+ rejects empty URLs)</span>
+        <span class="c1"># This can occur with unresolved references, broken cross-references,</span>
+        <span class="c1"># or malformed reStructuredText. Instead of generating invalid link(&quot;&quot;, ...),</span>
+        <span class="c1"># we skip the link wrapper and render content as plain text.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">refuri</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Reference node has empty URL. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Link will be rendered as plain text. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Check for broken references in source: </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">astext</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_skip_link_wrapper</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
         <span class="c1"># Determine if we need # prefix (in markup mode)</span>
         <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_markup_mode</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
@@ -2462,6 +2475,16 @@
 <span class="sd">        Args:</span>
 <span class="sd">            node: The reference node</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Skip link wrapper closing if we skipped it in visit</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_skip_link_wrapper&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_skip_link_wrapper</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># Restore list item separator state if needed</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_reference_was_list_item_needs_separator&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_list_item</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">list_item_needs_separator</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_reference_was_list_item_needs_separator&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
         <span class="c1"># Close the link function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
 
