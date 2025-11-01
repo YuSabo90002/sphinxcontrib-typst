@@ -280,14 +280,189 @@ class TypstBuilder(Builder):
             except Exception as e:
                 logger.warning(f"Failed to copy image {imguri}: {e}")
 
+    def copy_template_assets(self) -> None:
+        """
+        Copy template-associated assets to the output directory.
+
+        When using custom Typst templates via typst_template configuration,
+        this method copies assets (fonts, images, logos, etc.) referenced by
+        the template to the output directory.
+
+        Behavior:
+        - If typst_template_assets is configured, copies only specified files/directories
+        - If typst_template_assets is None (default), automatically copies entire template directory
+        - If typst_template_assets is empty list, disables automatic copying
+        - Skips .typ files to avoid duplicating template file (already handled by _write_template_file)
+
+        This follows the same pattern as copy_image_files() from Issue #38.
+        """
+
+        # Early return if no custom template is configured
+        template_path = getattr(self.config, "typst_template", None)
+        if not template_path:
+            return  # No custom template
+
+        # Early return if using Typst Universe package (assets handled by Typst compiler)
+        typst_package = getattr(self.config, "typst_package", None)
+        if typst_package:
+            return
+
+        # Get template assets configuration
+        template_assets = getattr(self.config, "typst_template_assets", None)
+
+        # Check if explicitly disabled (empty list)
+        if template_assets is not None and len(template_assets) == 0:
+            logger.debug("Template asset copying disabled (empty list)")
+            return
+
+        logger.info("Copying template assets...")
+
+        if template_assets:
+            # Option 2: Explicit asset list
+            self._copy_explicit_assets(template_assets)
+        else:
+            # Option 1: Automatic directory copy
+            self._copy_template_directory(template_path)
+
+    def _copy_template_directory(self, template_path: str) -> None:
+        """
+        Copy entire template directory to output (default behavior).
+
+        Automatically copies all files in the template directory,
+        excluding .typ files (which are handled separately).
+
+        Args:
+            template_path: Path to template file relative to source directory
+        """
+        import os
+
+        # Get template directory path
+        template_dir = path.dirname(template_path)
+        if not template_dir:
+            # Template is in root directory, no assets to copy
+            return
+
+        # Resolve absolute paths
+        src_dir = path.join(self.srcdir, template_dir)
+        dest_dir = path.join(self.outdir, template_dir)
+
+        # Check if template directory exists
+        if not path.exists(src_dir):
+            logger.warning(f"Template directory not found: {src_dir}")
+            return
+
+        # Track copied files for logging
+        copied_count = 0
+
+        # Walk through directory and copy all files except .typ
+        for root, _dirs, files in os.walk(src_dir):
+            for file in files:
+                # Skip .typ files (already handled by _write_template_file)
+                if file.endswith(".typ"):
+                    continue
+
+                # Get source and destination paths
+                src_file = path.join(root, file)
+                rel_path = path.relpath(src_file, src_dir)
+                dest_file = path.join(dest_dir, rel_path)
+
+                # Ensure destination directory exists
+                ensuredir(path.dirname(dest_file))
+
+                # Copy the file
+                try:
+                    shutil.copy2(src_file, dest_file)
+                    logger.debug(f"Copied template asset: {rel_path}")
+                    copied_count += 1
+                except Exception as e:
+                    logger.warning(f"Failed to copy template asset {rel_path}: {e}")
+
+        if copied_count > 0:
+            logger.info(f"Copied {copied_count} template asset(s) from {template_dir}/")
+
+    def _copy_explicit_assets(self, assets: list) -> None:
+        """
+        Copy explicitly specified assets.
+
+        Supports individual files, directories, and glob patterns.
+
+        Args:
+            assets: List of asset paths (relative to source directory)
+                   May include glob patterns like "*.png" or "fonts/*.otf"
+        """
+        import glob
+
+        copied_count = 0
+
+        for asset_pattern in assets:
+            # Resolve absolute pattern path
+            abs_pattern = path.join(self.srcdir, asset_pattern)
+
+            # Check if pattern contains wildcards
+            if "*" in asset_pattern or "?" in asset_pattern:
+                # Expand glob pattern
+                matches = glob.glob(abs_pattern, recursive=True)
+                if not matches:
+                    logger.warning(f"No files matched pattern: {asset_pattern}")
+                    continue
+
+                for match in matches:
+                    if self._copy_single_asset(match, asset_pattern):
+                        copied_count += 1
+            else:
+                # Single file or directory
+                if self._copy_single_asset(abs_pattern, asset_pattern):
+                    copied_count += 1
+
+        if copied_count > 0:
+            logger.info(f"Copied {copied_count} explicitly specified template asset(s)")
+
+    def _copy_single_asset(self, src_path: str, original_pattern: str) -> bool:
+        """
+        Copy a single asset file or directory.
+
+        Args:
+            src_path: Absolute source path
+            original_pattern: Original pattern from configuration (for error messages)
+
+        Returns:
+            True if successfully copied, False otherwise
+        """
+
+        # Check if source exists
+        if not path.exists(src_path):
+            logger.warning(f"Template asset not found: {original_pattern}")
+            return False
+
+        # Calculate relative path from source directory
+        rel_path = path.relpath(src_path, self.srcdir)
+        dest_path = path.join(self.outdir, rel_path)
+
+        try:
+            if path.isdir(src_path):
+                # Copy directory recursively
+                # Use copytree with dirs_exist_ok for Python 3.8+
+                shutil.copytree(src_path, dest_path, dirs_exist_ok=True)
+                logger.debug(f"Copied template asset directory: {rel_path}/")
+            else:
+                # Copy single file
+                ensuredir(path.dirname(dest_path))
+                shutil.copy2(src_path, dest_path)
+                logger.debug(f"Copied template asset: {rel_path}")
+            return True
+        except Exception as e:
+            logger.warning(f"Failed to copy template asset {rel_path}: {e}")
+            return False
+
     def finish(self) -> None:
         """
         Finish the build process.
 
         This method is called once after all documents have been written.
-        Copies image files to the output directory.
+        Copies image files and template assets to the output directory.
         """
         self.copy_image_files()
+        self.copy_template_assets()
 
 
 class TypstPDFBuilder(TypstBuilder):

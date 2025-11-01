@@ -55,6 +55,8 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     # Task 13.4: Output directory and debug mode
     app.add_config_value("typst_output_dir", "_build/typst", "html", [str])
     app.add_config_value("typst_debug", False, "html", [bool])
+    # Issue #75: Template asset support
+    app.add_config_value("typst_template_assets", None, "html", [list, type(None)])
 
     return {
         "version": __version__,
