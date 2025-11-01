@@ -28,25 +28,25 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv sync --extra dev
+          uv sync --extra dev --extra docs
           uv pip install -e .
 
-      - name: Build HTML documentation with tox
-        run: uv run tox -e docs-html
+      - name: Build multi-language HTML documentation
+        run: uv run tox -e docs-multilang
 
-      - name: Build PDF documentation with tox
+      - name: Build PDF documentation (English only)
         run: uv run tox -e docs-pdf
 
-      - name: Copy PDF to HTML directory for GitHub Pages
+      - name: Copy PDF to multi-language build (English version)
         run: |
-          mkdir -p docs/_build/html
-          cp docs/_build/pdf/*.pdf docs/_build/html/
+          mkdir -p docs/_build/multilang/en
+          cp docs/_build/pdf/*.pdf docs/_build/multilang/en/
 
       - name: Upload HTML artifact
         uses: actions/upload-artifact@v5
         with:
           name: documentation-html
-          path: docs/_build/html
+          path: docs/_build/multilang
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v5
@@ -59,7 +59,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html
+          publish_dir: ./docs/_build/multilang
           cname: false
 
       - name: Upload PDF to Release

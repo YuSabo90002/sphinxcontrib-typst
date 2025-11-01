@@ -1,0 +1,15 @@
+{# Language switcher for Furo theme #}
+<div class="language-switcher">
+  <p class="sidebar-label">Language / 言語</p>
+  <ul>
+    {% for lang_code, lang_name in languages %}
+    <li{% if language == lang_code %} class="active"{% endif %}>
+      {% if language == lang_code %}
+      <span>{{ lang_name }}</span>
+      {% else %}
+      <a href="{{ pathto('index', 1)|replace('/' + language + '/', '/' + lang_code + '/') }}">{{ lang_name }}</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
