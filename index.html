@@ -2,12 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=./en/index.html">
     <link rel="canonical" href="https://yusabo90002.github.io/typsphinx/en/index.html">
     <title>typsphinx Documentation</title>
     <script>
-      // Detect browser language and redirect accordingly
+      // Smart language detection with session storage
       (function() {
+        // Check if user already visited a language page in this session
+        var visitedLang = sessionStorage.getItem('typsphinx_lang');
+
+        // If user explicitly visited a language page, don't redirect again
+        if (visitedLang) {
+          return;
+        }
+
+        // Otherwise, detect browser language and redirect
         var lang = navigator.language || navigator.userLanguage;
         if (lang && lang.startsWith('ja')) {
           window.location.href = './ja/index.html';
