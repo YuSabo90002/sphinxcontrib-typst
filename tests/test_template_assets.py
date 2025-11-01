@@ -5,7 +5,6 @@ This module tests the copy_template_assets() method and related functionality
 for automatically copying assets (fonts, images, logos) referenced by custom templates.
 """
 
-
 import pytest
 from sphinx.testing.util import SphinxTestApp
 
