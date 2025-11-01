@@ -10,11 +10,11 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
 authors = [
-    {name = "Sphinx Typst Contributors", email = "noreply@example.com"}
+    {name = "YuSabo", email = "yusabo90002@gmail.com"}
 ]
 keywords = ["sphinx", "typst", "documentation", "pdf"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Framework :: Sphinx :: Extension",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",

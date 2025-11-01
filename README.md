@@ -39,7 +39,7 @@ typsphinx is a Sphinx extension that enables generating Typst documents from reS
 
 ## Installation
 
-### From PyPI (Beta Release)
+### From PyPI
 
 ```bash
 pip install typsphinx

@@ -12,7 +12,7 @@ sources using Sphinx, which can then be compiled to PDF using the Typst compiler
 """
 
 __version__ = "0.4.1"
-__author__ = "Sphinx Typst Contributors"
+__author__ = "YuSabo"
 
 from typing import Any, Dict
 

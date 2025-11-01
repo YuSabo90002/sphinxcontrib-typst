@@ -22,8 +22,8 @@ with open(pyproject_path, "rb") as f:
     version = pyproject_data["project"]["version"]
 
 project = "typsphinx"
-copyright = "2025, typsphinx contributors"
-author = "typsphinx contributors"
+copyright = "2025, YuSabo"
+author = "YuSabo"
 release = version
 
 # -- General configuration ---------------------------------------------------

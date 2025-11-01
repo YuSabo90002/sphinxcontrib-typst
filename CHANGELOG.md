@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Project Status & Authorship**
+  - Updated development status to "Production/Stable" in PyPI classifiers
+  - Updated author information across all project files
+  - Removed "Beta Release" designation from PyPI installation instructions
+
 ### Added
 
 - **Template Asset Support** ([#75](https://github.com/YuSabo90002/typsphinx/issues/75))
