@@ -7,7 +7,10 @@
       {% if language == lang_code %}
       <span>{{ lang_name }}</span>
       {% else %}
-      <a href="{{ pathto('index', 1)|replace('/' + language + '/', '/' + lang_code + '/') }}">{{ lang_name }}</a>
+      {# Generate language switch URL by replacing the language code in the current page path #}
+      {% set current_page = pagename + '.html' if pagename else 'index.html' %}
+      {% set base_path = pathto_root %}
+      <a href="{{ base_path }}../{{ lang_code }}/{{ current_page }}">{{ lang_name }}</a>
       {% endif %}
     </li>
     {% endfor %}
