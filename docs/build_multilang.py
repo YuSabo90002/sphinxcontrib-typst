@@ -16,8 +16,8 @@ BUILD_DIR = DOCS_DIR / "_build"
 MULTILANG_DIR = BUILD_DIR / "multilang"
 
 LANGUAGES = {
-    'en': 'English',
-    'ja': '日本語',
+    "en": "English",
+    "ja": "日本語",
 }
 
 
@@ -40,13 +40,15 @@ def build_language(lang_code):
 
     # Set language environment variable
     env = os.environ.copy()
-    env['SPHINX_LANGUAGE'] = lang_code
+    env["SPHINX_LANGUAGE"] = lang_code
 
     # Build HTML
     cmd = [
-        'sphinx-build',
-        '-b', 'html',
-        '-D', f'language={lang_code}',
+        "sphinx-build",
+        "-b",
+        "html",
+        "-D",
+        f"language={lang_code}",
         str(SOURCE_DIR),
         str(output_dir),
     ]
@@ -56,8 +58,13 @@ def build_language(lang_code):
 
     # Print only warnings and errors
     if result.stderr:
-        for line in result.stderr.split('\n'):
-            if 'WARNING' in line or 'ERROR' in line or 'warning' in line or 'error' in line:
+        for line in result.stderr.split("\n"):
+            if (
+                "WARNING" in line
+                or "ERROR" in line
+                or "warning" in line
+                or "error" in line
+            ):
                 print(line)
 
     print(f"\n✓ {LANGUAGES[lang_code]} build complete: {output_dir}\n")
@@ -96,7 +103,7 @@ def create_redirect_page():
 """
 
     index_file = MULTILANG_DIR / "index.html"
-    index_file.write_text(redirect_html, encoding='utf-8')
+    index_file.write_text(redirect_html, encoding="utf-8")
     print(f"✓ Created redirect page: {index_file}\n")
 
 
@@ -117,13 +124,15 @@ def print_summary():
     for lang_code, lang_name in LANGUAGES.items():
         lang_dir = MULTILANG_DIR / lang_code
         if lang_dir.exists():
-            file_count = sum(1 for _ in lang_dir.rglob('*.html'))
-            print(f"  - {lang_name:10s} ({lang_code}): {lang_dir} ({file_count} HTML files)")
+            file_count = sum(1 for _ in lang_dir.rglob("*.html"))
+            print(
+                f"  - {lang_name:10s} ({lang_code}): {lang_dir} ({file_count} HTML files)"
+            )
 
     print(f"\nRedirect page: {MULTILANG_DIR / 'index.html'}")
-    print(f"\nTo test locally, run:")
+    print("\nTo test locally, run:")
     print(f"  cd {MULTILANG_DIR} && python -m http.server 8000")
-    print(f"  Then visit: http://localhost:8000\n")
+    print("  Then visit: http://localhost:8000\n")
 
 
 def main():
