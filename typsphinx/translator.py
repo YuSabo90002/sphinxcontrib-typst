@@ -1930,6 +1930,19 @@ class TypstTranslator(SphinxTranslator):
         # Get the reference URI
         refuri = node.get("refuri", "")
 
+        # Handle empty URLs (Typst 0.14+ rejects empty URLs)
+        # This can occur with unresolved references, broken cross-references,
+        # or malformed reStructuredText. Instead of generating invalid link("", ...),
+        # we skip the link wrapper and render content as plain text.
+        if not refuri:
+            logger.warning(
+                f"Reference node has empty URL. "
+                f"Link will be rendered as plain text. "
+                f"Check for broken references in source: {node.astext()}"
+            )
+            self._skip_link_wrapper = True
+            return
+
         # Determine if we need # prefix (in markup mode)
         prefix = "#" if self._in_markup_mode else ""
 
@@ -1961,6 +1974,16 @@ class TypstTranslator(SphinxTranslator):
         Args:
             node: The reference node
         """
+        # Skip link wrapper closing if we skipped it in visit
+        if getattr(self, "_skip_link_wrapper", False):
+            self._skip_link_wrapper = False
+            # Restore list item separator state if needed
+            if hasattr(self, "_reference_was_list_item_needs_separator"):
+                if self.in_list_item:
+                    self.list_item_needs_separator = True
+                delattr(self, "_reference_was_list_item_needs_separator")
+            return
+
         # Close the link function
         self.add_text(")")
 
