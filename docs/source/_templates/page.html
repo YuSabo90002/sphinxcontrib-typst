@@ -1,0 +1,11 @@
+{% extends "!page.html" %}
+
+{% block extrahead %}
+{{ super() }}
+{# Mark current language in session storage to prevent unwanted redirects #}
+<script>
+  (function() {
+    sessionStorage.setItem('typsphinx_lang', '{{ language }}');
+  })();
+</script>
+{% endblock %}
