@@ -1,0 +1,287 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, YuSabo
+# This file is distributed under the same license as the typsphinx package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: typsphinx 0.4.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 21:21+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/user_guide/builders.rst:2
+msgid "Builders"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:4
+msgid "typsphinx provides two builders for different use cases."
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:7
+msgid "Overview"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:13
+msgid "Builder"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:14
+#: ../../source/user_guide/builders.rst:36
+#: ../../source/user_guide/builders.rst:76
+msgid "Output"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:15
+msgid "Use Case"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:16
+msgid "``typst``"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:17
+msgid "``.typ`` files"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:18
+msgid "Edit Typst markup manually, use external Typst CLI"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:19
+msgid "``typstpdf``"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:20
+msgid "``.pdf`` files"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:21
+msgid "Direct PDF generation, CI/CD pipelines"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:24
+msgid "typst Builder"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:26
+msgid "The ``typst`` builder generates Typst markup files (``.typ``)."
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:29
+#: ../../source/user_guide/builders.rst:69
+msgid "Usage"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:38
+msgid "Generates ``.typ`` files in the output directory"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:39
+msgid "One file per document defined in ``typst_documents``"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:40
+msgid "Include files for multi-document projects"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:43
+#: ../../source/user_guide/builders.rst:83
+msgid "When to Use"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:45
+msgid "You want to edit the generated Typst markup"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:46
+msgid "You have a specific Typst CLI version"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:47
+msgid "You need fine control over compilation"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:48
+msgid "You want to learn Typst syntax"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:51
+msgid "Manual Compilation"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:53
+msgid "After generating ``.typ`` files, compile with Typst CLI:"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:64
+msgid "typstpdf Builder"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:66
+msgid "The ``typstpdf`` builder generates PDF files directly using typst-py."
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:78
+msgid "Generates ``.pdf`` files directly"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:79
+msgid "No external tools required"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:80
+msgid "Uses typst-py Python bindings"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:85
+msgid "You want PDF output immediately"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:86
+msgid "You're running in CI/CD without Typst CLI"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:87
+msgid "You want self-contained builds"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:88
+msgid "You don't need to edit Typst markup"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:91
+msgid "Advantages"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:93
+msgid "**No external dependencies**: Everything runs in Python"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:94
+msgid "**Faster setup**: No need to install Typst CLI"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:95
+msgid "**Reproducible builds**: Same output across environments"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:96
+msgid "**CI/CD friendly**: Works in restricted environments"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:99
+msgid "Configuration"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:101
+msgid "Both builders share the same configuration options in ``conf.py``."
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:104
+msgid "Document Definitions"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:115
+msgid "Builder-Specific Options"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:117
+msgid ""
+"There are no builder-specific options currently. All ``typst_*`` "
+"configuration options apply to both builders."
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:121
+msgid "Choosing a Builder"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:123
+msgid "Use ``typst`` if:"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:125
+msgid "You want to customize the generated Typst code"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:126
+msgid "You need specific Typst CLI features"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:127
+msgid "You're learning Typst and want to see the markup"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:129
+msgid "Use ``typstpdf`` if:"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:131
+msgid "You just want PDF output"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:132
+msgid "You're building in CI/CD"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:133
+msgid "You want the simplest workflow"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:134
+msgid "You don't need to edit Typst code"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:137
+msgid "Common Workflow"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:140
+msgid "Development"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:142
+msgid "During development, use ``typstpdf`` for quick feedback:"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:150
+msgid "Production"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:152
+msgid "For production, you can use either builder:"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:164
+msgid "CI/CD"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:166
+msgid "In CI/CD, ``typstpdf`` is recommended for simplicity:"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:176
+msgid "See Also"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:178
+msgid ":doc:`configuration` - Configuration options"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:179
+msgid ":doc:`templates` - Customizing templates"
+msgstr ""
+
+#: ../../source/user_guide/builders.rst:180
+msgid ":doc:`/examples/basic` - Basic usage examples"
+msgstr ""
+

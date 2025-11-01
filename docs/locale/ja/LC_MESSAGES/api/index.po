@@ -1,0 +1,2132 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, YuSabo
+# This file is distributed under the same license as the typsphinx package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: typsphinx 0.4.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 21:21+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/api/index.rst:2
+msgid "API Reference"
+msgstr ""
+
+#: ../../source/api/index.rst:4
+msgid "This section provides detailed API documentation for typsphinx."
+msgstr ""
+
+#: ../../source/api/index.rst:7
+msgid "Builders"
+msgstr ""
+
+#: of typsphinx.builder:1
+msgid "Typst builder for Sphinx."
+msgstr ""
+
+#: of typsphinx.builder:3
+msgid ""
+"This module implements the TypstBuilder class, which is responsible for "
+"building Typst output from Sphinx documentation."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder:1
+msgid "Bases: :py:class:`~sphinx.builders.Builder`"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder:1
+msgid "Builder class for Typst output format."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder:3
+msgid ""
+"This builder converts Sphinx documentation to Typst markup files (.typ), "
+"which can then be compiled to PDF using the Typst compiler."
+msgstr ""
+
+#: ../../source/api/index.rst of typsphinx.pdf.TypstCompilationError
+#: typsphinx.pdf.compile_typst_to_pdf
+#: typsphinx.template_engine.TemplateEngine.extract_toctree_options
+#: typsphinx.template_engine.TemplateEngine.map_parameters
+#: typsphinx.template_engine.TemplateEngine.render
+#: typsphinx.translator.TypstTranslator.visit_toctree
+msgid "Parameters"
+msgstr ""
+
+#: ../../docstring of typsphinx.builder.TypstBuilder.name:1
+#: typsphinx.builder.TypstPDFBuilder.name:1
+msgid ""
+"The builder's name. This is the value used to select builders on the "
+"command line."
+msgstr ""
+
+#: ../../docstring of typsphinx.builder.TypstBuilder.format:1
+#: typsphinx.builder.TypstPDFBuilder.format:1
+msgid ""
+"The builder's output format, or '' if no document output is produced. "
+"This is commonly the file extension, e.g. \"html\", though any string "
+"value is accepted. The builder's format string can be used by various "
+"components such as :class:`.SphinxPostTransform` or extensions to "
+"determine their compatibility with the builder."
+msgstr ""
+
+#: ../../docstring of typsphinx.builder.TypstBuilder.allow_parallel:1
+msgid "Whether it is safe to make parallel :meth:`~.Builder.write_doc` calls."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.init:1
+msgid "Initialize the builder."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.init:3
+msgid "This method is called once at the beginning of the build process."
+msgstr ""
+
+#: ../../source/api/index.rst of typsphinx.pdf.compile_typst_to_pdf
+#: typsphinx.pdf.get_typst_version
+#: typsphinx.template_engine.TemplateEngine.extract_toctree_options
+#: typsphinx.template_engine.TemplateEngine.generate_package_import
+#: typsphinx.template_engine.TemplateEngine.get_template_content
+#: typsphinx.template_engine.TemplateEngine.load_template
+#: typsphinx.template_engine.TemplateEngine.map_parameters
+#: typsphinx.template_engine.TemplateEngine.render
+#: typsphinx.translator.TypstTranslator.visit_toctree
+msgid "Return type"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.copy_image_files:7
+#: typsphinx.builder.TypstBuilder.copy_template_assets:16
+#: typsphinx.builder.TypstBuilder.finish:7
+#: typsphinx.builder.TypstBuilder.init:6
+#: typsphinx.builder.TypstBuilder.post_process_images:9
+#: typsphinx.builder.TypstBuilder.prepare_writing:9
+#: typsphinx.builder.TypstBuilder.write:16
+#: typsphinx.builder.TypstBuilder.write_doc:15
+#: typsphinx.builder.TypstPDFBuilder.finish:13
+#: typsphinx.builder.TypstPDFBuilder.write_doc:11
+#: typsphinx.pdf.check_typst_available:9
+#: typsphinx.translator.TypstTranslator.add_text:6
+#: typsphinx.translator.TypstTranslator.depart_Text:6
+#: typsphinx.translator.TypstTranslator.depart_attribution:6
+#: typsphinx.translator.TypstTranslator.depart_block_quote:6
+#: typsphinx.translator.TypstTranslator.depart_bullet_list:8
+#: typsphinx.translator.TypstTranslator.depart_caption:6
+#: typsphinx.translator.TypstTranslator.depart_caution:4
+#: typsphinx.translator.TypstTranslator.depart_colspec:6
+#: typsphinx.translator.TypstTranslator.depart_comment:5
+#: typsphinx.translator.TypstTranslator.depart_compound:6
+#: typsphinx.translator.TypstTranslator.depart_container:6
+#: typsphinx.translator.TypstTranslator.depart_definition:8
+#: typsphinx.translator.TypstTranslator.depart_definition_list:8
+#: typsphinx.translator.TypstTranslator.depart_definition_list_item:6
+#: typsphinx.translator.TypstTranslator.depart_desc:6
+#: typsphinx.translator.TypstTranslator.depart_desc_addname:4
+#: typsphinx.translator.TypstTranslator.depart_desc_annotation:6
+#: typsphinx.translator.TypstTranslator.depart_desc_content:4
+#: typsphinx.translator.TypstTranslator.depart_desc_name:4
+#: typsphinx.translator.TypstTranslator.depart_desc_parameter:6
+#: typsphinx.translator.TypstTranslator.depart_desc_parameterlist:4
+#: typsphinx.translator.TypstTranslator.depart_desc_sig_keyword:4
+#: typsphinx.translator.TypstTranslator.depart_desc_sig_name:4
+#: typsphinx.translator.TypstTranslator.depart_desc_sig_operator:4
+#: typsphinx.translator.TypstTranslator.depart_desc_sig_punctuation:4
+#: typsphinx.translator.TypstTranslator.depart_desc_sig_space:4
+#: typsphinx.translator.TypstTranslator.depart_desc_signature:4
+#: typsphinx.translator.TypstTranslator.depart_document:8
+#: typsphinx.translator.TypstTranslator.depart_emphasis:8
+#: typsphinx.translator.TypstTranslator.depart_entry:6
+#: typsphinx.translator.TypstTranslator.depart_enumerated_list:8
+#: typsphinx.translator.TypstTranslator.depart_field:4
+#: typsphinx.translator.TypstTranslator.depart_field_body:6
+#: typsphinx.translator.TypstTranslator.depart_field_list:6
+#: typsphinx.translator.TypstTranslator.depart_field_name:4
+#: typsphinx.translator.TypstTranslator.depart_figure:6
+#: typsphinx.translator.TypstTranslator.depart_image:6
+#: typsphinx.translator.TypstTranslator.depart_important:4
+#: typsphinx.translator.TypstTranslator.depart_index:4
+#: typsphinx.translator.TypstTranslator.depart_inline:4
+#: typsphinx.translator.TypstTranslator.depart_list_item:8
+#: typsphinx.translator.TypstTranslator.depart_literal:8
+#: typsphinx.translator.TypstTranslator.depart_literal_block:8
+#: typsphinx.translator.TypstTranslator.depart_literal_emphasis:4
+#: typsphinx.translator.TypstTranslator.depart_literal_strong:4
+#: typsphinx.translator.TypstTranslator.depart_math:6
+#: typsphinx.translator.TypstTranslator.depart_math_block:6
+#: typsphinx.translator.TypstTranslator.depart_note:4
+#: typsphinx.translator.TypstTranslator.depart_paragraph:8
+#: typsphinx.translator.TypstTranslator.depart_pending_xref:6
+#: typsphinx.translator.TypstTranslator.depart_raw:5
+#: typsphinx.translator.TypstTranslator.depart_reference:6
+#: typsphinx.translator.TypstTranslator.depart_row:6
+#: typsphinx.translator.TypstTranslator.depart_rubric:4
+#: typsphinx.translator.TypstTranslator.depart_section:6
+#: typsphinx.translator.TypstTranslator.depart_seealso:4
+#: typsphinx.translator.TypstTranslator.depart_strong:8
+#: typsphinx.translator.TypstTranslator.depart_subscript:8
+#: typsphinx.translator.TypstTranslator.depart_subtitle:8
+#: typsphinx.translator.TypstTranslator.depart_superscript:8
+#: typsphinx.translator.TypstTranslator.depart_table:6
+#: typsphinx.translator.TypstTranslator.depart_target:6
+#: typsphinx.translator.TypstTranslator.depart_tbody:6
+#: typsphinx.translator.TypstTranslator.depart_term:8
+#: typsphinx.translator.TypstTranslator.depart_tgroup:6
+#: typsphinx.translator.TypstTranslator.depart_thead:6
+#: typsphinx.translator.TypstTranslator.depart_tip:4
+#: typsphinx.translator.TypstTranslator.depart_title:8
+#: typsphinx.translator.TypstTranslator.depart_title_reference:4
+#: typsphinx.translator.TypstTranslator.depart_toctree:6
+#: typsphinx.translator.TypstTranslator.depart_warning:4
+#: typsphinx.translator.TypstTranslator.unknown_departure:6
+#: typsphinx.translator.TypstTranslator.unknown_visit:6
+#: typsphinx.translator.TypstTranslator.visit_Text:12
+#: typsphinx.translator.TypstTranslator.visit_attribution:6
+#: typsphinx.translator.TypstTranslator.visit_block_quote:8
+#: typsphinx.translator.TypstTranslator.visit_bullet_list:8
+#: typsphinx.translator.TypstTranslator.visit_caption:8
+#: typsphinx.translator.TypstTranslator.visit_caution:4
+#: typsphinx.translator.TypstTranslator.visit_colspec:6
+#: typsphinx.translator.TypstTranslator.visit_comment:11
+#: typsphinx.translator.TypstTranslator.visit_compound:9
+#: typsphinx.translator.TypstTranslator.visit_container:9
+#: typsphinx.translator.TypstTranslator.visit_definition:8
+#: typsphinx.translator.TypstTranslator.visit_definition_list:9
+#: typsphinx.translator.TypstTranslator.visit_definition_list_item:6
+#: typsphinx.translator.TypstTranslator.visit_desc:6
+#: typsphinx.translator.TypstTranslator.visit_desc_addname:4
+#: typsphinx.translator.TypstTranslator.visit_desc_annotation:4
+#: typsphinx.translator.TypstTranslator.visit_desc_content:4
+#: typsphinx.translator.TypstTranslator.visit_desc_name:4
+#: typsphinx.translator.TypstTranslator.visit_desc_parameter:4
+#: typsphinx.translator.TypstTranslator.visit_desc_parameterlist:6
+#: typsphinx.translator.TypstTranslator.visit_desc_sig_keyword:4
+#: typsphinx.translator.TypstTranslator.visit_desc_sig_name:4
+#: typsphinx.translator.TypstTranslator.visit_desc_sig_operator:4
+#: typsphinx.translator.TypstTranslator.visit_desc_sig_punctuation:4
+#: typsphinx.translator.TypstTranslator.visit_desc_sig_space:4
+#: typsphinx.translator.TypstTranslator.visit_desc_signature:6
+#: typsphinx.translator.TypstTranslator.visit_document:8
+#: typsphinx.translator.TypstTranslator.visit_emphasis:9
+#: typsphinx.translator.TypstTranslator.visit_entry:6
+#: typsphinx.translator.TypstTranslator.visit_enumerated_list:8
+#: typsphinx.translator.TypstTranslator.visit_field:4
+#: typsphinx.translator.TypstTranslator.visit_field_body:4
+#: typsphinx.translator.TypstTranslator.visit_field_list:4
+#: typsphinx.translator.TypstTranslator.visit_field_name:6
+#: typsphinx.translator.TypstTranslator.visit_figure:8
+#: typsphinx.translator.TypstTranslator.visit_image:9
+#: typsphinx.translator.TypstTranslator.visit_important:4
+#: typsphinx.translator.TypstTranslator.visit_index:6
+#: typsphinx.translator.TypstTranslator.visit_inline:10
+#: typsphinx.translator.TypstTranslator.visit_list_item:8
+#: typsphinx.translator.TypstTranslator.visit_literal:9
+#: typsphinx.translator.TypstTranslator.visit_literal_block:12
+#: typsphinx.translator.TypstTranslator.visit_literal_emphasis:4
+#: typsphinx.translator.TypstTranslator.visit_literal_strong:4
+#: typsphinx.translator.TypstTranslator.visit_math:16
+#: typsphinx.translator.TypstTranslator.visit_math_block:16
+#: typsphinx.translator.TypstTranslator.visit_note:4
+#: typsphinx.translator.TypstTranslator.visit_paragraph:12
+#: typsphinx.translator.TypstTranslator.visit_pending_xref:6
+#: typsphinx.translator.TypstTranslator.visit_raw:10
+#: typsphinx.translator.TypstTranslator.visit_reference:8
+#: typsphinx.translator.TypstTranslator.visit_row:6
+#: typsphinx.translator.TypstTranslator.visit_rubric:6
+#: typsphinx.translator.TypstTranslator.visit_section:6
+#: typsphinx.translator.TypstTranslator.visit_seealso:4
+#: typsphinx.translator.TypstTranslator.visit_strong:9
+#: typsphinx.translator.TypstTranslator.visit_subscript:9
+#: typsphinx.translator.TypstTranslator.visit_subtitle:9
+#: typsphinx.translator.TypstTranslator.visit_superscript:9
+#: typsphinx.translator.TypstTranslator.visit_table:6
+#: typsphinx.translator.TypstTranslator.visit_target:6
+#: typsphinx.translator.TypstTranslator.visit_tbody:6
+#: typsphinx.translator.TypstTranslator.visit_term:8
+#: typsphinx.translator.TypstTranslator.visit_tgroup:6
+#: typsphinx.translator.TypstTranslator.visit_thead:6
+#: typsphinx.translator.TypstTranslator.visit_tip:4
+#: typsphinx.translator.TypstTranslator.visit_title:9
+#: typsphinx.translator.TypstTranslator.visit_title_reference:6
+#: typsphinx.translator.TypstTranslator.visit_toctree:14
+#: typsphinx.translator.TypstTranslator.visit_warning:4
+#: typsphinx.writer.TypstWriter.translate:10
+msgid ":sphinx_autodoc_typehints_type:`\\:py\\:obj\\:\\`None\\``"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_outdated_docs:1
+msgid "Return an iterator of document names that need to be rebuilt."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_outdated_docs:3
+msgid "For now, we rebuild all documents on every build."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_outdated_docs:5
+msgid ""
+":sphinx_autodoc_typehints_type:`\\:py\\:class\\:\\`\\~collections.abc.Iterator\\`\\\\"
+" \\\\\\[\\:py\\:class\\:\\`str\\`\\]`"
+msgstr ""
+
+#: ../../source/api/index.rst of typsphinx.pdf.compile_typst_to_pdf
+#: typsphinx.pdf.get_typst_version
+#: typsphinx.template_engine.TemplateEngine.extract_toctree_options
+#: typsphinx.template_engine.TemplateEngine.generate_package_import
+#: typsphinx.template_engine.TemplateEngine.get_template_content
+#: typsphinx.template_engine.TemplateEngine.load_template
+#: typsphinx.template_engine.TemplateEngine.map_parameters
+#: typsphinx.template_engine.TemplateEngine.render
+msgid "Returns"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_outdated_docs:6
+msgid "Iterator of document names that are outdated"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_target_uri:1
+msgid "Return the target URI for a document."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_target_uri:4
+#: typsphinx.builder.TypstBuilder.write_doc:11
+#: typsphinx.builder.TypstPDFBuilder.write_doc:7
+msgid "Name of the document"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_target_uri:6
+msgid "Type of the target (not used for Typst builder)"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_target_uri:8
+#: typsphinx.pdf.get_typst_version:3
+#: typsphinx.template_engine.TemplateEngine.generate_package_import:3
+#: typsphinx.template_engine.TemplateEngine.get_default_template_path:3
+#: typsphinx.template_engine.TemplateEngine.get_template_content:3
+#: typsphinx.template_engine.TemplateEngine.load_template:6
+#: typsphinx.template_engine.TemplateEngine.render:12
+#: typsphinx.translator.TypstTranslator.astext:3
+msgid ":sphinx_autodoc_typehints_type:`\\:py\\:class\\:\\`str\\``"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.get_target_uri:9
+msgid "Target URI string"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.prepare_writing:1
+msgid "Prepare for writing the documents."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.prepare_writing:3
+msgid ""
+"This method is called before writing begins. Writes the template file to "
+"the output directory for master documents to import."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.prepare_writing:7
+msgid "Set of document names to be written"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write:1
+msgid "Override write() to preserve toctree nodes."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write:3
+msgid ""
+"By default, Sphinx's Builder.write() calls env.get_and_resolve_doctree() "
+"which expands toctree nodes into compact_paragraph with links. For Typst,"
+" we need the original toctree nodes to generate #include() directives."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write:7
+msgid "This method uses env.get_doctree() instead to preserve toctree nodes."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write:10
+msgid "Document names to build (None = all)"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write:12
+msgid "Document names that were updated"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write:14
+msgid "Build method ('update' or 'all')"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.post_process_images:1
+msgid "Post-process images in the document tree."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.post_process_images:3
+msgid ""
+"Collects all image nodes from the document tree and tracks them in "
+"self.images dictionary for later copying to the output directory."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.post_process_images:7
+msgid "Document tree to process"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write_doc:1
+msgid "Write a document."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write_doc:3
+msgid "This method is called for each document that needs to be written."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write_doc:5
+msgid "Requirement 13.1: 各 reStructuredText ファイルに対応する独立した .typ ファイルを生成する"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write_doc:8
+msgid "Requirement 13.12: ソースディレクトリ構造を保持して出力する"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.write_doc:13
+#: typsphinx.builder.TypstPDFBuilder.write_doc:9
+msgid "Document tree to be written"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.copy_image_files:1
+msgid "Copy image files to the output directory."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.copy_image_files:3
+msgid ""
+"Iterates through all tracked images and copies them from the source "
+"directory to the output directory, preserving relative paths."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.copy_template_assets:1
+msgid "Copy template-associated assets to the output directory."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.copy_template_assets:3
+msgid ""
+"When using custom Typst templates via typst_template configuration, this "
+"method copies assets (fonts, images, logos, etc.) referenced by the "
+"template to the output directory."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.copy_template_assets:7
+msgid ""
+"Behavior: - If typst_template_assets is configured, copies only specified"
+" files/directories - If typst_template_assets is None (default), "
+"automatically copies entire template directory - If typst_template_assets"
+" is empty list, disables automatic copying - Skips .typ files to avoid "
+"duplicating template file (already handled by _write_template_file)"
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.copy_template_assets:13
+msgid "This follows the same pattern as copy_image_files() from Issue #38."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.finish:1
+msgid "Finish the build process."
+msgstr ""
+
+#: of typsphinx.builder.TypstBuilder.finish:3
+msgid ""
+"This method is called once after all documents have been written. Copies "
+"image files and template assets to the output directory."
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder:1
+msgid "Bases: :py:class:`~typsphinx.builder.TypstBuilder`"
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder:1
+msgid "Builder class for generating PDF output directly from Typst."
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder:3
+msgid ""
+"This builder extends TypstBuilder to compile generated .typ files to PDF "
+"using the typst-py package."
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder:6
+msgid ""
+"Requirement 9.3: TypstPDFBuilder extends TypstBuilder Requirement 9.4: "
+"Generate PDF from Typst markup"
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder.write_doc:1
+msgid "Write a document as both .typ and .pdf."
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder.write_doc:3
+msgid ""
+"Override to generate .typ file (not .pdf) during the write phase. The "
+".pdf will be generated in finish() by compiling the .typ file."
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder.finish:1
+msgid "Finish the build process by compiling Typst files to PDF."
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder.finish:3
+msgid ""
+"After the parent TypstBuilder has generated .typ files, this method "
+"compiles them to PDF using typst-py."
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder.finish:6
+msgid ""
+"Only master documents (defined in typst_documents) are compiled to PDF. "
+"Included documents are not compiled individually."
+msgstr ""
+
+#: of typsphinx.builder.TypstPDFBuilder.finish:9
+msgid ""
+"Requirement 9.2: Execute Typst compilation within Python Requirement 9.4:"
+" Generate PDF from Typst markup"
+msgstr ""
+
+#: of typsphinx.pdf:1
+msgid "PDF generation utilities using typst-py."
+msgstr ""
+
+#: of typsphinx.pdf:3
+msgid ""
+"This module provides functionality for generating PDFs from Typst markup "
+"using the typst Python package (Requirement 9)."
+msgstr ""
+
+#: of typsphinx.pdf.TypstCompilationError:1
+msgid "Bases: :py:class:`Exception`"
+msgstr ""
+
+#: of typsphinx.pdf.TypstCompilationError:1
+msgid "Exception raised when Typst compilation fails."
+msgstr ""
+
+#: of typsphinx.pdf.TypstCompilationError:3
+msgid ""
+"This exception provides detailed information about compilation errors, "
+"including the original error from typst-py and contextual information."
+msgstr ""
+
+#: of typsphinx.pdf.TypstCompilationError:8
+msgid "Human-readable error message"
+msgstr ""
+
+#: of typsphinx.pdf.TypstCompilationError:12
+msgid "Original error from typst compiler"
+msgstr ""
+
+#: of typsphinx.pdf.TypstCompilationError:16
+msgid "Location information if available"
+msgstr ""
+
+#: of typsphinx.pdf.TypstCompilationError:18
+msgid ""
+"Requirement 10.3: Error detection and handling Requirement 10.4: Error "
+"message parsing and user display"
+msgstr ""
+
+#: of typsphinx.pdf.check_typst_available:1
+msgid "Check if typst package is available."
+msgstr ""
+
+#: ../../source/api/index.rst of typsphinx.pdf.compile_typst_to_pdf
+msgid "Raises"
+msgstr ""
+
+#: of typsphinx.pdf.check_typst_available:3
+msgid "If typst package is not installed"
+msgstr ""
+
+#: of typsphinx.pdf.check_typst_available:5
+msgid ""
+"Requirement 9.1: Typst compiler functionality as dependency Requirement "
+"9.7: Automatic availability of Typst compiler"
+msgstr ""
+
+#: of typsphinx.pdf.get_typst_version:1
+msgid "Get the version of the typst package."
+msgstr ""
+
+#: of typsphinx.pdf.get_typst_version:4
+msgid "Version string (e.g., \"0.13.7\")"
+msgstr ""
+
+#: of typsphinx.pdf.get_typst_version:6
+msgid "Requirement 9.7: Version information for Typst compiler"
+msgstr ""
+
+#: of typsphinx.pdf.compile_typst_to_pdf:1
+msgid "Compile Typst content to PDF bytes."
+msgstr ""
+
+#: of typsphinx.pdf.compile_typst_to_pdf:4
+msgid "Typst markup content"
+msgstr ""
+
+#: of typsphinx.pdf.compile_typst_to_pdf:6
+msgid "Root directory for resolving includes and images"
+msgstr ""
+
+#: of typsphinx.pdf.compile_typst_to_pdf:8
+msgid ":sphinx_autodoc_typehints_type:`\\:py\\:class\\:\\`bytes\\``"
+msgstr ""
+
+#: of typsphinx.pdf.compile_typst_to_pdf:9
+msgid "PDF content as bytes"
+msgstr ""
+
+#: of typsphinx.pdf.compile_typst_to_pdf:11
+msgid "If typst package not available"
+msgstr ""
+
+#: of typsphinx.pdf.compile_typst_to_pdf:12
+msgid "If compilation fails"
+msgstr ""
+
+#: of typsphinx.pdf.compile_typst_to_pdf:14
+msgid ""
+"Requirement 9.2: Execute Typst compilation within Python environment "
+"Requirement 9.4: Generate PDF from Typst markup Requirement 10.3: Error "
+"detection and handling"
+msgstr ""
+
+#: ../../source/api/index.rst:20
+msgid "Writer and Translator"
+msgstr ""
+
+#: of typsphinx.writer:1
+msgid "Typst writer for docutils."
+msgstr ""
+
+#: of typsphinx.writer:3
+msgid ""
+"This module implements the TypstWriter class, which converts docutils "
+"document trees to Typst markup."
+msgstr ""
+
+#: of typsphinx.writer.TypstWriter:1
+msgid "Bases: :py:class:`~docutils.writers.Writer`"
+msgstr ""
+
+#: of typsphinx.writer.TypstWriter:1
+msgid "Writer class for Typst output format."
+msgstr ""
+
+#: of typsphinx.writer.TypstWriter:3
+msgid "This writer converts docutils document trees to Typst markup files."
+msgstr ""
+
+#: ../../docstring of typsphinx.writer.TypstWriter.supported:1
+msgid "Formats this writer supports."
+msgstr ""
+
+#: of typsphinx.writer.TypstWriter.translate:1
+msgid "Translate the document tree to Typst markup."
+msgstr ""
+
+#: of typsphinx.writer.TypstWriter.translate:3
+msgid ""
+"This method creates a TypstTranslator and visits the document tree, then "
+"wraps the output with a template using TemplateEngine."
+msgstr ""
+
+#: of typsphinx.writer.TypstWriter.translate:6
+msgid ""
+"For master documents (defined in typst_documents), the full template is "
+"applied. For included documents, only the body content is output."
+msgstr ""
+
+#: of typsphinx.translator:1
+msgid "Typst translator for docutils nodes."
+msgstr ""
+
+#: of typsphinx.translator:3
+msgid ""
+"This module implements the TypstTranslator class, which translates "
+"docutils nodes to Typst markup."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator:1
+msgid "Bases: :py:class:`~sphinx.util.docutils.SphinxTranslator`"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator:1
+msgid "Translator class that converts docutils nodes to Typst markup."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator:3
+msgid ""
+"This translator visits nodes in the document tree and generates "
+"corresponding Typst markup."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.astext:1
+msgid "Return the translated text as a string."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.astext:4
+msgid "The translated Typst markup"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.add_text:1
+msgid "Add text to the output body or table cell content."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.add_text:4
+msgid "The text to add"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_document:1
+msgid "Visit a document node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_document:3
+msgid "Generates opening code block wrapper for unified code mode."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_document:6
+#: typsphinx.translator.TypstTranslator.visit_document:6
+msgid "The document node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_document:1
+msgid "Depart a document node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_document:3
+msgid "Generates closing code block wrapper for unified code mode."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_section:1
+msgid "Visit a section node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_section:4
+#: typsphinx.translator.TypstTranslator.visit_section:4
+msgid "The section node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_section:1
+msgid "Depart a section node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_title:1
+msgid "Visit a title node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_title:3
+msgid ""
+"Generates heading() function call with level parameter. Child text nodes "
+"will be wrapped in text() automatically."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_title:6
+#: typsphinx.translator.TypstTranslator.visit_title:7
+msgid "The title node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_title:1
+msgid "Depart a title node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_title:3
+msgid "Closes heading() function call."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_subtitle:1
+msgid "Visit a subtitle node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_subtitle:3
+msgid ""
+"Generates emph() function for subtitle (no # prefix in code mode). Child "
+"text nodes will be wrapped in text() automatically."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_subtitle:6
+#: typsphinx.translator.TypstTranslator.visit_subtitle:7
+msgid "The subtitle node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_subtitle:1
+msgid "Depart a subtitle node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_subtitle:3
+msgid "Closes emph() function."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_compound:1
+msgid "Visit a compound node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_compound:3
+msgid ""
+"Compound nodes are containers that group related content. They are often "
+"used to wrap toctree directives."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_compound:4
+#: typsphinx.translator.TypstTranslator.visit_compound:7
+msgid "The compound node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_compound:1
+msgid "Depart a compound node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_container:1
+msgid "Visit a container node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_container:3
+msgid ""
+"Handle Sphinx-generated containers, particularly literal-block-wrapper "
+"for captioned code blocks (Issue #20)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_container:4
+#: typsphinx.translator.TypstTranslator.visit_container:7
+msgid "The container node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_container:1
+msgid "Depart a container node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_paragraph:1
+msgid "Visit a paragraph node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_paragraph:3
+msgid ""
+"Wraps paragraph content in par() function for unified code mode. Code "
+"mode doesn't auto-recognize paragraph breaks from blank lines."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_paragraph:6
+msgid ""
+"Exception: Inside list items, paragraphs are not wrapped in par() to "
+"avoid syntax like \"- par(text(...))\" which is invalid."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_paragraph:6
+#: typsphinx.translator.TypstTranslator.visit_paragraph:10
+msgid "The paragraph node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_paragraph:1
+msgid "Depart a paragraph node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_paragraph:3
+#, python-brace-format
+msgid "Closes par({}) function and adds spacing."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_comment:1
+msgid "Visit a comment node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_comment:3
+msgid ""
+"Comments are skipped entirely in Typst output as they are meant for "
+"source-level documentation only."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_comment:4
+#: typsphinx.translator.TypstTranslator.visit_comment:7
+msgid "The comment node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_comment:9
+msgid "Always raised to skip the comment"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_comment:1
+msgid "Depart a comment node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_comment:7
+msgid "This method is not called when SkipNode is raised in visit_comment."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_raw:1
+msgid "Visit a raw node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_raw:3
+msgid "Pass through content if format is 'typst', otherwise skip."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_raw:4
+#: typsphinx.translator.TypstTranslator.visit_raw:6
+msgid "The raw node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_raw:8
+msgid "When format is not 'typst'"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_raw:1
+msgid "Depart a raw node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_raw:7
+msgid "This method is not called when SkipNode is raised in visit_raw."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_Text:1
+msgid "Visit a text node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_Text:3
+msgid ""
+"Wraps text in text() function for unified code mode. Uses string escaping"
+" (not markup escaping)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_Text:6
+msgid ""
+"Exception: Inside literal blocks, text is output directly without text() "
+"wrapping to preserve code content."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_Text:4
+#: typsphinx.translator.TypstTranslator.visit_Text:10
+msgid "The text node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_Text:1
+msgid "Depart a text node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_emphasis:1
+msgid "Visit an emphasis (italic) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_emphasis:3
+msgid ""
+"Generates emph() function call. Child text nodes will be wrapped in "
+"text() automatically."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_emphasis:6
+#: typsphinx.translator.TypstTranslator.visit_emphasis:7
+msgid "The emphasis node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_emphasis:1
+msgid "Depart an emphasis (italic) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_emphasis:3
+#, python-brace-format
+msgid "Closes emph({}) function call."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_strong:1
+msgid "Visit a strong (bold) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_strong:3
+msgid ""
+"Generates strong() function call. Child text nodes will be wrapped in "
+"text() automatically."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_strong:6
+#: typsphinx.translator.TypstTranslator.visit_strong:7
+msgid "The strong node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_strong:1
+msgid "Depart a strong (bold) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_strong:3
+#, python-brace-format
+msgid "Closes strong({}) function call."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_literal:1
+msgid "Visit a literal (inline code) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_literal:3
+msgid ""
+"Generates raw() function call with backtick raw string. Uses backticks to"
+" avoid escaping issues."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_literal:6
+#: typsphinx.translator.TypstTranslator.visit_literal:7
+msgid "The literal node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_literal:1
+msgid "Depart a literal (inline code) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_literal:3
+msgid "This is not called when SkipNode is raised in visit_literal."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_subscript:1
+msgid "Visit a subscript node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_subscript:3
+msgid ""
+"Generates sub() function call. Child text nodes will be wrapped in text()"
+" automatically."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_subscript:6
+#: typsphinx.translator.TypstTranslator.visit_subscript:7
+msgid "The subscript node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_subscript:1
+msgid "Depart a subscript node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_subscript:3
+msgid "Closes sub() function call."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_superscript:1
+msgid "Visit a superscript node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_superscript:3
+msgid ""
+"Generates super() function call. Child text nodes will be wrapped in "
+"text() automatically."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_superscript:6
+#: typsphinx.translator.TypstTranslator.visit_superscript:7
+msgid "The superscript node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_superscript:1
+msgid "Depart a superscript node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_superscript:3
+msgid "Closes super() function call."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_bullet_list:1
+msgid "Visit a bullet list node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_bullet_list:3
+msgid "Outputs list( and prepares for stream-based item rendering."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_bullet_list:6
+#: typsphinx.translator.TypstTranslator.visit_bullet_list:6
+msgid "The bullet list node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_bullet_list:1
+msgid "Depart a bullet list node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_bullet_list:3
+msgid "Closes the list() function."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_enumerated_list:1
+msgid "Visit an enumerated (numbered) list node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_enumerated_list:3
+msgid "Outputs enum( and prepares for stream-based item rendering."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_enumerated_list:6
+#: typsphinx.translator.TypstTranslator.visit_enumerated_list:6
+msgid "The enumerated list node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_enumerated_list:1
+msgid "Depart an enumerated (numbered) list node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_enumerated_list:3
+msgid "Closes the enum() function."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_list_item:1
+msgid "Visit a list item node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_list_item:3
+msgid "Adds comma separator if not first item, then prepares for item content."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_list_item:6
+#: typsphinx.translator.TypstTranslator.visit_list_item:6
+msgid "The list item node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_list_item:1
+msgid "Depart a list item node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_list_item:3
+#, python-brace-format
+msgid "Close the { } block wrapper and mark that we're no longer in a list item."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_literal_block:1
+msgid "Visit a literal block (code block) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_literal_block:3
+msgid ""
+"Implements Task 4.2.2: codly forced usage with #codly-range() for "
+"highlighted lines Design 3.5: All code blocks use codly, with #codly-"
+"range() for highlights Requirements 7.3, 7.4: Support line numbers and "
+"highlighted lines Issue #20: Support :linenos:, :caption:, and :name: "
+"options Issue #31: Support :lineno-start: and :dedent: options"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_literal_block:6
+#: typsphinx.translator.TypstTranslator.visit_literal_block:10
+msgid "The literal block node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_literal_block:1
+msgid "Depart a literal block (code block) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_literal_block:3
+msgid "Issue #20: Handle closing figure bracket and labels."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_definition_list:1
+msgid "Visit a definition list node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_definition_list:3
+msgid ""
+"Collects all term-definition pairs and generates terms() function in "
+"unified code mode."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_definition_list:6
+#: typsphinx.translator.TypstTranslator.visit_definition_list:7
+msgid "The definition list node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_definition_list:1
+msgid "Depart a definition list node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_definition_list:3
+msgid "Generates terms() function with all collected term-definition pairs."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_definition_list_item:1
+msgid "Visit a definition list item node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_definition_list_item:4
+#: typsphinx.translator.TypstTranslator.visit_definition_list_item:4
+msgid "The definition list item node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_definition_list_item:1
+msgid "Depart a definition list item node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_term:1
+msgid "Visit a term (definition list term) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_term:3
+msgid "Starts buffering term content."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_term:6
+#: typsphinx.translator.TypstTranslator.visit_term:6
+msgid "The term node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_term:1
+msgid "Depart a term (definition list term) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_term:3
+msgid "Saves buffered term content."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_definition:1
+msgid "Visit a definition (definition list definition) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_definition:3
+msgid "Starts buffering definition content."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_definition:6
+#: typsphinx.translator.TypstTranslator.visit_definition:6
+msgid "The definition node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_definition:1
+msgid "Depart a definition (definition list definition) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_definition:3
+msgid "Saves buffered definition content and pairs it with the term."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_figure:1
+msgid "Visit a figure node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_figure:3
+msgid "Generates figure() function call (no # prefix in code mode)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_figure:4
+#: typsphinx.translator.TypstTranslator.visit_figure:6
+msgid "The figure node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_figure:1
+msgid "Depart a figure node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_caption:1
+msgid "Visit a caption node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_caption:3
+msgid "Handles captions for both figures and code blocks (Issue #20)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_caption:4
+#: typsphinx.translator.TypstTranslator.visit_caption:6
+msgid "The caption node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_caption:1
+msgid "Depart a caption node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_table:1
+msgid "Visit a table node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_table:4
+#: typsphinx.translator.TypstTranslator.visit_table:4
+msgid "The table node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_table:1
+msgid "Depart a table node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_tgroup:1
+msgid "Visit a tgroup (table group) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_tgroup:4
+#: typsphinx.translator.TypstTranslator.visit_tgroup:4
+msgid "The tgroup node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_tgroup:1
+msgid "Depart a tgroup (table group) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_colspec:1
+msgid "Visit a colspec (column specification) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_colspec:4
+#: typsphinx.translator.TypstTranslator.visit_colspec:4
+msgid "The colspec node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_colspec:1
+msgid "Depart a colspec (column specification) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_thead:1
+msgid "Visit a thead (table header) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_thead:4
+#: typsphinx.translator.TypstTranslator.visit_thead:4
+msgid "The thead node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_thead:1
+msgid "Depart a thead (table header) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_tbody:1
+msgid "Visit a tbody (table body) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_tbody:4
+#: typsphinx.translator.TypstTranslator.visit_tbody:4
+msgid "The tbody node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_tbody:1
+msgid "Depart a tbody (table body) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_row:1
+msgid "Visit a row (table row) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_row:4
+#: typsphinx.translator.TypstTranslator.visit_row:4
+msgid "The row node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_row:1
+msgid "Depart a row (table row) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_entry:1
+msgid "Visit an entry (table cell) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_entry:4
+#: typsphinx.translator.TypstTranslator.visit_entry:4
+msgid "The entry node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_entry:1
+msgid "Depart an entry (table cell) node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_block_quote:1
+msgid "Visit a block quote node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_block_quote:3
+msgid "Generates quote() function call (no # prefix in code mode)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_block_quote:4
+#: typsphinx.translator.TypstTranslator.visit_block_quote:6
+msgid "The block quote node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_block_quote:1
+msgid "Depart a block quote node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_attribution:1
+msgid "Visit an attribution node (quote attribution)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_attribution:4
+#: typsphinx.translator.TypstTranslator.visit_attribution:4
+msgid "The attribution node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_attribution:1
+msgid "Depart an attribution node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_image:1
+msgid "Visit an image node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_image:3
+msgid ""
+"Generates image() function call (no # prefix in code mode). Adjusts image"
+" paths for nested documents (Issue #69)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_image:4
+#: typsphinx.translator.TypstTranslator.visit_image:7
+msgid "The image node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_image:1
+msgid "Depart an image node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_target:1
+msgid "Visit a target node (label definition)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_target:4
+#: typsphinx.translator.TypstTranslator.visit_target:4
+msgid "The target node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_target:1
+msgid "Depart a target node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_pending_xref:1
+msgid "Visit a pending_xref node (Sphinx cross-reference)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_pending_xref:4
+#: typsphinx.translator.TypstTranslator.visit_pending_xref:4
+msgid "The pending_xref node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_pending_xref:1
+msgid "Depart a pending_xref node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_toctree:1
+msgid "Visit a toctree node (Sphinx table of contents tree)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_toctree:3
+msgid ""
+"Requirement 13: Multi-document integration and toctree processing - "
+"Generate #include() for each entry - Apply #set heading(offset: 1) to "
+"lower heading levels - Issue #5: Fix relative paths for nested toctrees"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_toctree:7
+msgid "Calculate relative paths from current document"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_toctree:8
+msgid ""
+"Issue #7: Simplify toctree output with single content block - Generate "
+"single #[...] block containing all includes - Apply #set heading(offset: "
+"1) once per toctree"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_toctree:4
+#: typsphinx.translator.TypstTranslator.visit_toctree:13
+msgid "The toctree node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_toctree:17
+msgid "Notes"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_toctree:18
+msgid ""
+"This method generates Typst #include() directives for each toctree entry "
+"within a single content block #[...] to apply heading offset without "
+"displaying the block delimiters in the output. This simplifies the "
+"generated Typst code and improves readability."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_toctree:1
+msgid "Depart a toctree node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_reference:1
+msgid "Visit a reference node (link)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_reference:3
+msgid "Generates link() function call (no # prefix in code mode)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_reference:4
+#: typsphinx.translator.TypstTranslator.visit_reference:6
+msgid "The reference node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_reference:1
+msgid "Depart a reference node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.unknown_visit:1
+msgid "Handle unknown nodes during visit."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.unknown_departure:4
+#: typsphinx.translator.TypstTranslator.unknown_visit:4
+msgid "The unknown node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.unknown_departure:1
+msgid "Handle unknown nodes during departure."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_math:1
+msgid "Visit an inline math node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_math:3
+msgid ""
+"Implements Task 6.2: LaTeX math conversion (mitex) Implements Task 6.3: "
+"Labeled equations Implements Task 6.4: Typst native math support "
+"Implements Task 6.5: Math fallback functionality Requirement 4.3: Inline "
+"math should use #mi(`...`) format (LaTeX) Requirement 4.9: Fallback when "
+"typst_use_mitex=False Requirement 5.2: Inline math should use $...$ "
+"format (Typst native) Requirement 4.7: Labeled equations should generate "
+"<eq:label> format Design 3.3: Support both mitex and Typst native math"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_math:4
+#: typsphinx.translator.TypstTranslator.visit_math:14
+msgid "The inline math node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_math:1
+msgid "Depart an inline math node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_math_block:1
+msgid "Visit a block math node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_math_block:3
+msgid ""
+"Implements Task 6.2: LaTeX math conversion (mitex) Implements Task 6.3: "
+"Labeled equations Implements Task 6.4: Typst native math support "
+"Implements Task 6.5: Math fallback functionality Requirement 4.2: Block "
+"math should use #mitex(`...`) format (LaTeX) Requirement 4.9: Fallback "
+"when typst_use_mitex=False Requirement 5.2: Block math should use $ ... $"
+" format (Typst native) Requirement 4.7: Labeled equations should generate"
+" <eq:label> format Design 3.3: Support both mitex and Typst native math"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_math_block:4
+#: typsphinx.translator.TypstTranslator.visit_math_block:14
+msgid "The block math node"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_math_block:1
+msgid "Depart a block math node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_note:1
+msgid "Visit a note admonition (converts to #info[])."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_note:1
+msgid "Depart a note admonition."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_warning:1
+msgid "Visit a warning admonition (converts to #warning[])."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_warning:1
+msgid "Depart a warning admonition."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_tip:1
+msgid "Visit a tip admonition (converts to #tip[])."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_tip:1
+msgid "Depart a tip admonition."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_important:1
+msgid ""
+"Visit an important admonition (converts to #warning(title: "
+"\"Important\")[])."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_important:1
+msgid "Depart an important admonition."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_caution:1
+msgid "Visit a caution admonition (converts to #warning[])."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_caution:1
+msgid "Depart a caution admonition."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_seealso:1
+msgid "Visit a seealso admonition (converts to #info(title: \"See Also\")[])."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_seealso:1
+msgid "Depart a seealso admonition."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_inline:1
+msgid "Visit an inline node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_inline:3
+msgid ""
+"Inline nodes are generic containers for inline content. They are often "
+"used for cross-references with specific CSS classes."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_inline:6
+msgid ""
+"Task 7.4: Handle inline nodes, especially those with 'xref' class "
+"Requirement 3.1: Cross-references and links"
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_inline:1
+msgid "Depart an inline node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_index:1
+msgid "Visit an index node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_index:3
+msgid ""
+"Index entries are skipped in Typst/PDF output as we don't generate "
+"indices."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_index:1
+msgid "Depart an index node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc:1
+msgid "Visit a desc node (API description container)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc:3
+msgid "Desc nodes contain API descriptions (classes, functions, methods, etc.)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc:1
+msgid "Depart a desc node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc:3
+msgid "Add spacing after API description blocks."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_signature:1
+msgid "Visit a desc_signature node (API element signature)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_signature:3
+#, python-brace-format
+msgid "Signatures are rendered in bold using strong({}) wrapper."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_signature:1
+msgid "Depart a desc_signature node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_content:1
+msgid "Visit a desc_content node (API description content)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_content:1
+msgid "Depart a desc_content node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_annotation:1
+msgid ""
+"Visit a desc_annotation node (type annotations like 'class', 'async', "
+"etc.)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_annotation:1
+msgid "Depart a desc_annotation node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_annotation:3
+msgid "Space after annotation is handled by desc_sig_space node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_addname:1
+msgid "Visit a desc_addname node (module name prefix)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_addname:1
+msgid "Depart a desc_addname node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_name:1
+msgid "Visit a desc_name node (function/class name)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_name:1
+msgid "Depart a desc_name node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_parameterlist:1
+msgid "Visit a desc_parameterlist node (parameter list container)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_parameterlist:3
+msgid "Parameters are concatenated with + inside text parentheses."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_parameterlist:1
+msgid "Depart a desc_parameterlist node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_parameter:1
+msgid "Visit a desc_parameter node (individual parameter)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_parameter:1
+msgid "Depart a desc_parameter node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_parameter:3
+msgid "Add comma + space between parameters if not last."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_field_list:1
+msgid "Visit a field_list node (structured fields like Parameters, Returns)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_field_list:1
+msgid "Depart a field_list node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_field_list:3
+msgid "Add spacing after field lists."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_field:1
+msgid "Visit a field node (individual field in a field list)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_field:1
+msgid "Depart a field node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_field_name:1
+msgid "Visit a field_name node (field name like 'Parameters', 'Returns')."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_field_name:3
+msgid "Field names are rendered in bold with a colon (no # prefix in code mode)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_field_name:1
+msgid "Depart a field_name node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_field_body:1
+msgid "Visit a field_body node (field content)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_field_body:1
+msgid "Depart a field_body node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_field_body:3
+msgid "Add newline after field body."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_rubric:1
+msgid "Visit a rubric node (section subheading)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_rubric:3
+#, python-brace-format
+msgid "Rubrics are rendered as subsection headings using strong({}) wrapper."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_rubric:1
+msgid "Depart a rubric node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_title_reference:1
+msgid "Visit a title_reference node (reference to a title)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_title_reference:3
+#, python-brace-format
+msgid "Title references are rendered in emphasis using emph({}) wrapper."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_title_reference:1
+msgid "Depart a title_reference node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_sig_keyword:1
+msgid ""
+"Visit a desc_sig_keyword node (keywords in signatures like 'class', "
+"'def')."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_sig_keyword:1
+msgid "Depart a desc_sig_keyword node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_sig_space:1
+msgid "Visit a desc_sig_space node (whitespace in signatures)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_sig_space:1
+msgid "Depart a desc_sig_space node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_sig_name:1
+msgid "Visit a desc_sig_name node (names in signatures)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_sig_name:1
+msgid "Depart a desc_sig_name node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_sig_punctuation:1
+msgid ""
+"Visit a desc_sig_punctuation node (punctuation in signatures like ':', "
+"'=')."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_sig_punctuation:1
+msgid "Depart a desc_sig_punctuation node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_desc_sig_operator:1
+msgid "Visit a desc_sig_operator node (operators in signatures)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_desc_sig_operator:1
+msgid "Depart a desc_sig_operator node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_literal_strong:1
+msgid "Visit a literal_strong node (bold literal text in field lists)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_literal_strong:1
+msgid "Depart a literal_strong node."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.visit_literal_emphasis:1
+msgid "Visit a literal_emphasis node (emphasized literal text in field lists)."
+msgstr ""
+
+#: of typsphinx.translator.TypstTranslator.depart_literal_emphasis:1
+msgid "Depart a literal_emphasis node."
+msgstr ""
+
+#: ../../source/api/index.rst:33
+msgid "Template Engine"
+msgstr ""
+
+#: of typsphinx.template_engine:1
+msgid "Template engine for Typst document generation."
+msgstr ""
+
+#: of typsphinx.template_engine:3
+msgid ""
+"This module implements template loading, parameter mapping, and rendering"
+" for Typst documents (Requirement 8)."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine:1
+msgid "Bases: :py:class:`object`"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine:1
+msgid "Manages Typst templates for document generation."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine:3
+msgid ""
+"Responsibilities: - Load default or custom Typst templates - Search "
+"templates in multiple directories with priority - Provide fallback to "
+"default template when custom template not found - Map Sphinx metadata to "
+"template parameters - Render final Typst document with template and "
+"content"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine:10
+msgid ""
+"Requirement 8.1: Default Typst template included in package Requirement "
+"8.2: Support custom template specification Requirement 8.7: Priority "
+"search in user project directory Requirement 8.9: Fallback to default "
+"template with warning"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.get_default_template_path:1
+msgid "Get the path to the default template bundled with the package."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.get_default_template_path:4
+msgid "Absolute path to default template file"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.load_template:1
+msgid ""
+"Load Typst template with priority order: 1. Explicit template_path if "
+"provided 2. Search for template_name in search_paths (first match wins) "
+"3. Default template bundled with package"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.get_template_content:4
+#: typsphinx.template_engine.TemplateEngine.load_template:7
+msgid "Template content as string"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.load_template:9
+msgid ""
+"Requirement 8.1: Load default template Requirement 8.2: Load custom "
+"template Requirement 8.7: Search in user project directory Requirement "
+"8.9: Fallback to default with warning"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.map_parameters:1
+msgid "Map Sphinx metadata to template parameters."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.map_parameters:4
+msgid ""
+"Dictionary of Sphinx configuration metadata (project, author, release, "
+"etc.)"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.extract_toctree_options:6
+#: typsphinx.template_engine.TemplateEngine.map_parameters:7
+msgid ""
+":sphinx_autodoc_typehints_type:`\\:py\\:class\\:\\`\\~typing.Dict\\`\\\\ "
+"\\\\\\[\\:py\\:class\\:\\`str\\`\\, "
+"\\:py\\:data\\:\\`\\~typing.Any\\`\\]`"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.map_parameters:8
+msgid "Dictionary of template parameters ready to pass to template"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.map_parameters:10
+msgid ""
+"Requirement 8.3: Pass Sphinx metadata to template Requirement 8.4: "
+"Support different parameter names Requirement 8.5: Standard metadata name"
+" transformation Requirement 8.8: Convert to arrays and complex structures"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.generate_package_import:1
+msgid "Generate Typst package import statement."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.generate_package_import:4
+msgid "Import statement string, or empty string if no package specified"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.generate_package_import:6
+msgid "Requirement 8.6: Typst Universe external template packages"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.extract_toctree_options:1
+msgid "Extract toctree options from doctree for template parameters."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.extract_toctree_options:4
+msgid "Docutils document tree"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.extract_toctree_options:7
+msgid "Dictionary of toctree options for template"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.extract_toctree_options:9
+msgid ""
+"Requirement 8.12: toctree options passed as template parameters "
+"Requirement 8.13: template reflects toctree options in #outline() "
+"Requirement 13.8: #outline() managed at template level Requirement 13.9: "
+"toctree options mapped to template parameters"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.get_template_content:1
+msgid "Get the template content for writing to a separate file."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.get_template_content:6
+msgid ""
+"This is used when templates are written as separate files instead of "
+"being inlined in the main document."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.render:1
+msgid "Render final Typst document with template and body."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.render:4
+msgid "Template parameters (title, authors, etc.)"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.render:6
+msgid "Document body content (Typst markup)"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.render:8
+msgid ""
+"Path to template file for import (relative to output dir). If None, "
+"template is inlined (old behavior). If specified, template is imported "
+"from file."
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.render:13
+msgid "Complete Typst document string"
+msgstr ""
+
+#: of typsphinx.template_engine.TemplateEngine.render:15
+msgid ""
+"Requirement 8.2: Use custom template Requirement 8.10: Pass document "
+"settings to template Requirement 8.14: #outline() in template, not body"
+msgstr ""
+
+#: ../../source/api/index.rst:41
+msgid "Configuration"
+msgstr ""
+
+#: ../../source/api/index.rst:43
+msgid "Configuration values are registered in the main ``__init__.py`` module."
+msgstr ""
+
+#: ../../source/api/index.rst:46
+msgid "Available Configuration Values"
+msgstr ""
+
+#: ../../source/api/index.rst:52
+msgid "Name"
+msgstr ""
+
+#: ../../source/api/index.rst:53
+msgid "Description"
+msgstr ""
+
+#: ../../source/api/index.rst:54
+msgid "Default"
+msgstr ""
+
+#: ../../source/api/index.rst:55
+msgid "``typst_documents``"
+msgstr ""
+
+#: ../../source/api/index.rst:56
+msgid "List of documents to build"
+msgstr ""
+
+#: ../../source/api/index.rst:57
+msgid "``[]``"
+msgstr ""
+
+#: ../../source/api/index.rst:58
+msgid "``typst_template``"
+msgstr ""
+
+#: ../../source/api/index.rst:59
+msgid "Path to custom template file"
+msgstr ""
+
+#: ../../source/api/index.rst:60 ../../source/api/index.rst:63
+#: ../../source/api/index.rst:66 ../../source/api/index.rst:69
+msgid "``None``"
+msgstr ""
+
+#: ../../source/api/index.rst:61
+msgid "``typst_template_function``"
+msgstr ""
+
+#: ../../source/api/index.rst:62
+msgid "Template function name or dict"
+msgstr ""
+
+#: ../../source/api/index.rst:64
+msgid "``typst_package``"
+msgstr ""
+
+#: ../../source/api/index.rst:65
+msgid "Typst Universe package"
+msgstr ""
+
+#: ../../source/api/index.rst:67
+msgid "``typst_authors``"
+msgstr ""
+
+#: ../../source/api/index.rst:68
+msgid "Detailed author information"
+msgstr ""
+
+#: ../../source/api/index.rst:70
+msgid "``typst_use_mitex``"
+msgstr ""
+
+#: ../../source/api/index.rst:71
+msgid "Use mitex for LaTeX math"
+msgstr ""
+
+#: ../../source/api/index.rst:72 ../../source/api/index.rst:75
+#: ../../source/api/index.rst:78
+msgid "``True``"
+msgstr ""
+
+#: ../../source/api/index.rst:73
+msgid "``typst_use_codly``"
+msgstr ""
+
+#: ../../source/api/index.rst:74
+msgid "Use codly for code highlighting"
+msgstr ""
+
+#: ../../source/api/index.rst:76
+msgid "``typst_code_line_numbers``"
+msgstr ""
+
+#: ../../source/api/index.rst:77
+msgid "Show line numbers in code blocks"
+msgstr ""
+
+#: ../../source/api/index.rst:79
+msgid "``typst_papersize``"
+msgstr ""
+
+#: ../../source/api/index.rst:80
+msgid "Paper size (e.g., \"a4\", \"us-letter\")"
+msgstr ""
+
+#: ../../source/api/index.rst:81
+msgid "``\"a4\"``"
+msgstr ""
+
+#: ../../source/api/index.rst:82
+msgid "``typst_fontsize``"
+msgstr ""
+
+#: ../../source/api/index.rst:83
+msgid "Base font size"
+msgstr ""
+
+#: ../../source/api/index.rst:84
+msgid "``\"11pt\"``"
+msgstr ""
+
+#: ../../source/api/index.rst:86
+msgid "See :doc:`/user_guide/configuration` for detailed usage of each option."
+msgstr ""
+
+#: ../../source/api/index.rst:89
+msgid "Indices and Tables"
+msgstr ""
+
+#: ../../source/api/index.rst:91
+msgid ":ref:`genindex`"
+msgstr ""
+
+#: ../../source/api/index.rst:92
+msgid ":ref:`modindex`"
+msgstr ""
+
