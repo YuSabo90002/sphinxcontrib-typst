@@ -45,7 +45,7 @@ exclude_patterns = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-locale_dirs
 
 # Language can be set via SPHINX_LANGUAGE environment variable
-language = os.getenv('SPHINX_LANGUAGE', 'en')
+language = os.getenv("SPHINX_LANGUAGE", "en")
 
 locale_dirs = ["../locale/"]  # Path is relative to the conf.py file
 gettext_compact = False  # Generate separate .pot files for each document
@@ -66,10 +66,10 @@ html_css_files = [
 
 # Language switcher configuration
 html_context = {
-    'language': language,
-    'languages': [
-        ('en', 'English'),
-        ('ja', '日本語'),
+    "language": language,
+    "languages": [
+        ("en", "English"),
+        ("ja", "日本語"),
     ],
 }
 
